@@ -12,7 +12,6 @@ public class Site implements Serializable {
 	private Integer tid;
 	private String tname;
 	private String tintro;
-	private Role role;
 	public Integer getTid() {
 		return tid;
 	}
@@ -31,15 +30,12 @@ public class Site implements Serializable {
 	public void setTintro(String tintro) {
 		this.tintro = tintro;
 	}
-	public Role getRole() {
-		return role;
-	}
-	public void setRole(Role role) {
-		this.role = role;
-	}
+	
+	
 	@Override
 	public String toString() {
-		return "Site [tid=" + tid + ", tname=" + tname + ", tintro=" + tintro + ", role=" + role + "]";
+		return "Site [tid=" + tid + ", tname=" + tname + ", tintro=" + tintro + "]";
 	}
+	
 	
 }
