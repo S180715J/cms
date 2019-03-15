@@ -3,11 +3,11 @@ package com.newer.cms.pojo;
 import java.io.Serializable;
 
 /**
- * .语种类
+ *  .仅仅是用来接收数据的语种类
  * @author Administrator
  *
  */
-public class Language implements Serializable {
+public class Languag implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,7 +15,7 @@ public class Language implements Serializable {
 	private String lname;
 	private String abbreviation;
 	private Integer isactivation;
-	private Site site;
+	private User user;
 	public Integer getLid() {
 		return lid;
 	}
@@ -40,18 +40,16 @@ public class Language implements Serializable {
 	public void setIsactivation(Integer isactivation) {
 		this.isactivation = isactivation;
 	}
-	
-	
-	public Site getSite() {
-		return site;
+	public User getUser() {
+		return user;
 	}
-	public void setSite(Site site) {
-		this.site = site;
+	public void setUser(User user) {
+		this.user = user;
 	}
 	@Override
 	public String toString() {
-		return "Language [lid=" + lid + ", lname=" + lname + ", abbreviation=" + abbreviation + ", isactivation="
-				+ isactivation + ", site=" + site + "]";
+		return "Languag [lid=" + lid + ", lname=" + lname + ", abbreviation=" + abbreviation + ", isactivation="
+				+ isactivation + ", user=" + user + "]";
 	}
 	
 	
