@@ -112,14 +112,13 @@ CREATE TABLE `t_language` (
   `lname` varchar(50) COLLATE utf8_bin NOT NULL,
   `abbreviation` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `isactivation` int(11) DEFAULT NULL,
-  `role` int(11) DEFAULT NULL,
   `tid` int(11) DEFAULT NULL,
   PRIMARY KEY (`lid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_language` */
 
-insert  into `t_language`(`lid`,`lname`,`abbreviation`,`isactivation`,`role`,`tid`) values (1,'简体中文','cn',1,3,2),(2,'English','en',1,3,2);
+insert  into `t_language`(`lid`,`lname`,`abbreviation`,`isactivation`,`tid`) values (1,'简体中文','cn',1,1),(2,'Enlish','us',1,2);
 
 /*Table structure for table `t_role` */
 
@@ -144,13 +143,25 @@ CREATE TABLE `t_site` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `tname` varchar(50) COLLATE utf8_bin NOT NULL,
   `tintro` varchar(100) COLLATE utf8_bin DEFAULT NULL,
-  `role` int(11) DEFAULT NULL,
   PRIMARY KEY (`tid`,`tname`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_site` */
 
-insert  into `t_site`(`tid`,`tname`,`tintro`,`role`) values (1,'牛耳总公司','培训机构',2);
+insert  into `t_site`(`tid`,`tname`,`tintro`) values (1,'牛耳总公司1','培训机构'),(2,'贝尔安亲','培训机构');
+
+/*Table structure for table `t_site_user` */
+
+DROP TABLE IF EXISTS `t_site_user`;
+
+CREATE TABLE `t_site_user` (
+  `tid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+/*Data for the table `t_site_user` */
+
+insert  into `t_site_user`(`tid`,`uid`) values (1,1),(2,2);
 
 /*Table structure for table `t_user` */
 

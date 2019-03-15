@@ -2,16 +2,18 @@
 tid     int   自增   
 tname   varchar   站点名
 tintro  简介 varchar 
-role       int   角色id
+
 
 语种表  t_language
 lid     int   自增
 lname   varchar  语种名 
 abbreviation  varchar  语种简称
 isactivation   int  是否激活   0不激活  1激活
-role   int   角色id
 tid    int  站点表id
 
+站点用户关系表 t_site_user
+tid
+uid
 
 频道表   t_channel
 cid     int   自增
