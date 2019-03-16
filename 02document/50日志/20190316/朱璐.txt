@@ -1,0 +1,19 @@
+今日任务：
+  初步实现web页面内容，实现登录，以及显示用户列表共
+  
+  完成情况：
+  已完成初步的页面调试，实现了登录，用户列表的动态分页数据
+  
+  所遇问题：
+   1.后端返回JSON数据与 layui动态表格JSON数据的匹配 状态码，等问题
+   response: {
+			    statusName: 'status' //规定数据状态的字段名称，默认：code
+			    ,statusCode: 'OK' //规定成功的状态码，默认：0
+			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
+			    ,countName: 'count' //规定数据总数的字段名称，默认：count
+			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
+			  } , 
+    2.layui动态表格的点击上下一页无法获得数据问题！(已解决)request: {
+			    pageName: 'pageNoStr' //页码的参数名称，默认：page
+			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
+			  },_
