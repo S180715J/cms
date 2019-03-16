@@ -28,19 +28,9 @@ public class Article implements Serializable {
 	private Articletype articletype;
 	private Integer status;
 	private Integer stick;
-	
-	public Integer getStick() {
-		return stick;
-	}
-	public void setStick(Integer stick) {
-		this.stick = stick;
-	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+	private String author;
+	private String aboutimg;
+	private Channel channel;
 	public Integer getAid() {
 		return aid;
 	}
@@ -89,12 +79,45 @@ public class Article implements Serializable {
 	public void setArticletype(Articletype articletype) {
 		this.articletype = articletype;
 	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public Integer getStick() {
+		return stick;
+	}
+	public void setStick(Integer stick) {
+		this.stick = stick;
+	}
+	public String getAuthor() {
+		return author;
+	}
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	public String getAboutimg() {
+		return aboutimg;
+	}
+	public void setAboutimg(String aboutimg) {
+		this.aboutimg = aboutimg;
+	}
+	public Channel getChannel() {
+		return channel;
+	}
+	public void setChannel(Channel channel) {
+		this.channel = channel;
+	}
+	
 	@Override
 	public String toString() {
 		return "Article [aid=" + aid + ", title=" + title + ", subhead=" + subhead + ", mainbody=" + mainbody
 				+ ", accessoryname=" + accessoryname + ", accessory=" + accessory + ", creattime=" + creattime
-				+ ", articletype=" + articletype + "]";
+				+ ", articletype=" + articletype + ", status=" + status + ", stick=" + stick + ", author=" + author
+				+ ", aboutimg=" + aboutimg + ", channel=" + channel + "]";
 	}
+	
 	
 	
 }

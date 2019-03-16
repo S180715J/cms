@@ -38,10 +38,10 @@ creattime datetime  创建时间
 articletype int  文章类型
 stick  int  默认为0不置顶 数值越大置顶等级越高
 status   int  状态  默认为0，待审批，1为已发布
+author  varchar 作者
+aboutimg varchar 相关图片
+cid    频道id
 
-频道文章关系表 t_channel_article
-cid 
-aid
 
 机构表 t_institution
 id       机构id
