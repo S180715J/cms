@@ -59,13 +59,27 @@
                   <span class="x-red">*</span>
               </div>
           </div>
-          <div class="layui-form-item">
+          <div class="layui-form-item" >
               <label class="layui-form-label"><span class="x-red">*</span>角色</label>
-              <div class="layui-input-block">
-                <input type="checkbox" name="like1[write]" lay-skin="primary" title="超级管理员" checked="">
-                <input type="checkbox" name="like1[read]" lay-skin="primary" title="编辑人员">
-                <input type="checkbox" name="like1[write]" lay-skin="primary" title="宣传人员" checked="">
+              <div class="layui-input-block" style="width: 120px">
+                <select name='rid' lay-verify="required">
+                <option></option>
+                </select>
               </div>
+          </div>
+          <div class="layui-form-item" >
+              <label class="layui-form-label"><span class="x-red">*</span>所属机构
+              <div class="layui-input-block" style="width: 120px">
+                <select name='rid' lay-verify="required">
+                <option></option>
+                
+                </select>
+                
+               
+              </div>
+              
+              </label>
+              
           </div>
           <div class="layui-form-item">
               <label for="L_pass" class="layui-form-label">
@@ -97,6 +111,26 @@
           </div>
       </form>
     </div>
+    <script type="text/javascript">
+    $(function() {
+		findByinstitution();
+	});
+    function findByinstitution() {
+		$.ajax({
+			method:'get',
+			url:'',
+			success: function(data) {
+				if(data!=null){
+					var html='';
+					$.each(data,function(index,obj){
+						html+=' <option value='+obj.rid+'>'+obj.rname+'</option>';
+					});
+					$("select[name=rid]").append(html);
+				}
+			}
+		});
+	}
+    </script>
     <script>
         layui.use(['form','layer'], function(){
             $ = layui.jquery;

@@ -82,13 +82,16 @@ public interface UserMapper {
 	 * @param pageSize
 	 * @return 用户数据集合
 	 */
-	@Select("SELECT c.uid AS 'user.uid',c.uname AS 'user.uname',c.six AS 'user.six',c.upassword AS 'user.password',d.rid AS 'role.rid',\r\n"
-			+ "			c.phone AS 'user.phone',c.namepath AS 'user.institution.namepath',c.islogin AS 'user.islogin',d.rname AS 'role.rname' FROM\r\n"
-			+ "			(SELECT a.uid,a.uname,a.upassword,a.phone,a.six,a.namepath,a.islogin,b.rid FROM \r\n"
-			+ "			(SELECT u.`uid`,u.`uname`,u.upassword,u.`six`,u.`phone`,i.`namepath`,u.`islogin` FROM \r\n"
-			+ "			t_user u LEFT JOIN t_institution i ON u.`id`=i.`id`) a\r\n"
-			+ "			LEFT JOIN t_user_role b ON a.uid=b.uid ) c LEFT JOIN  t_role d ON c.rid=d.`rid`\r\n"
-			+ "			LIMIT #{index},#{pageSize}")
+	@Select("SELECT c.uid AS 'user.uid',c.uname AS 'user.uname',c.six AS 'user.six',c.upassword AS 'user.upassword',d.rid AS 'role.rid',c.email AS 'user.email',\r\n"
+			+ "	c.id AS 'user.institution.id', c.iname AS 'user.institution.iname',c.idpath AS 'user.institution.idpath',c.fid AS 'user.institution.fid',\r\n"
+			+ "	c.phone AS 'user.phone',c.namepath AS 'user.institution.namepath',c.islogin AS 'user.islogin',d.rname AS 'role.rname' FROM\r\n"
+			+ "	(SELECT a.`uid`,a.fid,b.`rid`,a.uname,a.upassword,a.six,a.phone,a.email,a.id,a.islogin\r\n"
+			+ "	,a.iname,a.namepath,a.idpath FROM \r\n"
+			+ "	(SELECT u.`uid`,u.`uname`,u.`upassword`,u.`six`,u.`phone`,u.`email`\r\n"
+			+ "	,u.`id`,u.`islogin`,i.`iname`,i.`fid`,i.`namepath`,i.`idpath` FROM \r\n"
+			+ "	t_user u LEFT JOIN t_institution i ON u.`id`=i.`id`) a\r\n"
+			+ "	LEFT JOIN t_user_role b ON a.uid=b.uid ) c LEFT JOIN  t_role d ON c.rid=d.`rid`\r\n"
+			+ "						LIMIT #{index},#{pageSize}")
 	List<UserRole> getPageByUser(@Param("index") Integer index, @Param("pageSize") Integer pageSize);
 
 	/**

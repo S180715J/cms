@@ -49,12 +49,12 @@
     	 <div>{{d.role == null ? '暂无':d.role.rname}}</div>
     </script>
     <script type="text/html" id="islogin">
-    	 <input type="checkbox" name="sex" value="{{d.user.islogin}}" lay-skin="switch" lay-text="是|否" lay-filter="sexDemo" {{ d.user.islogin == 1 ? 'checked' : '' }}>
+    	 <input type="checkbox" name="sex" value="{{d.user.islogin}}" lay-skin="switch" lay-text="是|否" lay-filter="sexDemo" {{ d.user.islogin == 1 ? 'checked' : '' }} lay-event='islogin'>
     </script>
     <script type="text/html" id="operate">
     	
              
-              <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+              <a title="删除" onclick="member_del(this,{{d.user.uid}})" href="javascript:;">
                 <i class="layui-icon">&#xe640;</i>
               </a>
     </script>
@@ -75,7 +75,7 @@
      
     <script type="text/html" id="switchTpl">
       <!-- 这里的 checked 的状态只是演示 -->
-      <input type="checkbox" name="sex" value="{{d.user.six}}" lay-skin="switch" lay-text="女|男" lay-filter="sexDemo" {{ d.user.six == 0 ? 'checked' : '' }}>
+      <input type="checkbox" name="sex" value="{{d.user.six}}" lay-skin="switch" lay-text="女|男" lay-filter="sexDemo" {{ d.user.six == 0 ? 'checked' : '' }} lay-event='openSex'>
     </script>
     <script type="text/html" id="phone">
       <!-- 这里的 checked 的状态只是演示 -->
@@ -100,7 +100,7 @@
       });
     </script>
     
-    </script>
+ 
     <script>
     layui.use('table',function(){
       var table = layui.table;
@@ -122,7 +122,12 @@
 			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
 			  },
 			cols : [ [ //表头
+				{
+				type:'checkbox',
+				field:'user.uid'
+				},
 			{
+				field:'user.uid',
 				templet:'<div>{{d.user.uid}}</div>',
 				title : 'ID',
 				width : 120,
@@ -131,6 +136,7 @@
 				
 			}, {
 				templet:'<div>{{d.user.uname}}</div>',
+				field:'uname',
 				title : '用户名',
 				align : 'center',
 				width : 120,
@@ -138,36 +144,44 @@
 
 			}, {
 				templet:'#switchTpl',
+				field:'six',
 				title : '性别 ',
 				width : 155,
 				align : 'center',
 				sort : true,
+				event:'openSex'
 				
 			}, {
 				templet : '#phone',
+				field:'phone',
 				title : '手机号',
 				width : 155,
 				align : 'center',
-				sort : true
+				sort : true,
+				edit:'text'
 				
 			}, {
-				templet : '<div>{{d.user.institution.iname}}</div>',
+				templet : '<div>{{d.user.institution == null ? "暂无":d.user.institution.iname}}</div>',
+				field:'iname',
 				title : '所属分支机构',
 				align : 'center',
 				width : 130,
 				
 			}, {
 				templet:'#rname',
+				field:'rname',
 				title : '角色',
 				align : 'center',
 				width : 120,
 				style : 'font-size: 10px;'
 			}, {
 				templet:'#islogin',
+				field:'islogin',
 				title : '是否可登录',
 				width : 130,
 				align : 'center',
 				sort : true,
+				event:'islogin'
 				
 			}, {
 				templet:'#operate',
@@ -190,16 +204,86 @@
         
       
       
+      
+      
       //监听单元格编辑
       table.on('edit(test)', function(obj){
         var value = obj.value //得到修改后的值
         ,data = obj.data //得到所在行所有键值
         ,field = obj.field; //得到字段
-         alert(field);
-         alert(data.username);
-        //此处修改的AJAX
-        
-        layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+       var user=data.user;
+       if(field=='uname'){
+    	   data.user.uname=value;
+       }
+        if(field=='phone'){
+        	data.user.phone=value;
+        }
+         
+         //此处修改的AJAX
+         $.ajax({
+        	method:'put',
+        	url:'http://localhost:8080/User',
+        	data:JSON.stringify(user),
+        	contentType:'application/json;charset=UTF-8',
+        	success:function(res){
+        		if(res=='ok'){
+        			layer.msg('[ID: '+ data.user.uid +'] ' +field + ' :字段更改为：'+ value,{
+        				icon:1,
+        				time:2000
+        			});
+        		}
+        	}
+        	
+        });  
+  
+      });
+
+      
+      //监听性别是否可登录的状态改变事件
+      table.on('tool(test)',function(obj){
+    	 
+     	 if(obj.event=='openSex'){//监听性别的状态
+     		 obj.data.user.six =obj.data.user.six == 1 ? 0:1;
+     	 var user = obj.data.user
+     	     layer.confirm('确定要更改性别？',function(){
+     	    	$.ajax({
+     	        	method:'put',
+     	        	url:'http://localhost:8080/User',
+     	        	data:JSON.stringify(user),
+     	        	contentType:'application/json;charset=UTF-8',
+     	        	success:function(res){
+     	        		if(res=='ok'){
+     	        			layer.msg('[用户: '+ obj.data.user.uname +'] ' +'修改性别成功',{
+     	        				icon:1,
+     	        				time:2000
+     	        			});
+     	        		}
+     	        	}
+     	        	
+     	        }); 
+     	     });
+     	 }
+     	 if(obj.event=='islogin'){
+     		 obj.data.user.islogin =obj.data.user.islogin == 1 ? 0:1;
+         	 var user = obj.data.user
+         	     layer.confirm('确定要更改是否可登录状态？',function(){
+         	    	$.ajax({
+         	        	method:'put',
+         	        	url:'http://localhost:8080/User',
+         	        	data:JSON.stringify(user),
+         	        	contentType:'application/json;charset=UTF-8',
+         	        	success:function(res){
+         	        		if(res=='ok'){
+         	        			layer.msg('[用户: '+ obj.data.user.uname +'] ' +'更改状态成功！',{
+         	        				icon:1,
+         	        				time:2000
+         	        			});
+         	        		}
+         	        	}
+         	        	
+         	        }); 
+         	     });
+     	 }
       });
 
       //头工具栏事件
@@ -273,9 +357,18 @@
       /*用户-删除*/
       function member_del(obj,id){
           layer.confirm('确认要删除吗？',function(index){
-              //发异步删除数据
-              $(obj).parents("tr").remove();
-              layer.msg('已删除!',{icon:1,time:1000});
+        	  $.ajax({
+              	method:'delete',
+              	url:'http://localhost:8080/User/'+id,
+              	success: function(data) {
+					if(data=='ok'){
+						//发异步删除数据
+			              $(obj).parents("tr").remove();
+			              layer.msg('已删除!',{icon:1,time:1000});	
+					}
+				}
+              });
+              
           });
       }
 
@@ -287,6 +380,8 @@
   
         layer.confirm('确认要删除吗？'+data,function(index){
             //捉到所有被选中的，发异步进行删除
+           
+            
             layer.msg('删除成功', {icon: 1});
             $(".layui-form-checked").not('.header').parents('tr').remove();
         });

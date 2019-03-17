@@ -13,7 +13,7 @@
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
-
+    <script type="text/javascript" src="js/jwt.js"></script>
 </head>
 <body>
     <!-- 顶部开始 -->
@@ -34,10 +34,10 @@
         </ul>
         <ul class="layui-nav right" lay-filter="">
           <li class="layui-nav-item">
-            <a href="javascript:;">admin</a>
+            <a href="javascript:;" id="admin"></a>
             <dl class="layui-nav-child"> <!-- 二级菜单 -->
               <dd><a onclick="x_admin_show('个人信息','http://www.baidu.com')">个人信息</a></dd>
-              <dd><a onclick="x_admin_show('切换帐号','http://www.baidu.com')">切换帐号</a></dd>
+              <dd><a onclick="x_admin_show('修改密码','http://www.baidu.com')">修改密码</a></dd>
               <dd><a href="./login.html">退出</a></dd>
             </dl>
           </li>
@@ -277,6 +277,24 @@
         <div class="copyright">Copyright ©2017 x-admin v2.3 All Rights Reserved</div>  
     </div>
     <!-- 底部结束 -->
+    
+    <script type="text/javascript">
+    $(function() {
+		getToken();
+	});
+     function getToken() {
+		$.ajax({
+			method:'get',
+			url:'http://localhost:8080/findToken',
+			headers:createAuthorizationTokenHeader(),
+		  success: function(data) {
+			if(data!=null){
+				$("#admin").text(data);
+			}
+		}
+		});
+	}
+    </script>
     <script>
     //百度统计可去掉
     var _hmt = _hmt || [];

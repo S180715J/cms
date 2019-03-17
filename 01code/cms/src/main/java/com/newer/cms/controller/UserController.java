@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -119,12 +120,20 @@ public class UserController {
 		String token = request.getHeader(header);
 
 		// 解析token
-		Claims claims = new JwtTokenUtil().parseJWT(token);
-		Object object = claims.get("userRole");
-		if (object == null) {
+		Claims claims;
+		try {
+			claims = new JwtTokenUtil().parseJWT(token);
+			String uname = (String) claims.get("uname");
+			if (uname == null) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			return new ResponseEntity<String>(uname, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<Object>(object, HttpStatus.OK);
+
 	}
 
 	/**
@@ -146,7 +155,8 @@ public class UserController {
 	 * @return 成功返回"ok",否则返回"error"
 	 */
 	@PutMapping("/User")
-	public String updateUser(User user) {
+	public String updateUser(@RequestBody User user) {
+		System.out.println(user);
 		String str = userService.updateUser(user);
 		return str;
 	}

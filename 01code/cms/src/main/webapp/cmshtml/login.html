@@ -43,7 +43,7 @@
             	  layer.msg(JSON.stringify(data.field),{
             		  iocn:1,
             		  time:4000
-            	  });
+            	  }); 
                  $.ajax({
                 	method :'get',
                 	url:'http://localhost:8080/login',
@@ -52,7 +52,7 @@
                 	success:function(data){
                 		if(data!=null){
                 			setJwtToken(data);
-                			 location.href='http://localhost:8080/cmshtml/index.html';
+                			location.href='http://localhost:8080/cmshtml/index.html';
                 		}
                 	},
                 	error:function(){

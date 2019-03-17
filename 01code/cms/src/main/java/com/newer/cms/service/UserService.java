@@ -51,7 +51,11 @@ public class UserService {
 	 */
 	public UserRole getUserRole(String userName, String password) {
 		// 通过用户名和密码查询用户并返回
-		return userMapper.getUserRoleByUserNameAndPassword(userName, password);
+		UserRole userRole = userMapper.getUserRoleByUserNameAndPassword(userName, password);
+		if (userRole.getRole() == null || userRole.getUser().getIslogin() == 0) {
+			return null;
+		}
+		return userRole;
 	}
 
 	/**

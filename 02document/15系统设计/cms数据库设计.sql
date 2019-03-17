@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v10.00 Beta1
-MySQL - 5.5.51 : Database - cms
+SQLyog Ultimate v11.11 (64 bit)
+MySQL - 5.7.17 : Database - cms
 *********************************************************************
 */
 
@@ -35,7 +35,7 @@ CREATE TABLE `t_article` (
   `aboutimg` varchar(100) COLLATE utf8_bin DEFAULT NULL,
   `cid` int(11) DEFAULT NULL,
   PRIMARY KEY (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_article` */
 
@@ -87,7 +87,7 @@ CREATE TABLE `t_institution` (
   `idpath` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `namepath` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_institution` */
 
@@ -104,7 +104,7 @@ CREATE TABLE `t_language` (
   `isactivation` int(11) DEFAULT NULL,
   `tid` int(11) DEFAULT NULL,
   PRIMARY KEY (`lid`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_language` */
 
@@ -167,11 +167,11 @@ CREATE TABLE `t_user` (
   `id` int(11) DEFAULT NULL,
   `islogin` int(11) DEFAULT '1',
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_user` */
 
-insert  into `t_user`(`uid`,`uname`,`upassword`,`six`,`phone`,`email`,`id`,`islogin`) values (1,'zhangsan','123456',1,'112233445566','123@qq.com',1,0),(2,'admin','123456',0,'22222222222','admin@qq.com',2,1),(3,'李四','123456',0,'23243432432','123@qq.com',3,1),(4,'王五','123456',0,'23234343434','123@qq.com',2,1),(5,'root','123456',0,'1222222222','ad@qq.com',1,1),(6,'qw','123456',0,'2132','qw@qq.com',3,1);
+insert  into `t_user`(`uid`,`uname`,`upassword`,`six`,`phone`,`email`,`id`,`islogin`) values (1,'zhansgan','123456',1,'12345678901','123@qq.com',1,0),(2,'admin','123456',0,'22222222222','admin@qq.com',2,1),(3,'李四','123456',0,'23243432432','123@qq.com',3,1),(4,'王五','123456',0,'23234343434','123@qq.com',2,1),(5,'root','123456',0,'1222222222','ad@qq.com',1,1),(6,'qw','123456',0,'2132','qw@qq.com',3,1),(8,'nihao','123456',1,'12345678911','123@qq.com',3,1),(9,'nihao','123456',1,'12345678911','123@qq.com',3,1),(10,'nihao','123456',1,'12345678911','123@qq.com',3,1),(11,'nihao','123456',1,'12345678911','123@qq.com',3,1),(12,'nihao','123456',1,'12345678911','123@qq.com',3,1);
 
 /*Table structure for table `t_user_role` */
 
@@ -184,7 +184,7 @@ CREATE TABLE `t_user_role` (
 
 /*Data for the table `t_user_role` */
 
-insert  into `t_user_role`(`rid`,`uid`) values (1,1),(2,2),(3,3),(4,4);
+insert  into `t_user_role`(`rid`,`uid`) values (1,1),(2,2),(3,3),(4,4),(3,5);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
