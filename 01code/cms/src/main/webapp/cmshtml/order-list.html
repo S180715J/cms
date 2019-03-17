@@ -32,58 +32,15 @@
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
     <div class="x-body">
-      <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-          <input class="layui-input" placeholder="开始日" name="start" id="start">
-          <input class="layui-input" placeholder="截止日" name="end" id="end">
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option>支付状态</option>
-              <option>已支付</option>
-              <option>未支付</option>
-            </select>
-          </div>
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option>支付方式</option>
-              <option>支付宝</option>
-              <option>微信</option>
-              <option>货到付款</option>
-            </select>
-          </div>
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option value="">订单状态</option>
-              <option value="0">待确认</option>
-              <option value="1">已确认</option>
-              <option value="2">已收货</option>
-              <option value="3">已取消</option>
-              <option value="4">已完成</option>
-              <option value="5">已作废</option>
-            </select>
-          </div>
-          <input type="text" name="username"  placeholder="请输入订单号" autocomplete="off" class="layui-input">
-          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
-        </form>
-      </div>
+     
       <xblock>
         <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
         <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add.html')"><i class="layui-icon"></i>添加</button>
-        <span class="x-right" style="line-height:40px">共有数据：88 条</span>
+        <span class="x-right" id='dataLength' style="line-height:40px"></span>
       </xblock>
      <div>
-     	      <table class="layui-table" lay-data="{url:'./user.json',page:true,toolbar: '#toolbarDemo',id:'test'}" lay-filter="test">
-        <thead>
-          <tr>
-            <th lay-data-user="{type:'checkbox'}">ID</th>
-            <th lay-data-user="{templet:'{{d.role.rid}}',width:80, sort: true}">ID</th>
-            <th lay-data-user="{templet:'{{d.role.rname}}',field:'username' ,width:120, sort: true, edit: 'text'}">站点名称</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">站点管理员</th>
-            <th lay-data="{field:'sex', width:80,templet: '#switchTpl'}">是否激活</th>
-            <th lay-data="{field:'id', minWidth: 30,templet:'{{d.site.tintro}}'}">描述</th>
-           <th lay-data="{field:'id', minWidth: 30,templet:'#operate'}">操作</th>
-          </tr>
-        </thead>
+     	      <table class="layui-table" id="table" lay-filter="test">
+        
       </table>
      </div>
    
@@ -190,6 +147,7 @@
           });
       }
 
+      
 
 
       function delAll (argument) {
@@ -203,12 +161,76 @@
         });
       }
     </script>
+    <script type="text/html" id="sit">
+    <div>{{d.user==null?'暂无' :d.user.uname}}</div>
+    </script>
+    <script type="text/javascript">
+    /*站点加载*/
+     layui.use('table',function(){
+      var table = layui.table;
+     var url='http://localhost:8080/getPageSiteUser';
+     table.render({
+			elem : '#table',
+			url : url, //数据接口
+			response: {
+			    statusName: 'status' //规定数据状态的字段名称，默认：code
+			    ,statusCode: 'OK' //规定成功的状态码，默认：0
+			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
+			    ,countName: 'count' //规定数据总数的字段名称，默认：count
+			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
+			  } , 
+			page : true, //开启分页
+			toolbar: '#toolbarDemo',
+			request: {
+			    pageName: 'pageNoStr' //页码的参数名称，默认：page
+			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
+			  },
+			cols : [ [ //表头
+			{
+				templet:'<div>{{d.site.tid}}</div>',
+				title : 'ID',				
+				sort : true,
+				align : 'center',
+				
+			}, {
+				templet:'<div>{{d.site.tname}}</div>',
+				title : '站点名称',
+				align : 'center',				
+				edit:'text'
+
+			}, {
+				templet : '#sit',
+				title : '站点管理员',
+				align : 'center',
+				
+			},{
+				templet : '<div>{{d.site.tintro}}</div>',
+				title : '描述',
+				align : 'center',
+				
+			}] ],
+
+			size : 'lg',
+			done : function(res, curr, count) {
+				//如果是异步请求数据方式，res即为你接口返回的信息。
+				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+				//得到数据总量
+				$("#dataLength").text("共有数据：" + count + "条");
+			}
+		}); 
+     
+     });
+    </script>
+   
+    
     <script>var _hmt = _hmt || []; (function() {
         var hm = document.createElement("script");
         hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
         var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(hm, s);
       })();</script>
+      
+      
   </body>
 
 </html>

@@ -1,11 +1,15 @@
 package com.newer.cms.mapper;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 import com.newer.cms.pojo.Site;
+import com.newer.cms.pojo.SiteUser;
 
 public interface SiteMapper {
 	
@@ -29,4 +33,17 @@ public interface SiteMapper {
 	 */
 	@Update("UPDATE  t_site SET tname=#{tname},tintro=#{tintro} WHERE tid=#{tid}")
 	int updateSite(Site site);
+	
+	/**
+	 * .查询所有站点的总记录数
+	 */
+	Integer getTotalSite(Map param);
+	
+	/**
+	 * .查询条件为map 的站点集合
+	 */
+	
+	List<SiteUser> getPageSiteUser(Map param);
+
+	
 }

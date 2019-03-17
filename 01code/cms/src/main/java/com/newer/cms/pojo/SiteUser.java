@@ -13,13 +13,13 @@ public class SiteUser implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Size size;
+	private Site site;
 	private User user;
-	public Size getSize() {
-		return size;
+	public Site getSite() {
+		return site;
 	}
-	public void setSize(Size size) {
-		this.size = size;
+	public void setSite(Site site) {
+		this.site = site;
 	}
 	public User getUser() {
 		return user;
@@ -29,7 +29,7 @@ public class SiteUser implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "SiteUser [size=" + size + ", user=" + user + "]";
+		return "SiteUser [size=" + site + ", user=" + user + "]";
 	}
 	
 }

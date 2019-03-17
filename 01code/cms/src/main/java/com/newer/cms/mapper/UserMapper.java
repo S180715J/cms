@@ -1,6 +1,7 @@
 package com.newer.cms.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -110,4 +111,6 @@ public interface UserMapper {
 			+ "			WHERE c.uname=#{userName} AND c.upassword=#{password};")
 	UserRole getUserRoleByUserNameAndPassword(@Param("userName") String userName, @Param("password") String password);
 
+	void updateUsers(Map<String,Object> param);
+	
 }
