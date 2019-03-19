@@ -143,8 +143,9 @@ public class UserController {
 	 * @return 成功返回"ok",否则返回"error"
 	 */
 	@PostMapping("/User")
-	public String saveUser(User user) {
-		String str = userService.saveUser(user);
+	public String saveUser(@RequestBody UserRole userRole) {
+		System.out.println(userRole);
+		String str = userService.saveUser(userRole);
 		return str;
 	}
 
@@ -179,4 +180,5 @@ public class UserController {
 		String str = userService.deleteUser(id);
 		return new ResponseEntity<String>(str, HttpStatus.OK);
 	}
+
 }

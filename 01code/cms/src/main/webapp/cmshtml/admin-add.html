@@ -28,7 +28,7 @@
                   <span class="x-red">*</span>登录名
               </label>
               <div class="layui-input-inline">
-                  <input type="text" id="username" name="username" required="" lay-verify="required"
+                  <input type="text" id="username" name="userName" required="" lay-verify="required"
                   autocomplete="off" class="layui-input">
               </div>
               <div class="layui-form-mid layui-word-aux">
@@ -44,7 +44,7 @@
                   autocomplete="off" class="layui-input">
               </div>
               <div class="layui-form-mid layui-word-aux">
-                  <span class="x-red">*</span>将会成为您唯一的登入名
+                  
               </div>
           </div>
           <div class="layui-form-item">
@@ -59,49 +59,53 @@
                   <span class="x-red">*</span>
               </div>
           </div>
+                 <div class="layui-form-item">
+    <label class="layui-form-label">性别</label>
+    <div class="layui-input-block">
+      <input type="radio" name="six" value="1" title="男" checked>
+      <input type="radio" name="six" value="0" title="女" >
+    </div>
+  </div>
           <div class="layui-form-item" >
               <label class="layui-form-label"><span class="x-red">*</span>角色</label>
               <div class="layui-input-block" style="width: 120px">
-                <select name='rid' lay-verify="required">
+                <select name='rid' id="role" lay-verify="required">
                 <option></option>
                 </select>
               </div>
           </div>
-          <div class="layui-form-item" >
-              <label class="layui-form-label"><span class="x-red">*</span>所属机构
-              <div class="layui-input-block" style="width: 120px">
-                <select name='rid' lay-verify="required">
-                <option></option>
-                
-                </select>
-                
-               
-              </div>
-              
-              </label>
-              
-          </div>
+   
+        <div class="layui-form">  
+         <label class="layui-form-label"><span class="x-red">*</span>所属机构</label>
+            <div class="layui-input-inline">  
+                <select name="institution" lay-filter="institution" class="institution">  
+                    <option value="">请选择机构</option>  
+                </select>  
+            </div>  
+            <div class="layui-input-inline">  
+                <select name="mechanism" lay-filter="mechanism" >  
+                    <option value="">请选择子机构</option>  
+                </select>  
+            </div>  
+            <div class="layui-input-inline">  
+                <select name="department" lay-filter="department" >  
+                    <option value="">请选择部门</option>  
+                </select>  
+            </div>  
+        </div>  
+
+
           <div class="layui-form-item">
               <label for="L_pass" class="layui-form-label">
-                  <span class="x-red">*</span>密码
+                 
               </label>
               <div class="layui-input-inline">
-                  <input type="password" id="L_pass" name="pass" required="" lay-verify="pass"
+                  <input type="hidden" id="L_pass" name="upassword" required="" value="888888" lay-verify="pass"
                   autocomplete="off" class="layui-input">
               </div>
-              <div class="layui-form-mid layui-word-aux">
-                  6到16个字符
-              </div>
+              
           </div>
-          <div class="layui-form-item">
-              <label for="L_repass" class="layui-form-label">
-                  <span class="x-red">*</span>确认密码
-              </label>
-              <div class="layui-input-inline">
-                  <input type="password" id="L_repass" name="repass" required="" lay-verify="repass"
-                  autocomplete="off" class="layui-input">
-              </div>
-          </div>
+        
           <div class="layui-form-item">
               <label for="L_repass" class="layui-form-label">
               </label>
@@ -111,21 +115,33 @@
           </div>
       </form>
     </div>
+    <script type="text/javascript" src="./js/address.js"></script>
+    <script type="text/javascript">
+    layui.config({  
+        base : "js/" //address.js的路径  
+    }).use([ 'layer', 'jquery', "address" ], function() {  
+        var layer = layui.layer, $ = layui.jquery, address = layui.address();  
+         
+    });  
+   
+   
+    </script>
     <script type="text/javascript">
     $(function() {
-		findByinstitution();
+		findByRoles();
 	});
-    function findByinstitution() {
+    function findByRoles() {
 		$.ajax({
 			method:'get',
-			url:'',
+			url:'http://localhost:8080/findRole',
 			success: function(data) {
 				if(data!=null){
 					var html='';
 					$.each(data,function(index,obj){
-						html+=' <option value='+obj.rid+'>'+obj.rname+'</option>';
+						
+						html+=' <option value="'+obj.rid+'">'+obj.rname+'</option>';
 					});
-					$("select[name=rid]").append(html);
+					$("#role").append(html);
 				}
 			}
 		});
@@ -155,27 +171,63 @@
           //监听提交
           form.on('submit(add)', function(data){
             console.log(data);
+            layer.msg(data.field.userName,{
+      		  iocn:1,
+      		  time:4000
+      	  }); 
             //发异步，把数据提交给php
-            layer.alert("增加成功", {icon: 6},function () {
+                var user={
+            		"uname":data.field.userName,
+            		"upassword":data.field.upassword,
+            		"phone":data.field.phone,
+            		"email":data.field.email,
+            		"six":data.field.six,
+            		
+            		  };
+            var institution;
+             if(data.field.mechanism==null||data.field.mechanism==''){
+            	 institution={
+            			 "id":data.field.institution
+            	 }
+             }else{
+            	 user.institution={
+            			 "id":data.field.department ==null||data.field.department =='' ? data.field.mechanism : data.field.department
+            	 }
+             }
+           
+               
+            var role={
+            		"rid":data.field.rid
+            }
+            var userRole={
+            		"role":role,
+            		"user":user
+            	}
+            $.ajax({
+            	method:'post',
+            	url:'http://localhost:8080/User',
+            	data:JSON.stringify(userRole),
+            	contentType:'application/json',
+            success: function(data){
+            	      layer.alert("增加成功", {icon: 6},function () {
                 // 获得frame索引
                 var index = parent.layer.getFrameIndex(window.name);
                 //关闭当前frame
                 parent.layer.close(index);
                 // 可以对父窗口进行刷新 
                 x_admin_father_reload();
+            }); 
+            }
             });
+            
+      
             return false;
           });
           
           
         });
     </script>
-    <script>var _hmt = _hmt || []; (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-      })();</script>
+  
   </body>
 
 </html>

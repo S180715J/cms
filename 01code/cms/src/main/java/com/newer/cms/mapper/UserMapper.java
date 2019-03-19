@@ -34,8 +34,8 @@ public interface UserMapper {
 	 * 
 	 * @return
 	 */
-	@Insert("INSERT INTO t_user(uname,upassword,six,phone,email,id) VALUES(#{uname},#{upassword},#{six},#{phone},#{email},#{institution.id})")
-	int saveUser(User user);
+	@Insert("INSERT INTO t_user(uname,upassword,six,phone,email,id) VALUES(#{user.uname},#{user.upassword},#{user.six},#{user.phone},#{user.email},#{user.institution.id})")
+	int saveUser(UserRole userRole);
 
 	/**
 	 * .根据用户id删除用户
@@ -92,7 +92,7 @@ public interface UserMapper {
 			+ "	,u.`id`,u.`islogin`,i.`iname`,i.`fid`,i.`namepath`,i.`idpath` FROM \r\n"
 			+ "	t_user u LEFT JOIN t_institution i ON u.`id`=i.`id`) a\r\n"
 			+ "	LEFT JOIN t_user_role b ON a.uid=b.uid ) c LEFT JOIN  t_role d ON c.rid=d.`rid`\r\n"
-			+ "						LIMIT #{index},#{pageSize}")
+			+ "order by c.uid    desc\r\n" + "						LIMIT #{index},#{pageSize}")
 	List<UserRole> getPageByUser(@Param("index") Integer index, @Param("pageSize") Integer pageSize);
 
 	/**
@@ -111,6 +111,9 @@ public interface UserMapper {
 			+ "			WHERE c.uname=#{userName} AND c.upassword=#{password};")
 	UserRole getUserRoleByUserNameAndPassword(@Param("userName") String userName, @Param("password") String password);
 
-	void updateUsers(Map<String,Object> param);
-	
+	void updateUsers(Map<String, Object> param);
+
+	@Insert("INSERT INTO t_user_role(rid,uid)VALUES(#{role.rid},(SELECT uid FROM t_user WHERE uname=#{user.uname} AND upassword=#{user.upassword} AND phone=#{user.phone} ))")
+	int saveUserAndRole(UserRole userRole);
+
 }

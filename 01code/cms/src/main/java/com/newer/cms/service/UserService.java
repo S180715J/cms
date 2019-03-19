@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.newer.cms.mapper.UserMapper;
 import com.newer.cms.model.Page;
 import com.newer.cms.pojo.User;
 import com.newer.cms.pojo.UserRole;
 
+@Transactional
 @Service
 public class UserService {
 	@Autowired
@@ -62,13 +64,21 @@ public class UserService {
 	 * 新增用户
 	 * 
 	 * @param user
+	 * @param role
 	 * @return String 成功返回"ok",否则返回"error"
 	 */
-	public String saveUser(User user) {
+	@Transactional
+	public String saveUser(UserRole userRole) {
 		// 新增用户 得到影响行数
-		int i = userMapper.saveUser(user);
+		int i = userMapper.saveUser(userRole);
 
-		return i > 0 ? "ok" : "error";
+		// 判断是否添加成功，成功添加用户角色关系表
+		int falg = 0;
+		if (i > 0) {
+			falg = userMapper.saveUserAndRole(userRole);
+		}
+
+		return falg > 0 ? "ok" : "error";
 	}
 
 	/**
@@ -77,6 +87,7 @@ public class UserService {
 	 * @param user
 	 * @return String 成功返回"ok",否则返回"error"
 	 */
+	@Transactional
 	public String updateUser(User user) {
 		// 更新用户，得到影响行数
 		int i = userMapper.updateUser(user);
@@ -89,6 +100,7 @@ public class UserService {
 	 * @param id
 	 * @return String 成功返回“ok",否则返回"error“
 	 */
+	@Transactional
 	public String deleteUser(Integer id) {
 		// 根据id删除用户数据 得到返回的影响函数
 		int i = userMapper.deleteUser(id);

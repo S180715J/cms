@@ -60,6 +60,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
       </div>
     </script>
+   
     <script type="text/html" id="switchTpl">
       <!-- 这里的 checked 的状态只是演示 -->
       <input type="checkbox" name="sex" value="{{d.site.}}" lay-skin="switch" lay-text="开|关" lay-filter="sexDemo" {{ d.id == 10003 ? 'checked' : '' }}>
@@ -67,7 +68,56 @@
     <script>
     	  layui.use('table', function(){
       var table = layui.table;
-      
+      var url='http://localhost:8080/getPageSiteUser';
+      table.render({
+ 			elem : '#table',
+ 			url : url, //数据接口
+ 			response: {
+ 			    statusName: 'status' //规定数据状态的字段名称，默认：code
+ 			    ,statusCode: 'OK' //规定成功的状态码，默认：0
+ 			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
+ 			    ,countName: 'count' //规定数据总数的字段名称，默认：count
+ 			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
+ 			  } , 
+ 			page : true, //开启分页
+ 			toolbar: '#toolbarDemo',
+ 			request: {
+ 			    pageName: 'pageNoStr' //页码的参数名称，默认：page
+ 			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
+ 			  },
+ 			cols : [ [ //表头
+ 			{
+ 				templet:'<div>{{d.site.tid}}</div>',
+ 				title : 'ID',				
+ 				sort : true,
+ 				align : 'center',
+ 				
+ 			}, {
+ 				templet:'<div>{{d.site.tname}}</div>',
+ 				title : '站点名称',
+ 				align : 'center',				
+ 				edit:'text'
+
+ 			}, {
+ 				templet : '#sit',
+ 				title : '站点管理员',
+ 				align : 'center',
+ 				
+ 			},{
+ 				templet : '<div>{{d.site.tintro}}</div>',
+ 				title : '描述',
+ 				align : 'center',
+ 				
+ 			}] ],
+
+ 			size : 'lg',
+ 			done : function(res, curr, count) {
+ 				//如果是异步请求数据方式，res即为你接口返回的信息。
+ 				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+ 				//得到数据总量
+ 				$("#dataLength").text("共有数据：" + count + "条");
+ 			}
+ 		});
       //监听单元格编辑
       table.on('edit(test)', function(obj){
         var value = obj.value //得到修改后的值
@@ -165,62 +215,7 @@
     <div>{{d.user==null?'暂无' :d.user.uname}}</div>
     </script>
     <script type="text/javascript">
-    /*站点加载*/
-     layui.use('table',function(){
-      var table = layui.table;
-     var url='http://localhost:8080/getPageSiteUser';
-     table.render({
-			elem : '#table',
-			url : url, //数据接口
-			response: {
-			    statusName: 'status' //规定数据状态的字段名称，默认：code
-			    ,statusCode: 'OK' //规定成功的状态码，默认：0
-			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
-			    ,countName: 'count' //规定数据总数的字段名称，默认：count
-			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
-			  } , 
-			page : true, //开启分页
-			toolbar: '#toolbarDemo',
-			request: {
-			    pageName: 'pageNoStr' //页码的参数名称，默认：page
-			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
-			  },
-			cols : [ [ //表头
-			{
-				templet:'<div>{{d.site.tid}}</div>',
-				title : 'ID',				
-				sort : true,
-				align : 'center',
-				
-			}, {
-				templet:'<div>{{d.site.tname}}</div>',
-				title : '站点名称',
-				align : 'center',				
-				edit:'text'
-
-			}, {
-				templet : '#sit',
-				title : '站点管理员',
-				align : 'center',
-				
-			},{
-				templet : '<div>{{d.site.tintro}}</div>',
-				title : '描述',
-				align : 'center',
-				
-			}] ],
-
-			size : 'lg',
-			done : function(res, curr, count) {
-				//如果是异步请求数据方式，res即为你接口返回的信息。
-				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
-				//得到数据总量
-				$("#dataLength").text("共有数据：" + count + "条");
-			}
-		}); 
-     
-     });
-    </script>
+  
    
     
     <script>var _hmt = _hmt || []; (function() {
