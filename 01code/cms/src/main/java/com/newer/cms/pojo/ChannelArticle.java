@@ -13,6 +13,16 @@ public class ChannelArticle implements Serializable {
 
 	private Channel channel;
 	private Article article;
+	
+	
+	
+	public ChannelArticle() {
+		super();
+	}
+	public ChannelArticle(Channel channel, Article article) {
+		this.channel = channel;
+		this.article = article;
+	}
 	public Channel getChannel() {
 		return channel;
 	}

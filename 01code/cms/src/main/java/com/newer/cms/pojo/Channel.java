@@ -27,6 +27,26 @@ public class Channel implements Serializable {
 	private Date datetime;
 	private Integer tsequence;
 	private Language language;
+	
+	
+	
+	public Channel() {
+		super();
+	}
+	public Channel(Integer cid) {
+		this.cid = cid;
+	}
+	public Channel(Integer cid, String cname, String calias, Integer pid, String cnamepath, String cidpath,
+			Integer tsequence, Language language) {
+		this.cid = cid;
+		this.cname = cname;
+		this.calias = calias;
+		this.pid = pid;
+		this.cnamepath = cnamepath;
+		this.cidpath = cidpath;
+		this.tsequence = tsequence;
+		this.language = language;
+	}
 	public Integer getCid() {
 		return cid;
 	}
