@@ -63,6 +63,10 @@ public class Page<T> {
 	public Page(String pageNoStr, int totalRecordNo, int pageSize) {
 		this.count = totalRecordNo;
 		this.pageSize = pageSize;
+
+		if (this.pageSize == 0) {
+			this.pageSize = 10;
+		}
 		// 计算总页数
 		// 通过总记录数和pageSize计算得到总页数
 		this.totalPageNo = this.count / this.pageSize + ((this.count % this.pageSize == 0) ? 0 : 1);

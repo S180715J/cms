@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,7 +53,8 @@ public class InstitutionController {
 	 * @return
 	 */
 	@GetMapping("/findTree")
-	public ResponseEntity<?> getInstitutionTree(Integer id) {
+	public ResponseEntity<?> getInstitutionTree() {
+
 		List<Institution> list = inService.findInstitutionTree();
 		if (list == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -84,6 +86,21 @@ public class InstitutionController {
 		}
 		page.setStatus(HttpStatus.OK);
 		return new ResponseEntity<Page<Institution>>(page, HttpStatus.OK);
+	}
+
+	/**
+	 * 得到所有机构信息
+	 * 
+	 * @return
+	 */
+	@GetMapping("/findPageInstitutionAll")
+	public ResponseEntity<?> findPageInstitutionsAll() {
+		Page<Institution> page = inService.findPageInstitions();
+		if (page == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+		return new ResponseEntity<Page>(page, HttpStatus.OK);
 	}
 
 	/**
@@ -120,4 +137,20 @@ public class InstitutionController {
 		return new ResponseEntity<String>(data, HttpStatus.OK);
 	}
 
+	/**
+	 * 根据id得到机构信息
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/mechanism/{id}")
+	public ResponseEntity<?> findInstitution(@PathVariable("id") Integer id) {
+		// 调用服务层
+		Institution institution = inService.findInstitution(id);
+		if (institution == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<Institution>(institution, HttpStatus.OK);
+	}
 }

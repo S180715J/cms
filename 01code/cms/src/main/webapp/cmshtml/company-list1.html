@@ -82,7 +82,7 @@
       </div>
     </script>
     <script type="text/html" id="button" >
-<button class="layui-btn layui-btn layui-btn-xs"  onclick="x_admin_show('编辑','admin-edit.html?id='+{{d.id}})" ><i class="layui-icon">&#xe642;</i>编辑</button>
+<button class="layui-btn layui-btn layui-btn-xs"  onclick="x_admin_show('编辑','institution-add.html?id='+{{d.id}}+'&name=x')" ><i class="layui-icon">&#xe642;</i>编辑</button>
                
               
               <button class="layui-btn-danger layui-btn layui-btn-xs"  onclick="member_del(this,{{d.id}})" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button></script>
@@ -91,7 +91,7 @@
       <i class="layui-icon x-show" status='true'>&#xe623;</i>
            {{d.iname}}
     </script>
-    
+  
     <script type="text/javascript">
     var zTreeObj;
      var setting={
@@ -152,7 +152,7 @@
              treeDefaultClose: false,//是否默认折叠
              treeLinkage: true,//父级展开时是否自动展开所有子级
       	   elem:'#auth-table',
-      	   url:'http://localhost:8080/findPageInstitution',
+      	   url:'http://localhost:8080/findPageInstitutionAll',
       	   headers:createAuthorizationTokenHeader(),
       	   response: {
   			    statusName: 'status' //规定数据状态的字段名称，默认：code
@@ -161,7 +161,7 @@
   			    ,countName: 'count' //规定数据总数的字段名称，默认：count
   			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
   			  } , 
-  			  page : false, //开启分页	
+  			  
   				toolbar: '#toolbarDemo',
   				request: {
   				    pageName: 'pageNoStr' //页码的参数名称，默认：page
@@ -198,7 +198,7 @@
            	  }
             ]],
             defaultToolbar: ['filter', 'print', 'exports'],
-  			size : 'lg', 
+  			
   			done : function(res, curr, count) {
   				
   				//如果是异步请求数据方式，res即为你接口返回的信息。
@@ -299,7 +299,7 @@
               layer.msg('选中了：'+ data.length + ' 个');
             break;
             case 'openAdd':
-            	x_admin_show('新建子机构','institution-add.html','600','260');
+            	x_admin_show('新建子机构','institution-add.html','600','350');
             	break;
             case 'isAll':
               layer.msg(checkStatus.isAll ? '全选': '未全选');

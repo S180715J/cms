@@ -9,11 +9,13 @@
 -->    <meta http-equiv="Cache-Control" content="no-siteapp" />
     <link rel="stylesheet" href="./css/font.css">
 	<link rel="stylesheet" href="./css/xadmin.css">
+	 <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css">
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
     <script type="text/javascript" src="js/jwt.js"></script>
+    <script type="text/javascript" src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
 </head>
 <body>
     <!-- 顶部开始 -->
@@ -136,10 +138,8 @@
                 </a>
                  <ul class="sub-menu">
                     <li>
-                        <a _href="cate.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>频道列表</cite>
-                        </a>
+                        <ul id="tree" class="ztree iconfont" style="width:230px; overflow:auto;"></ul>
+                        
                     </li >
                 </ul>
                 <ul class="sub-menu">
@@ -273,11 +273,67 @@
     <!-- 右侧主体结束 -->
     <!-- 中部结束 -->
     <!-- 底部开始 -->
-    <div class="footer">
+    <div class="footer" >
         <div class="copyright">Copyright ©2017 x-admin v2.3 All Rights Reserved</div>  
     </div>
     <!-- 底部结束 -->
-    
+      <script type="text/javascript">
+    var zTreeObj;
+    var setting={
+       		
+      		/*  callback:{
+      			 onClick: zTreeOnClick
+      		 },   */
+      		  async:{
+      			 enable:true, //开启async功能必须要设置为true，其他地方同理
+      			 dataType:'json',
+      			 url:'http://localhost:8080/findAllzTree',//异步请求数据的接口
+      			 autoParam:['id'],//提交的参数
+      			 otherParam:pidTree,
+      			 type:'get'	
+      		 }, 
+      		 data:{ 
+      			 keep:{
+      				 leaf:true,
+      				 parent:true
+      			 },
+      			 key:{
+      				 isParent: "parent",
+      				 name:'cname',
+      				 style:'margin-right:2px; background: url(../../../css/zTreeStyle/img/diy/1_open.png) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle'
+      			 },
+      			  simpleData:{ //设置节点，父节点，以及默认的根节点
+      				  enable:true,
+      				  idKey: "cid",//节点id名
+                        pIdKey: "pid",//父节点id名
+                        rootPId: 0//默认根节点为0
+      				  
+      			  }
+      		 },
+      		 view:{
+      			 fontCss:{
+      				 color:"red"
+      				
+      			 }
+      			 
+      		 }
+      		 
+      		
+       };
+     
+     
+     
+     
+     $(document).ready(function(){
+         zTreeObj = $.fn.zTree.init($("#tree"), setting);
+      });
+     
+     function pidTree(treeId,treeNode) {
+    	 
+		return '["id","'+treeId+'"]';
+	}
+     
+     </script>
     <script type="text/javascript">
     $(function() {
 		getToken();

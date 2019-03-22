@@ -159,4 +159,40 @@ public class InstitutionService {
 		return j > 0 ? "ok" : null;
 	}
 
+	/**
+	 * 通过id得到机构
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Institution findInstitution(Integer id) {
+		// 通过id得到机构
+		return institutionMapper.findInstitutionById(id);
+	}
+
+	/**
+	 * 查询机构所有信息
+	 * 
+	 * @return
+	 */
+	public Page<Institution> findPageInstitions() {
+		// 得到机构信息总记录数
+		Integer count = institutionMapper.findInstitutionCount();
+
+		// 调用Page对象的构造函数
+		Page<Institution> page = new Page<>(null, count, 0);
+
+		/*
+		 * // 初始化开始查询信息的坐标 Integer index = (page.getPageNo() - 1) * pageSize;
+		 */
+
+		// 查询机构信息数据集合
+		List<Institution> data = institutionMapper.findPageInstitutionsAll();
+
+		page.setData(data);
+
+		return page;
+
+	}
+
 }

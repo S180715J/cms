@@ -36,7 +36,7 @@ public interface InstitutionMapper {
 	/**
 	 * .根据id查询部门
 	 */
-	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution ")
+	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution  ")
 	List<Institution> findInstitutions();
 
 	/**
@@ -89,4 +89,12 @@ public interface InstitutionMapper {
 	 */
 	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution WHERE iname=#{iname} AND fid=#{fid} ")
 	Institution findInstitionByName(Institution institution);
+
+	/**
+	 * 得到所有机构信息
+	 * 
+	 * @return
+	 */
+	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution ")
+	List<Institution> findPageInstitutionsAll();
 }

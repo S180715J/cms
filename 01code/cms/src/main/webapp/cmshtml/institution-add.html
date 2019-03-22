@@ -9,15 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+     <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css">
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" src="./js/jwt.js"></script>
+    <script type="text/javascript" src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+   
   </head>
   
   <body>
@@ -30,27 +34,31 @@
               <div class="layui-input-inline">
                   <input type="text" id="iname" name="iname" required="" lay-verify="required"
                   autocomplete="off" value="请输入机构/部门名" class="layui-input">
-              </div>
-             
+                 
+                  <div class="layui-col-md4" id="insTree" style="margin-left:200px;" >
+                  <label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>请点击选择机构/部门
+              </label>
+           <ul id="tree" class="ztree iconfont" style="width:230px; overflow:auto;"></ul>
           </div>
-       
+              </div>
+            
+          </div>
+              
          
           <div class="layui-form-item">
-              <label class="layui-form-label"><span class="x-red">*</span>所属机构</label>
-              <div class="layui-input-inline">  
-                <select name="institution" lay-filter="institution" class="institution">  
-                    <option value="">请选择机构</option>  
-                </select>  
+              <label class="layui-form-label"><span class="x-red">*</span> 所属机构</label>
+              <div class="layui-input-inline" id="instituTree">  
+                <input type="text" id="fidname" name="fidname" required="" lay-verify="required"
+                  autocomplete="off" value="" class="layui-input" readonly >
+                  <input type="hidden" id="id" value="" >
             </div>
-            <div class="layui-input-inline">  
-                <select name="mechanism" lay-filter="mechanism" class="institution">  
-                    <option value="">请选择子机构</option>  
-                </select>  
-            </div>
+            
           </div>
+          
         
      
-          <div class="layui-form-item">
+          <div class="layui-form-item" >
               <label for="L_repass" class="layui-form-label">
               </label>
               <button  class="layui-btn" lay-filter="add" lay-submit="">
@@ -59,7 +67,8 @@
           </div>
       </form>
     </div>
-    <script type="text/javascript">
+  
+     <script type="text/javascript">
     layui.config({  
         base : "js/" //address.js的路径  
     }).use([ 'layer', 'jquery', "address" ], function() {  
@@ -67,7 +76,162 @@
          
     }); 
          
+    </script> 
+    <script type="text/javascript">
+    
+    
+    
     </script>
+    <script type="text/javascript">
+    var zTreeObj;
+    var setting={
+   		
+   		 callback:{
+   			 onClick: zTreeOnClick
+   		 },  
+   		  async:{
+   			 enable:true, //开启async功能必须要设置为true，其他地方同理
+   			 dataType:'json',
+   			 url:'http://localhost:8080/findTree',//异步请求数据的接口
+   			 autoParam:['id'],//提交的参数
+   			 type:'get'	
+   		 }, 
+   		 data:{ 
+   			 keep:{
+   				 leaf:true,
+   				 parent:true
+   			 },
+   			 key:{
+   				 isParent: "parent",
+   				 name:'iname',
+   				 style:'margin-right:2px; background: url(../../../css/zTreeStyle/img/diy/1_open.png) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle'
+   			 },
+   			  simpleData:{ //设置节点，父节点，以及默认的根节点
+   				  enable:true,
+   				  idKey: "id",//节点id名
+                     pIdKey: "fid",//父节点id名
+                     rootPId: 0//默认根节点为0
+   				  
+   			  }
+   		 },
+   		 view:{
+   			 fontCss:{
+   				 color:"red"
+   				
+   			 }
+   			 
+   		 }
+   		 
+   		
+    };
+    
+    $(document).ready(function(){
+        zTreeObj = $.fn.zTree.init($("#tree"), setting);
+     });
+     
+    function zTreeOnClick() {
+		
+	}
+    </script>
+    
+      <!--<script type="text/javascript">
+   //获取跳转页面传递的参数
+    var url=location.search;
+	var cid=-1;
+	 var name=-1;
+	//通过截取获得参数
+	if(url.indexOf('?')!=-1){
+		var str=url.substr(1);
+		var strs=str.split('=');	
+		name=strs[2];
+		var instr=strs[1].split('&');
+		 cid = instr[0];
+	}else {
+		 layui.config({  
+		        base : "js/" //address.js的路径  
+		    }).use([ 'layer', 'jquery', "address" ], function() {  
+		        var layer = layui.layer, $ = layui.jquery, address = layui.address();  
+		         
+		    }); 
+	}
+	if(name!=-1){
+		$("button").text('修改');
+	}
+	var uri='http://localhost:8080/mechanism/';
+	if(cid!=-1){
+		eidt(uri,cid); 
+	
+	}
+	   var fid=-1;
+	//发送ajax请求的函数
+	function eidt(url,id){
+		$.ajax({
+			method:'get',
+			url:uri+id,
+			headers:createAuthorizationTokenHeader(),
+		success:function(data){
+		if(data!=null){
+			$("#iname").text(data.iname);
+			$("#id").text(data.id);
+		}
+		//如果父机构不为空！
+			if(data.fid!=null||data.fid!=''){
+				
+			}
+			
+				
+		},
+		error: function() {
+			layer.msg('出现错误！',{
+				icon:2,
+				time:2000
+			});
+		}
+		}); 
+	}
+	
+	//查询父机构
+	function findInstitutionByFid(url,fid){
+		var html='';
+		$.ajax({
+			method:'get',
+			url:uri+fid,
+			headers:createAuthorizationTokenHeader(),
+		success:function(data){
+		       
+		//如果父机构不为空！
+			if(data.fid!=null||data.fid!=''){
+				$("#mechanism").val(data.id);
+				$("#mechanism").text(data.iname);
+				$.ajax({
+					method:'get',
+					url:uri+data.fid,
+					headers:createAuthorizationTokenHeader(),
+					success:function(res){
+						if(res!=null){
+							$("#institution").val(res.id);
+							$("#institution").text(res.iname);
+						}
+					}
+				});
+				
+			}else{
+				$("#institution").val(data.id);
+				$("#institution").text(data.iname);
+			}
+			
+				
+		},
+		error: function() {
+			layer.msg('出现错误！',{
+				icon:2,
+				time:2000
+			});
+		}
+		}); 
+	}
+	
+    </script> -->
    
     <script> 
         layui.use(['form','layer'], function(){
@@ -123,12 +287,7 @@
           
         });
     </script>
-    <script>var _hmt = _hmt || []; (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-      })();</script>
+    
   </body>
 
 </html>

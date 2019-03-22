@@ -32,6 +32,7 @@ import io.jsonwebtoken.Claims;
  * @author Administrator 2019年3月16日
  */
 @RestController
+
 public class UserController {
 
 	@Autowired
