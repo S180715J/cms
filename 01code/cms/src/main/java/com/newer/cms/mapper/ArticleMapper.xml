@@ -23,4 +23,7 @@ AND title LIKE #{cname}
 </where>
   LIMIT #{index},#{pageSize}
 </select>
+
+
+
 </mapper>
