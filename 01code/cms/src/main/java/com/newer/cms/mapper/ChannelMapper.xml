@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newer.cms.mapper.ChannelMapper">
+
+
+	<!-- 带条件查询 -->
+	<select id="findChannelAll" resultType="com.newer.cms.pojo.Channel">
+	SELECT cid,cname,calias,pid,cnamepath ,cidpath,creattime as datetime,tsequence FROM t_channel
+	<where>
+	  lid=#{lid} 
+	<if test="calias!=null">
+	AND calias LIKE '%${calias}%'
+	</if>
+	</where>
+	LIMIT #{index},#{pageSize}
+	</select>
+
+
+	<!-- 查询总记录数 -->
+	<select id="findCount" resultType="int">
+	SELECT COUNT(*) FROM t_channel
+	<where>
+	  lid=#{lid} 
+	<if test="calias!=null">
+	AND calias LIKE '%${calias}%'
+	</if>
+	</where>
+	
+	</select>
+
+
+
+
+</mapper>
