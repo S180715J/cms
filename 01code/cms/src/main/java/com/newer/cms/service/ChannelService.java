@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newer.cms.mapper.ArticleMaaper;
+import com.newer.cms.mapper.ArticleMapper;
 import com.newer.cms.mapper.ChannelMapper;
 import com.newer.cms.model.Page;
 import com.newer.cms.pojo.Article;
@@ -24,7 +24,7 @@ public class ChannelService {
 	private ChannelMapper channelMapper;
 	
 	@Autowired
-	private ArticleMaaper articleMaaper;
+	private ArticleMapper articleMaaper;
 	
 	/**
 	 * 通过lid查询所有
@@ -333,6 +333,11 @@ public class ChannelService {
 	public int tsequenceMax() {
 		int tsequenceMax = channelMapper.tsequenceMax();
 		return tsequenceMax;
+	}
+
+	public List<Channel> getChannels() {
+		List<Channel> queryChannel = channelMapper.queryChannel(1);
+		return queryChannel;
 	}
 	
 	

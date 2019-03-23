@@ -30,6 +30,15 @@ public class Article implements Serializable {
 	private Integer stick;
 	private String author;
 	private String aboutimg;
+	private Integer pid;
+	
+	public Integer getPid() {
+		return pid;
+	}
+	public void setPid(Integer pid) {
+		this.pid = pid;
+	}
+
 	private Channel channel;
 	public Integer getAid() {
 		return aid;

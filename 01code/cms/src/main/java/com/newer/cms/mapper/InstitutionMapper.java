@@ -16,7 +16,7 @@ public interface InstitutionMapper {
 	 * 
 	 * @return
 	 */
-	@Insert("INSERT INTO t_institution(iname,fid,idpath,namepath) VALUES(#{iname},#{fid},#{idpath},#{namepath})")
+	@Insert("INSERT INTO t_institution(iname,fid,namepath) VALUES(#{iname},#{fid},#{namepath})")
 	int saveInstitution(Institution institution);
 
 	/**
@@ -24,8 +24,8 @@ public interface InstitutionMapper {
 	 * 
 	 * @return
 	 */
-	@Update(" ")
-	int updateInstitution();
+	@Update("UPDATE t_institution SET iname=#{iname},fid=#{fid},idpath=#{idpath},namepath=#{namepath} WHERE id=#{id}")
+	int updateInstitutionByIdpath(Institution institution);
 
 	/**
 	 * .删除机构
@@ -36,8 +36,8 @@ public interface InstitutionMapper {
 	/**
 	 * .根据id查询部门
 	 */
-	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution WHERE id=#{id}")
-	List<Institution> findInstitutionById(@Param("id") Integer id);
+	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution ")
+	List<Institution> findInstitutions();
 
 	/**
 	 * .得到所有的部门
@@ -45,6 +45,48 @@ public interface InstitutionMapper {
 	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution")
 	List<Institution> queryInstitution();
 
+	/**
+	 * 查询所有父部门
+	 * 
+	 * @param fid
+	 * @return
+	 */
 	@Select("SELECT * FROM t_institution WHERE fid=#{fid}")
 	List<Institution> findInstitutionByFid(Integer fid);
+
+	/**
+	 * 根据id或者fid查询机构
+	 * 
+	 * @param fid
+	 * @return
+	 */
+	@Select("SELECT * FROM t_institution WHERE id=#{fid}")
+	Institution findInstitutionById(Integer fid);
+
+	/**
+	 * 得到机构部门数据的总记录数
+	 * 
+	 * @return
+	 */
+	@Select("SELECT COUNT(*) FROM t_institution")
+	Integer findInstitutionCount();
+
+	/**
+	 * 得到从index开始 pageSize 条记录数
+	 * 
+	 * @param index
+	 * @param pageSize
+	 * @return institution pageSize条数据集合
+	 */
+	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution LIMIT #{index},#{pageSize}")
+	List<Institution> findPageInstitution(@Param("index") Integer index, @Param("pageSize") Integer pageSize);
+
+	/**
+	 * 通过 机构名，父机构的id，查询机构
+	 * 
+	 * @param institution
+	 * @return
+	 */
+	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution WHERE iname=#{iname} AND fid=#{fid} ")
+	Institution findInstitionByName(Institution institution);
 }

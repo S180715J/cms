@@ -11,6 +11,6 @@ public interface RoleMapper {
 	/**
 	 * .获得所有角色数据的集合
 	 */
-	@Select("SELECT rid,rname,duty FROM t_role")
+	@Select("SELECT rid,rname,duty,encoding FROM t_role")
 	List<Role> findRoles();
 }

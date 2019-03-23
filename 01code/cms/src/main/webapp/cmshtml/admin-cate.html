@@ -39,24 +39,12 @@
           <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon"></i>增加</button>
         </form>
       </div>
-      <table class="layui-table" lay-data="{url:'./user.json',page:true,toolbar: '#toolbarDemo',id:'test'}" lay-filter="test">
-        <thead>
-          <tr>
-            <th lay-data-user="{type:'checkbox'}">ID</th>
-            <th lay-data-user="{field:'id', width:80, sort: true,templet:'{{d.role.rid}}'}">ID</th>
-            <th lay-data-user="{field:'username', width:120, sort: true, edit: 'text',templet:'{{d.role.rname}}'}">角色名</th>
-             <th lay-data="{field:'sex', width:80,edit: 'text',templet:'{{d.role.duty}}'}">职责</th>
-            <th lay-data="{field:'sex', width:80,templet: '#switchTpl'}">状态</th>
-            <th lay-data="{field:'id', minWidth: 30,templet:'#operate'}">操作</th>
-           
-          </tr>
-        </thead>
+      <table class="layui-table"  lay-filter="test">
+        
       </table>
 
     </div>
     <script type="text/html" id="operate">
-    	
-             
               <a title="删除" onclick="member_del(this,'{{d.role.rid}}')" href="javascript:;">
                 <i class="layui-icon">&#xe640;</i>
               </a>
@@ -92,8 +80,6 @@
     <script>
     layui.use('table', function(){
       var table = layui.table;
-        
-      myMenu('layui-table-body tr');
       
       
       //监听单元格编辑

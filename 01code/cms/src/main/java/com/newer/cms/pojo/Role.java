@@ -14,6 +14,14 @@ public class Role implements Serializable {
 	private Integer rid;
 	private String  rname;
 	private String  duty;
+	private String encoding;
+	
+	public String getEncoding() {
+		return encoding;
+	}
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
 	public Integer getRid() {
 		return rid;
 	}
@@ -34,8 +42,9 @@ public class Role implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "Role [rid=" + rid + ", rname=" + rname + ", duty=" + duty + "]";
+		return "Role [rid=" + rid + ", rname=" + rname + ", duty=" + duty + ", encoding=" + encoding + "]";
 	}
+	
 	
 	
 }

@@ -89,7 +89,7 @@ public class UserController {
 	 * @param password
 	 * @return 成功返回token 否则返回状态码没有内容
 	 */
-	@GetMapping("/login")
+	@PostMapping("/login")
 	public ResponseEntity<?> login(String userName, String password) {
 
 		// 通过用户名和密码查询用户

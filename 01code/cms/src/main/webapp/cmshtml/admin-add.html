@@ -9,10 +9,20 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor-dev-1.5.0/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor-dev-1.5.0/editor_api.js"></script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="ueditor-dev-1.5.0/lang/zh-cn/zh-cn.js"></script>
+    <style type="text/css">
+        div{
+            width:100%;
+        }
+    </style>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -31,79 +41,15 @@
                   <input type="text" id="username" name="userName" required="" lay-verify="required"
                   autocomplete="off" class="layui-input">
               </div>
-              <div class="layui-form-mid layui-word-aux">
-                  <span class="x-red">*</span>将会成为您唯一的登入名
-              </div>
+             
           </div>
           <div class="layui-form-item">
-              <label for="phone" class="layui-form-label">
-                  <span class="x-red">*</span>手机
+          	 <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>文章内容
               </label>
-              <div class="layui-input-inline">
-                  <input type="text" id="phone" name="phone" required="" lay-verify="phone"
-                  autocomplete="off" class="layui-input">
+              <script id="editor" type="text/plain" style="width:800px;height:400px;"></script>
               </div>
-              <div class="layui-form-mid layui-word-aux">
-                  
-              </div>
-          </div>
-          <div class="layui-form-item">
-              <label for="L_email" class="layui-form-label">
-                  <span class="x-red">*</span>邮箱
-              </label>
-              <div class="layui-input-inline">
-                  <input type="text" id="L_email" name="email" required="" lay-verify="email"
-                  autocomplete="off" class="layui-input">
-              </div>
-              <div class="layui-form-mid layui-word-aux">
-                  <span class="x-red">*</span>
-              </div>
-          </div>
-                 <div class="layui-form-item">
-    <label class="layui-form-label">性别</label>
-    <div class="layui-input-block">
-      <input type="radio" name="six" value="1" title="男" checked>
-      <input type="radio" name="six" value="0" title="女" >
-    </div>
-  </div>
-          <div class="layui-form-item" >
-              <label class="layui-form-label"><span class="x-red">*</span>角色</label>
-              <div class="layui-input-block" style="width: 120px">
-                <select name='rid' id="role" lay-verify="required">
-                <option></option>
-                </select>
-              </div>
-          </div>
-   
-        <div class="layui-form">  
-         <label class="layui-form-label"><span class="x-red">*</span>所属机构</label>
-            <div class="layui-input-inline">  
-                <select name="institution" lay-filter="institution" class="institution">  
-                    <option value="">请选择机构</option>  
-                </select>  
-            </div>  
-            <div class="layui-input-inline">  
-                <select name="mechanism" lay-filter="mechanism" >  
-                    <option value="">请选择子机构</option>  
-                </select>  
-            </div>  
-            <div class="layui-input-inline">  
-                <select name="department" lay-filter="department" >  
-                    <option value="">请选择部门</option>  
-                </select>  
-            </div>  
-        </div>  
-
-
-          <div class="layui-form-item">
-              <label for="L_pass" class="layui-form-label">
-                 
-              </label>
-              <div class="layui-input-inline">
-                  <input type="hidden" id="L_pass" name="upassword" required="" value="888888" lay-verify="pass"
-                  autocomplete="off" class="layui-input">
-              </div>
-              
           </div>
         
           <div class="layui-form-item">
@@ -115,6 +61,19 @@
           </div>
       </form>
     </div>
+    <script type="text/javascript">
+
+    //实例化编辑器
+    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+    var ue = UE.getEditor('editor');
+    $("button").click(function(){
+    	
+    
+    var uname=$("input:first").val();
+    alert(uname);
+    var abody=UE.getEditor('editor').getContent();
+    alert(abody);});
+    </script>
     <script type="text/javascript" src="./js/address.js"></script>
     <script type="text/javascript">
     layui.config({  
@@ -123,7 +82,9 @@
         var layer = layui.layer, $ = layui.jquery, address = layui.address();  
          
     });  
+
    
+
    
     </script>
     <script type="text/javascript">

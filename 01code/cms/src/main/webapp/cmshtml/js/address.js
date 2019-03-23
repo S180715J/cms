@@ -91,7 +91,7 @@ layui.define(["form","jquery"],function(exports){
                
                 //that.areas(citys[$(this).index() - 1].childs);
             } else {  
-                $("select[name=department]").attr("disabled", "disabled");  
+                $("select[name=department]").attr("disabled", "disabled");
             }  
         });  
     }  
@@ -99,7 +99,7 @@ layui.define(["form","jquery"],function(exports){
     //加载县/区数据  
     function department(val) {
     	      
-        var departmentHtml = '<option value="">请选择bumen</option>';  
+        var departmentHtml = '<option value="">请选择部门</option>';  
         for (var i = 0; i < val.length; i++) {  
         	departmentHtml += '<option value="' + val[i].id + '">' + val[i].iname + '</option>';  
         }  

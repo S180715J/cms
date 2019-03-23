@@ -15,7 +15,7 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Configuration
 public class CorsConfig {
-	private static String[] originsVal = new String[] { "127.0.0.1:8080", "localhost:8080", "127.0.0.1:8086",
+	private static String[] originsVal = new String[] { "127.0.0.1:8080", "localhost:8080", "127.0.0.1:8888",
 			"localhost:8086","127.0.0.1:8848", "localhost:8848" };
 
 	@Bean
