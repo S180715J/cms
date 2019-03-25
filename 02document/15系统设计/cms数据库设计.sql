@@ -60,7 +60,7 @@ insert  into `t_articletype`(`eid`,`ename`) values (1,'情感类'),(2,'新闻类
 DROP TABLE IF EXISTS `t_channel`;
 
 CREATE TABLE `t_channel` (
-  `cid` int(11) NOT NULL,
+  `cid` int(11) NOT NULL AUTO_INCREMENT,
   `cname` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `calias` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
@@ -70,11 +70,28 @@ CREATE TABLE `t_channel` (
   `tsequence` int(11) DEFAULT NULL,
   `lid` int(11) DEFAULT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_channel` */
 
-insert  into `t_channel`(`cid`,`cname`,`calias`,`pid`,`cnamepath`,`cidpath`,`creattime`,`tsequence`,`lid`) values (1,'首页','首页',0,'/首页','/1','2019-03-14 16:22:07',1,1),(2,'公司业务','公司业务',0,'/公司业务','/2','2019-03-11 16:27:05',2,1),(3,'个人业务','个人业务',0,'/个人业务','/3','2019-03-05 16:27:24',3,1),(4,'互联网金融','互联网金融',0,'/互联网金融','/4','2019-03-04 16:27:30',4,1),(5,'国际业务','国际业务',0,'/国际业务','/5','2019-03-11 16:27:34',5,1),(6,'重要通知','重要通知',1,'/首页/重要通知','/1/6','2019-03-05 16:53:45',6,1),(7,'热点推荐','热点推荐',1,'/首页/热点推荐','/1/7','2019-03-06 16:55:09',7,1),(8,'常用信息','常用信息',1,'/首页/常用信息','/1/8','2019-03-05 16:55:04',8,1),(9,'用户登录区','用户登录区',1,'/首页/用户登录区','/1/9','2019-03-06 16:54:48',9,1),(10,'关于我们','关于我们',NULL,'/关于我们','/10','2019-03-01 13:29:33',6,1);
+insert  into `t_channel`(`cid`,`cname`,`calias`,`pid`,`cnamepath`,`cidpath`,`creattime`,`tsequence`,`lid`) values (1,'首页','首页',0,'/首页','/1','2019-03-14 16:22:07',1,1),(2,'公司业务','公司业务',0,'/公司业务','/2','2019-03-11 16:27:05',2,1),(3,'个人业务','个人业务',0,'/个人业务','/3','2019-03-05 16:27:24',3,1),(4,'互联网金融','互联网金融',0,'/互联网金融','/4','2019-03-04 16:27:30',4,1),(5,'国际业务','国际业务',0,'/国际业务','/5','2019-03-11 16:27:34',5,1),(6,'重要通知','重要通知',1,'/首页/重要通知','/1/6','2019-03-05 16:53:45',6,1),(7,'热点推荐','热点推荐',1,'/首页/热点推荐','/1/7','2019-03-06 16:55:09',7,1),(8,'常用信息','常用信息',1,'/首页/常用信息','/1/8','2019-03-05 16:55:04',8,1),(9,'用户登录区','用户登录区',1,'/首页/用户登录区','/1/9','2019-03-06 16:54:48',9,1),(10,'关于我们','关于我们',0,'/关于我们','/10','2019-03-01 13:29:33',6,1);
+
+/*Table structure for table `t_control` */
+
+DROP TABLE IF EXISTS `t_control`;
+
+CREATE TABLE `t_control` (
+  `control_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '权限id',
+  `control_name` varchar(50) NOT NULL COMMENT '权限名称',
+  `control_explain` varchar(200) DEFAULT NULL COMMENT '权限说明',
+  `by1` varchar(300) DEFAULT NULL COMMENT '备用1',
+  `by2` varchar(300) DEFAULT NULL COMMENT '备用2',
+  PRIMARY KEY (`control_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+/*Data for the table `t_control` */
+
+insert  into `t_control`(`control_id`,`control_name`,`control_explain`,`by1`,`by2`) values (1,'用户管理','进入用户管理界面对用户进行操作','admin-list.html',NULL),(2,'站点管理','进入站点语种管理界面对站点进行操作',NULL,NULL),(3,'频道管理','对站点下的频道进行操作',NULL,NULL),(4,'信息管理','能进入信息管理界面对发布信息进行操作以及设置录入员，审批员',NULL,NULL),(5,'审批管理','对发布信息进行审批',NULL,NULL),(6,'录入信息','进行文章信息的录入',NULL,NULL);
 
 /*Table structure for table `t_institution` */
 
@@ -87,11 +104,11 @@ CREATE TABLE `t_institution` (
   `idpath` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `namepath` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_institution` */
 
-insert  into `t_institution`(`id`,`iname`,`fid`,`idpath`,`namepath`) values (1,'牛耳总公司',0,'/1','/牛耳总公司'),(2,'互联网学院',1,'/1/2','/牛耳总公司/互联网学院'),(3,'教学部',2,'/1/2/3','/牛耳总公司/互联网学院/教学部');
+insert  into `t_institution`(`id`,`iname`,`fid`,`idpath`,`namepath`) values (1,'牛耳总公司',0,'/1','/牛耳总公司'),(2,'五一校区',1,'/1/2','/牛耳总公司/五一校区'),(14,'保卫部',2,'/1/2/14','/牛耳总公司/五一校区/教学部'),(31,'W180801j',14,'/1/2/14/31','/牛耳总公司/五一校区/教学部/W180801j'),(32,'你好',14,'/1/2/14/32','/牛耳总公司/五一校区/教学部/你好');
 
 /*Table structure for table `t_language` */
 
@@ -118,12 +135,26 @@ CREATE TABLE `t_role` (
   `rid` int(11) NOT NULL AUTO_INCREMENT,
   `rname` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `duty` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `isusable` int(2) DEFAULT '1' COMMENT '是否可用 1.可用，0.不可用',
   PRIMARY KEY (`rid`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_role` */
 
-insert  into `t_role`(`rid`,`rname`,`duty`) values (1,'系统管理员','管理用户'),(2,'站点管理员','管理站点'),(3,'频道管理员','管理频道'),(4,'信息管理员','管理信息');
+insert  into `t_role`(`rid`,`rname`,`duty`,`isusable`) values (1,'系统管理员','管理用户，站点等',1),(2,'站点管理员','管理站点',1),(3,'频道管理员','管理频道',1),(4,'信息管理员','管理信息',1),(5,'审批员','审批文章信息',1),(6,'录入员','录入文章',1);
+
+/*Table structure for table `t_role_control` */
+
+DROP TABLE IF EXISTS `t_role_control`;
+
+CREATE TABLE `t_role_control` (
+  `role_id` bigint(20) DEFAULT NULL COMMENT '角色',
+  `control_id` bigint(20) DEFAULT NULL COMMENT '权限'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `t_role_control` */
+
+insert  into `t_role_control`(`role_id`,`control_id`) values (1,1),(1,2),(2,2),(3,3),(4,4),(4,5),(4,6),(5,5),(6,6);
 
 /*Table structure for table `t_site` */
 
@@ -167,11 +198,11 @@ CREATE TABLE `t_user` (
   `id` int(11) DEFAULT NULL,
   `islogin` int(11) DEFAULT '1',
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `t_user` */
 
-insert  into `t_user`(`uid`,`uname`,`upassword`,`six`,`phone`,`email`,`id`,`islogin`) values (1,'zhansgan','123456',1,'12345678901','123@qq.com',1,0),(2,'admin','123456',0,'22222222222','admin@qq.com',2,1),(3,'李四','123456',0,'23243432432','123@qq.com',3,1),(4,'王五','123456',0,'23234343434','123@qq.com',2,1),(5,'root','123456',0,'1222222222','ad@qq.com',1,1),(6,'qw','123456',0,'2132','qw@qq.com',3,1),(8,'nihao','123456',1,'12345678911','123@qq.com',3,1),(9,'nihao','123456',1,'12345678911','123@qq.com',3,1),(10,'nihao','123456',1,'12345678911','123@qq.com',3,1),(11,'nihao','123456',1,'12345678911','123@qq.com',3,1),(12,'nihao','123456',1,'12345678911','123@qq.com',3,1);
+insert  into `t_user`(`uid`,`uname`,`upassword`,`six`,`phone`,`email`,`id`,`islogin`) values (1,'不必','123456',1,'12345678901','123@qq.com',1,0),(2,'admin','123456',0,'22222222222','admin@qq.com',2,1),(3,'李四','123456',0,'23243432432','123@qq.com',3,1),(4,'王五','123456',0,'23234343434','123@qq.com',2,1),(5,'root','123456',0,'1222222222','ad@qq.com',1,1),(6,'qw','123456',0,'2132','qw@qq.com',3,1),(8,'nihao','123456',1,'12345678911','123@qq.com',3,1),(9,'nihao','123456',1,'12345678911','123@qq.com',3,1),(10,'nihao','123456',1,'12345678911','123@qq.com',3,1),(11,'nihao','123456',1,'12345678911','123@qq.com',3,1),(25,'asdasd','888888',1,'18390116868','zhulu@qq.com',3,1),(26,'xdxd','888888',0,'18390116868','zhulu@qq.com',5,1),(27,'zhului','888888',1,'18390116868','zhulu@qq.com',3,1);
 
 /*Table structure for table `t_user_role` */
 
@@ -184,7 +215,7 @@ CREATE TABLE `t_user_role` (
 
 /*Data for the table `t_user_role` */
 
-insert  into `t_user_role`(`rid`,`uid`) values (1,1),(2,2),(3,3),(4,4),(3,5);
+insert  into `t_user_role`(`rid`,`uid`) values (1,1),(2,2),(3,3),(4,4),(3,5),(3,6),(1,25),(1,26),(1,27);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
