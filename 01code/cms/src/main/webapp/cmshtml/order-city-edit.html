@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+   
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="/cmshtml/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script type="text/javascript" src="./js/cookie.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>语种名称
+              </label>
+              <div class="layui-input-inline">
+                  
+                  <textarea  placeholder="请输入内容" class="layui-textarea" name="lname" id="lname"></textarea>
+            </div>
+          </div> 
+          <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>语种简称
+              </label>
+              <div class="layui-input-inline">
+                  
+                  <textarea  placeholder="请输入内容" class="layui-textarea" name="abbreviation" id="abbreviation"></textarea>
+            </div>
+          </div>
+			<div class="layui-form-item">
+				<label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>所属机构
+              </label>
+				<div class="layui-input-block" >
+					<select class="layui-input" name="site" lay-filter="province">
+						<option >请选择</option>
+						<!-- <option value="1">牛耳总公司1</option>
+						<option value="2">贝尔安亲</option> -->
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+    
+    
+    function medcard(){
+		var url=location.search;
+		if(url.indexOf("?")!=-1){
+			var str=url.substr(1);
+			var medcard=str.split("=");
+			return medcard[1];
+		}
+	}
+    
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        /* alert(JSON.stringify(layer)); */
+          /* alert($);alert(JSON.stringify(form));alert(JSON.stringify(layer)); */
+           $.ajax({
+            	method:'GET',
+            	url:'http://localhost:8080/queryLanguage/'+medcard(),
+            	data:{},
+            	dataType:"json",
+            	contentType: "application/json;charset=utf-8",
+            	success: function(dat) {
+            		
+        			$("#lname").html(dat.lname);
+        			$("#abbreviation").html(dat.abbreviation);
+        			
+        			
+        			  $("select").append('<option value="'+dat.site.tid+'">'+dat.site.tname+'</option>'); 
+        			 
+            		/* $.each(dat,function(i,value){
+            			
+            		}) */
+            	}
+            });
+          //自定义验证规则
+          form.verify({
+            nikename: function(value){
+              if(value.length < 5){
+                return '昵称至少得5个字符啊';
+              }
+            }           
+          });
+
+          //监听提交
+          form.on('submit(add)', function(data){
+        	  /* alert(JSON.stringify(data.field.lname)); */
+        	var se= $("select option:selected").val();
+        	  var tid={"tid":se}
+        	data.field.site=tid;
+        	
+        	  alert(JSON.stringify(data));
+             $.ajax({
+            	method:'PUT',
+            	url:'http://localhost:8080/updateLanguage/'+medcard(),
+            	data:JSON.stringify(data.field),
+            	dataType:"text",
+            	contentType: "application/json;charset=utf-8",
+            	success: function(dat) {
+            		if(dat=='ok'){
+            			layer.alert("修改成功", {icon: 6},function () {
+            				window.parent.location.reload();
+                            // 获得frame索引
+                            var index = parent.layer.getFrameIndex(window.name);
+                            //关闭当前frame
+                            parent.layer.close(index);
+            		}
+            		)}
+            	}
+            }); 
+            return false;
+          });
+          
+          
+
+        });
+        
+    </script>
+    <script>var _hmt = _hmt || []; (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();</script>
+  </body>
+
+</html>

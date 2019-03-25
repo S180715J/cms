@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/cmshtml/js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
@@ -33,48 +33,286 @@
     </div>
     <div class="x-body">
       <div class="layui-row">
-        <form class="layui-form layui-col-md12  layui-form-pane">
-           <div class="layui-form-item" id="x-city">
-            <label class="layui-form-label">城市联动</label>
-            <div class="layui-input-inline">
-              <select name="province" lay-filter="province">
-                <option value="">请选择省</option>
-              </select>
-            </div>
-            <div class="layui-input-inline">
-              <select name="city" lay-filter="city">
-                <option value="">请选择市</option>
-              </select>
-            </div>
-            <div class="layui-input-inline">
-              <select name="area" lay-filter="area">
-                <option value="">请选择县/区</option>
-              </select>
-            </div>
-          </div>
+        <form class="layui-form layui-col-md12 x-so">
+          
+          <input type="text" name="username"  placeholder="请输入订单号" autocomplete="off" class="layui-input">
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
         </form>
       </div>
-      <blockquote class="layui-elem-quote"> </blockquote>
-      <pre class="layui-code" lay-title="JavaScript" lay-skin="notepad">
-          //xcity城市插件 基于于jquery与layui form 模块，使用之前先确认这两者是否引入 
-          //插件文件为 xcity.js,引入 
-          select lay-filter 属性值 为必须 "province/city/area"
-          //初始化
-          $('#x-city').xcity();
-          //传默认值 
-          $('#x-city').xcity('广东','广州市','东山区');
-      </pre>
+      <xblock>
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-city-add.html')"><i class="layui-icon"></i>添加</button>
+        
+        <span id="dataLength" class="x-right" style="line-height:40px"></span>
+      </xblock>
+     <div>
+     	      <table class="layui-table" id="table" lay-filter="test">
+        
+      </table>
+     </div>
+   
+
     </div>
-    <script type="text/javascript" src="./js/xcity.js"></script>
+     
+    <script type="text/html" id="toolbarDemo">
+      <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+      </div>
+    </script>
+    
     <script>
-      layui.use(['form','code'], function(){
-        form = layui.form;
-
-        layui.code();
-
-        $('#x-city').xcity('广东','广州市','东山区');
-
+    	  layui.use('table', function(){
+      var table = layui.table;
+      
+      //监听单元格编辑
+      table.on('edit(test)', function(obj){
+        var value = obj.value //得到修改后的值
+        ,data = obj.data //得到所在行所有键值
+        ,field = obj.field; //得到字段
+        
+        /* if(field=="status"){
+        	data.status=value;
+        	alert(JSON.stringify(data));
+       
+        
+        //此处修改的AJAX
+        $.ajax({
+        	method:'put',
+        	url:'http://localhost:8080/updateStatus',
+        	data:JSON.stringify(data),
+        	contentType:'application/json;charset=UTF-8',
+        	success:function(res){
+        		if(res=='ok'){
+        			layer.msg('[ID: '+ data.status +'] ' +field + ' :字段更改为：'+ value,{
+        				
+        				icon:1,
+        				time:2000
+        			});
+        		}
+        	}
+        	
+        });  
+        } */
       });
+
+      //头工具栏事件
+      table.on('toolbar(test)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        switch(obj.event){
+          case 'getCheckData':
+            var data = checkStatus.data;
+            layer.alert(JSON.stringify(data));
+          break;
+          case 'getCheckLength':
+            var data = checkStatus.data;
+            layer.msg('选中了：'+ data.length + ' 个');
+          break;
+          case 'isAll':
+            layer.msg(checkStatus.isAll ? '全选': '未全选');
+          break;
+        };
+      });
+    });
+    </script>
+    <script type="text/html" id="isactivation">
+      <!-- 这里的 checked 的状态只是演示 -->
+      <input type="checkbox" name="isactivation" value="{{d.isactivation}}" lay-skin="switch" lay-text="已激活|未激活" lay-filter="sexDemo" {{ d.isactivation == 1 ? 'checked' : '' }} lay-event='openIsactivation'>
+    </script>
+    <script type="text/html" id="operate">
+              
+      <button class="layui-btn layui-btn-radius layui-btn-danger" onclick="member_del(this,{{d.lid}})" href="javascript:;">删 除     </button>  
+
+<button class="layui-btn" onclick="x_admin_show('修改用户','./order-city-edit.html?id={{d.lid}}')"><i class="layui-icon"></i>修改</button>  
+    </script>
+     
+    <script type="text/html" id="operaupda">
+           
+         
+           
+    </script>
+    <script>
+      layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#end' //指定元素
+        });
+      });
+
+      layui.use('table',function(){
+          var table = layui.table;
+         var url='http://localhost:8080/pageLanguage';
+          table.render({
+    			elem : '#table',
+    			url : url, //数据接口
+    			response: {
+    			    statusName: 'status' //规定数据状态的字段名称，默认：code
+    			    ,statusCode: 'OK' //规定成功的状态码，默认：0
+    			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
+    			    ,countName: 'count' //规定数据总数的字段名称，默认：count
+    			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
+    			  } , 
+    			page : true, //开启分页
+    			toolbar: '#toolbarDemo',
+    			request: {
+    			    pageName: 'pageNoStr' //页码的参数名称，默认：page
+    			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
+    			  },
+    			cols : [ [ //表头
+    				{
+    				type:'checkbox',
+    				field:'article.aid',
+    				width:50
+    				},
+    			  {
+    				templet:'<div>{{d.lid}}</div>',
+    				field:'lid',
+    				title : 'ID',
+    				sort : true,
+    				align : 'center'
+    			}, {
+    				templet:'<div>{{d.lname}}</div>',
+    				field:'lname',
+    				title : '语种名称',
+    				align : 'center',
+    				edit:'text'
+
+    			},  {
+    				templet:'<div>{{d.abbreviation}}</div>',
+    				field:'abbreviation',
+    				title : '语种简称 ',
+    				align : 'center'
+    				
+    			},{
+    				templet:'#isactivation',
+    				field:'isactivation',
+    				title : '是否激活 ',
+    				align : 'center',
+    				event :'openIsactivation'
+    			},  {
+    				templet:'<div>{{d.site.tname}}</div>',
+    				field:'abbreviation',
+    				title : '所属机构 ',
+    				align : 'center'
+    				
+    			},
+    			{
+    				templet:'#operate',
+    				title : '操作 ',
+    				align : 'center',
+    				/* sort : true, */
+    				
+    			}
+    			] ],
+
+    			size : 'lg',
+    			done : function(res, curr, count) {
+    				
+    				//如果是异步请求数据方式，res即为你接口返回的信息。
+    				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+    				//得到数据总量
+    				$("#dataLength").text("共有数据：" + (count) + "条");
+    			}
+    		}); 
+        //监听性别是否可登录的状态改变事件
+          table.on('tool(test)',function(obj){
+        	 
+         	 if(obj.event=='openIsactivation'){//监听激活的状态
+         		 obj.data.isactivation =obj.data.isactivation == 1 ? 0:1;
+         	 
+         	 
+         	     layer.confirm('确定要更改状态？',function(){
+         	    	$.ajax({
+         	        	method:'put',
+         	        	url:'http://localhost:8080/upStatus',
+         	        	data:JSON.stringify(obj.data),
+         	        	contentType:'application/json;charset=UTF-8',
+         	        	success:function(res){
+         	        		if(res=='ok'){
+         	        			layer.msg('[用户: '+ obj.data.lid +'] ' +'修改成功',{
+         	        				icon:1,
+         	        				time:2000
+         	        			});
+         	        		}
+         	        	}
+         	        	
+         	        }); 
+         	     });
+         	 }
+         	 
+          });
+      });
+      
+      function member_update(obj,aid){
+    	  $("#ese").on("click",function(){
+        	  alert("666")
+          });
+      };
+    
+       /*用户-停用*/
+      function member_stop(obj,id){
+          layer.confirm('确认要停用吗？',function(index){
+
+              if($(obj).attr('title')=='启用'){
+
+                //发异步把用户状态进行更改
+                $(obj).attr('title','停用')
+                $(obj).find('i').html('&#xe62f;');
+
+                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
+                layer.msg('已停用!',{icon: 5,time:1000});
+
+              }else{
+                $(obj).attr('title','启用')
+                $(obj).find('i').html('&#xe601;');
+
+                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
+                layer.msg('已启用!',{icon: 5,time:1000});
+              }
+              
+          });
+      }
+
+      
+      /*用户-删除*/
+      function member_del(obj,aid){
+          layer.confirm('确认要删除   id:'+aid+'的数据吗？',function(index){
+        	  $.ajax({
+              	method:'delete',
+              	url:'http://localhost:8080/deleteL/'+aid,
+              	success: function(data) {
+					if(data=='ok'){
+						//发异步删除数据
+			              $(obj).parents("tr").remove();
+			              layer.msg('已删除!',{icon:1,time:1000});	
+					}
+				}
+              });
+          });       
+      };
+  
+      
+     
+
+      function delAll (argument) {
+
+        var data = tableCheck.getData();
+            
+        layer.confirm('确认要删除吗？'+data,function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    
     </script>
     <script>var _hmt = _hmt || []; (function() {
         var hm = document.createElement("script");

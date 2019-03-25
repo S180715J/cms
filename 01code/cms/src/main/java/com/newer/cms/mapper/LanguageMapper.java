@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+
 import com.newer.cms.pojo.Language;
 
 public interface LanguageMapper {
@@ -16,7 +17,7 @@ public interface LanguageMapper {
 	 * @param language
 	 * @return
 	 */
-	@Insert("INSERT INTO t_language(lname,abbreviation,isactivation,role,tid) VALUES(#{lname},#{abbreviation},#{isactivation},#{role.rid},#{site.tid})")
+	@Insert("INSERT INTO `t_language`(lname,abbreviation,isactivation,tid) VALUES(#{lname},#{abbreviation},#{isactivation},#{site.tid})")
 	int saveLanguage(Language language);
 	
 	/**
@@ -24,9 +25,19 @@ public interface LanguageMapper {
 	 * @param language
 	 * @return
 	 */
-	@Update("UPDATE t_language SET lname=#{lname},abbreviation=#{abbreviation},isactivation=#{isactivation} ,role=#{role.rid},tid=#{site.tid} WHERE lid=#{lid}")
+	@Update("UPDATE `t_language` SET lname=#{lname},abbreviation=#{abbreviation} WHERE lid=#{lid};")
 	int updateLanguage(Language language);
 	
+	/**
+	 * 关联查询t_language     t_site
+	 * 用来在修改时回显数据
+	 * @return
+	 */
+	@Select("SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,s.`tid` AS'site.tid', s.`tname` AS 'site.tname',s.`tintro` AS 'site.tintro' FROM `t_language` l\r\n" + 
+			"LEFT JOIN `t_site` s\r\n" + 
+			"ON l.`tid`=s.`tid`\r\n" + 
+			"WHERE lid=#{lid}")
+	Language queryLanguageS(@Param("lid") Integer lid);
 	/**
 	 * .删除语种
 	 * @return
@@ -57,5 +68,35 @@ public interface LanguageMapper {
 			"(SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,t.uid FROM t_language l LEFT JOIN t_site_user t ON l.`tid`=t.`tid`) a\r\n" + 
 			"LEFT JOIN t_user b ON a.tid=b.`uid` WHERE a.tid=#{tid}")
 	List<Language> queryLanguage(@Param("tid") Integer tid);
+	
+	
+	/**
+	 * 查询语种信息数据总记录数
+	 * 
+	 * @return integer 用户数据总记录数
+	 */
+	@Select("SELECT COUNT(*) FROM `t_language`")
+	Integer getTotalLanguage();
+	
+	
+	/**
+	   * 获取从index开始，的pageSize条记录
+	 * 
+	 * @param index
+	 * @param pageSize
+	 * @return 用户数据集合
+	 */
+	@Select("SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,s.`tid` AS'site.tid', s.`tname` AS 'site.tname',s.`tintro` AS 'site.tintro' FROM `t_language` l\r\n" + 
+			"LEFT JOIN `t_site` s\r\n" + 
+			"ON l.`tid`=s.`tid` ORDER BY  l.lid ASC LIMIT #{index},#{pageSize}")
+	List<Language> getPageByLanguage(@Param("index") Integer index, @Param("pageSize") Integer pageSize);
+	
+	/**
+	 * 更改激活状态
+	 * @param language
+	 * @return
+	 */
+	@Update("UPDATE `t_language` SET isactivation=#{isactivation} WHERE lid=#{lid}")
+	Integer upStatus(Language language);
 
 }
