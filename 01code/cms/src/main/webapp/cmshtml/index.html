@@ -9,11 +9,13 @@
 -->    <meta http-equiv="Cache-Control" content="no-siteapp" />
     <link rel="stylesheet" href="./css/font.css">
 	<link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css">
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
     <script type="text/javascript" src="js/jwt.js"></script>
+    <script type="text/javascript" src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
 </head>
 <body>
     <!-- 顶部开始 -->
@@ -35,6 +37,7 @@
         <ul class="layui-nav right" lay-filter="">
           <li class="layui-nav-item">
             <a href="javascript:;" id="admin"></a>
+            <input type="hidden"  id="rid" value="">
             <dl class="layui-nav-child"> <!-- 二级菜单 -->
               <dd><a onclick="x_admin_show('个人信息','http://www.baidu.com')">个人信息</a></dd>
               <dd><a onclick="x_admin_show('修改密码','http://www.baidu.com')">修改密码</a></dd>
@@ -141,6 +144,9 @@
                             <cite>频道列表</cite>
                         </a>
                     </li >
+                    <div class="zTreeDemoBackground left">
+		<ul id="treeDemo" class="ztree"></ul>
+	</div>
                 </ul>
                 <ul class="sub-menu">
                     <li>
@@ -277,12 +283,56 @@
         <div class="copyright">Copyright ©2017 x-admin v2.3 All Rights Reserved</div>  
     </div>
     <!-- 底部结束 -->
-    
+     <script type="text/javascript">
+     var zTreeObj;
+     
+     //zTree配置
+     var setting={
+    		 // 开启异步加载
+    		 async:{
+    			 enable:true, //开启异步加载功能，若异步则必写
+    			 type:'get',
+    			 url:'http://localhost:8080/findAllChannel',  //url路径 返回json数据
+    			 headers:createAuthorizationTokenHeader(), //请求头
+    			 dataType:'json' //返回的数据类型 
+    		 },
+    		 data:{
+    			 keep:{
+    				leaf:true,
+    				parent:true,
+    			 },
+    			 key:{
+    				 name:'cname'
+    			 },
+    			 simpleData:{
+    				enable:true,
+    				idKey:"cid",
+    				pIdKey:"pid",
+    				rootPid:0
+    			 }
+    		 },
+    	/* 	 edit:{
+    			 enable:true,
+    			 showRemoveBtn: true,
+    			 showRenameBtn: true  
+    		 }, */
+    		 view:{
+    			 fontCss:{
+    				 color:'red'
+    			 }
+    		 }
+     };
+     
+     $(document).ready(function(){
+         zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+      });
+
+     </script>
     <script type="text/javascript">
     $(function() {
 		getToken();
 	});
-     function getToken() {
+   function getToken() {
 		$.ajax({
 			method:'get',
 			url:'http://localhost:8080/findToken',
@@ -292,8 +342,9 @@
 				$("#admin").text(data);
 			}
 		}
-		});
-	}
+		}); 
+ }
+	
     </script>
    
 </body>

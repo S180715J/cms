@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.newer.cms.pojo.Article;
-import com.newer.cms.pojo.UserRole;
 
 public interface ArticleMaaper {
 	
@@ -28,39 +27,6 @@ public interface ArticleMaaper {
 	List<Article> queryArticle(@Param("cid") Integer cid);
 	
 	/**
-	 * 查询所有文章
-	 * @return
-	 */
-	@Select("SELECT * FROM `t_article`")
-	List<Article> queryListArticle();
-	
-	/**
-	 * 查询文章信息数据总记录数
-	 * 
-	 * @return integer 用户数据总记录数
-	 */
-	@Select("SELECT COUNT(*) FROM t_article")
-	Integer getTotalArticle();
-	
-	/**
-	 * .添加文章
-	 * @param article
-	 * @return
-	 */
-	@Insert("INSERT INTO `t_article`(title,subhead,mainbody,creattime) "
-			+ "VALUES(#{title},#{subhead},#{mainbody},#{creattime})")
-	Integer inserArticle(Article article);
-	                                                                     
-	/**
-	   * 获取从index开始，的pageSize条记录
-	 * 
-	 * @param index
-	 * @param pageSize
-	 * @return 用户数据集合
-	 */
-	@Select("SELECT * FROM t_article LIMIT #{index},#{pageSize}")
-	List<Article> getPageByArticle(@Param("index") Integer index, @Param("pageSize") Integer pageSize);
-	/**
 	 * .添加文章
 	 * @param article
 	 * @return
@@ -73,7 +39,7 @@ public interface ArticleMaaper {
 	 * .修改文章
 	 * @return
 	 */
-	@Update("UPDATE t_article SET title=#{title} ,subhead=#{subhead},mainbody=#{mainbody},creattime=#{creattime} WHERE aid=#{aid};")
+	@Update("UPDATE t_article SET title=#{title},subhead=#{subhead},accessory=#{accessory},accessoryname=#{accessoryname},mainbody=#{mainbody},stick=#{stick},author=#{author},aboutimg=#{aboutimg},eid=#{articletype.eid} WHERE aid=#{aid} ")
 	int updateArticle(Article article);
 	
 	/**

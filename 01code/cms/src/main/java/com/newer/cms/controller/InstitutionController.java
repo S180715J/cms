@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -87,7 +90,8 @@ public class InstitutionController {
 	}
 
 	/**
-	 * 新增机构
+	 * 新增机构 <br>
+	 * 过时方法。
 	 * 
 	 * @param institution
 	 * @return
@@ -120,4 +124,60 @@ public class InstitutionController {
 		return new ResponseEntity<String>(data, HttpStatus.OK);
 	}
 
+	/**
+	 * 获得所有机构信息
+	 * 
+	 * @return
+	 */
+	@GetMapping("/getAllInstitution")
+	public ResponseEntity<?> getAllInstitution() {
+
+		// 调用服务层
+		List<Institution> data = inService.getAllInstitution();
+
+		// 判断data是否为空
+		if (data == null || data.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<List<Institution>>(data, HttpStatus.OK);
+	}
+
+	/**
+	 * 根据id删除机构以及其下子孙机构
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@DeleteMapping("/deletaInstitution/{id}")
+	public ResponseEntity<?> deleteInstitution(@PathVariable("id") Integer id) {
+		// 调用服务层
+		String data = inService.deleteInstitution(id);
+
+		// 判断data是否为空
+		if (data == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<String>(data, HttpStatus.OK);
+	}
+
+	/**
+	 * 编辑/更新机构
+	 * 
+	 * @param institution
+	 * @return
+	 */
+	@PutMapping("/institution")
+	public ResponseEntity<?> updateInstitution(@RequestBody Institution institution) {
+
+		// 调用服务层
+		String data = inService.updateInstitution(institution);
+
+		// 判断data是否为空
+		if (data == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<String>(data, HttpStatus.OK);
+	}
 }

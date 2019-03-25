@@ -30,8 +30,8 @@ public interface InstitutionMapper {
 	/**
 	 * .删除机构
 	 */
-	@Delete("DELETE FROM t_institution WHERE id=#{id}")
-	int deleteInstitution(@Param("id") Integer id);
+	@Delete("DELETE FROM t_institution WHERE idpath LIKE '%${idpath}%'")
+	int deleteInstitution(@Param("idpath") String idpath);
 
 	/**
 	 * .根据id查询部门
@@ -89,4 +89,24 @@ public interface InstitutionMapper {
 	 */
 	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution WHERE iname=#{iname} AND fid=#{fid} ")
 	Institution findInstitionByName(Institution institution);
+
+	/**
+	 * 查询所有机构信息
+	 * 
+	 * @return
+	 */
+	@Select("SELECT id,iname,fid,idpath,namepath FROM t_institution")
+	List<Institution> findAllInstitution();
+
+	/**
+	 * 模糊查询机构名路径包含iname的机构
+	 * 
+	 * @param iname
+	 * @return 返回 机构集合List
+	 */
+	@Select("SELECT * FROM t_institution WHERE namepath LIKE '%${iname}%'")
+	List<Institution> findInstitutionByNamepath(@Param("iname") String iname);
+
+	@Update("UPDATE t_institution SET iname=#{iname} WHERE id=#{id}")
+	int updateInstitutionByIname(@Param("iname") String iname, @Param("id") Integer id);
 }

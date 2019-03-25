@@ -8,11 +8,11 @@
 }
 
 .treeTable-icon .layui-icon-triangle-d:before {
-    content: "\e68e";
+    content: "\e623";
 }
 
 .treeTable-icon.open .layui-icon-triangle-d:before {
-    content: "\e7ae";
+    content: "\e625";
     background-color: transparent;
 }
 

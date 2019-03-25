@@ -41,7 +41,6 @@
   </head>
   
   <body >
-   <ul id="tree" class="ztree" style="width:230px; overflow:auto;"></ul>
     <div class="x-nav layui-container">
       <span class="layui-breadcrumb">
         <a href="idenx.html">首页</a>
@@ -75,14 +74,14 @@
     <script type="text/html" id="toolbarDemo">
       <div class="layui-btn-container">
 
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">新建机构</button>
-<button class="layui-btn layui-btn-warm layui-btn-xs" lay-event="openAdd"	 ><i class="layui-icon">&#xe642;</i>添加子机构</button>
+       
+<button class="layui-btn layui-btn-warm layui-btn-xs" lay-event="openAdd"	 ><i class="layui-icon">&#xe642;</i>添加机构</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
       </div>
     </script>
     <script type="text/html" id="button" >
-<button class="layui-btn layui-btn layui-btn-xs"  onclick="x_admin_show('编辑','admin-edit.html?id='+{{d.id}})" ><i class="layui-icon">&#xe642;</i>编辑</button>
+<button class="layui-btn layui-btn layui-btn-xs"  onclick="getCheckData({{d.id}},'{{d.iname}}');	" ><i class="layui-icon">&#xe642;</i>编辑</button>
                
               
               <button class="layui-btn-danger layui-btn layui-btn-xs"  onclick="member_del(this,{{d.id}})" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button></script>
@@ -92,43 +91,7 @@
            {{d.iname}}
     </script>
     
-    <script type="text/javascript">
-    var zTreeObj;
-     var setting={
-    		 check:{
-    			 enable:true,
-    			 chkStyle:'checkbox' //显示CheckBox选择框，默认checkbox可选值radio
-    		 },
-    		 /* callback:{
-    			 onClick: //函数（callback回调函数） 
-    		 }, */
-    		 async:{
-    			 enable:true, //开启async功能必须要设置为true，其他地方同理
-    			 dataType:'json',
-    			 url:'http://localhost:8080/findTree',//异步请求数据的接口
-    			 type:'get'	
-    		 },
-    		 data:{ 
-    			 key:{
-    				 isParent: "parent",
-    				 name:'iname'
-    			 },
-    			  simpleData:{ //设置节点，父节点，以及默认的根节点
-    				  enable:true,
-    				  idKey: "id",//节点id名
-                      pIdKey: "fid",//父节点id名
-                      rootPId: 0//默认根节点为0
-    				  
-    			  }
-    		 }
-    		 
-    		
-     };
-     
-     $(document).ready(function(){
-         zTreeObj = $.fn.zTree.init($("#tree"), setting);
-      });
-    </script>
+ 
           
     <script>
     
@@ -255,51 +218,13 @@
         table.on('toolbar(auth-table)', function(obj){
           var checkStatus = table.checkStatus(obj.config.id);
           switch(obj.event){
-          case 'getCheckData':
-        	  layer.prompt({
-    			  formType: 2,
-    			  value: '请输入机构名',
-    			  title: '新增机构',
-    			  area: ['200px', '70px'] //自定义文本域宽高
-    			}, function(value, index, elem){
-    			  alert(value); //得到value
-    			  var data={
-    					  "fid":0,
-    					  "iname":value,
-    					  "namepath":'/'+value
-    			  }
-    			  if(value==null||value==''||value=='请输入机构名'){
-    				  layer.msg('创建失败,请重新创建！',{
-						  icon:2,
-						  time:2000
-					  });
-					  layer.close(index);
-    			  }
-    			  $.ajax({
-    				  method:'post',
-    				  url:'http://localhost:8080/institution',
-    				  data:JSON.stringify(data),
-    				  contentType:'application/json;charset=UTF-8',
-    				  success:function(data){
-    					  if(data=='ok'){
-    						  layer.msg('创建成功！',{
-    							  icon:1,
-    							  time:2000
-    						  });
-    						  layer.close(index);
-    					  }
-    				  }
-    			  });
-    			  
-    			  
-    			});
-        	  break;
+         
             case 'getCheckLength':
               var data = checkStatus.data;
               layer.msg('选中了：'+ data.length + ' 个');
             break;
             case 'openAdd':
-            	x_admin_show('新建子机构','institution-add.html','600','260');
+            	x_admin_show('新建机构','institution-add.html','600','340');
             	break;
             case 'isAll':
               layer.msg(checkStatus.isAll ? '全选': '未全选');
@@ -320,24 +245,76 @@
    
     
     <script type="text/javascript">
-    	function parpert (id) {
-    		if(id==null||id==''||id=='0'){
-    			return '无';
-    		}
-    		// 通过父机构的id查询父机构的名称
-    		$.ajax({
-    			method:'get',
-    			url:'',
-    			headers:'',
-    			async:true,
-    			success:function (data) {
-    				if(data!=null){
-    					return data.iname;
-    				}
-    			},
-    		});
-    		
-    	}
+      
+    
+       function getCheckData(id,iname) {
+    	   layui.use('layer',function(){
+    	    	  var layer=layui.layer;
+    	      });
+    	   layer.prompt({
+ 			  formType: 2,
+ 			  value: iname,
+ 			  title: '修改机构名',
+ 			  area: ['200px', '70px'] //自定义文本域宽高
+ 			}, function(value, index, elem){
+ 			
+ 			  var data={
+ 					  "id":id,
+ 					  "iname":value,
+ 					
+ 			  }
+ 			  if(value==null||value==''||value==iname){
+ 				  layer.msg('错误,请重新编辑!',{
+						  icon:2,
+						  time:2000
+					  });
+					  layer.close(index);
+ 			  }else{
+ 			  $.ajax({
+ 				  method:'put',
+ 				  url:'http://localhost:8080/institution',
+ 				  data:JSON.stringify(data),
+ 				 headers:createAuthorizationTokenHeader(),
+ 				  contentType:'application/json;charset=UTF-8',
+ 				  success:function(data){
+ 					         alert(data);
+ 					  if(data=='ok'){
+ 						layer.msg('编辑成功！',{
+ 							icon:1,
+ 							time:2000
+ 						});
+ 						 layer.close(index,3000); 
+ 						location.reload();
+					}
+
+ 				  }
+ 			  });
+ 			  }
+ 			  
+ 			} );
+	}
+    
+    	
+    	
+    	   /*用户-删除*/
+        function member_del(obj,id){
+            layer.confirm('确认要该机构及其下子机构？',function(index){
+          	  $.ajax({
+                	method:'delete',
+                	url:'http://localhost:8080/deletaInstitution/'+id,
+                	 headers:createAuthorizationTokenHeader(),
+                	success: function(data) {
+  					if(data=='ok'){
+  						//发异步删除数据
+  			              $(obj).parents("tr").remove();
+  			              layer.alert('删除成功!',{icon:1,time:2000});
+  			               windows.location.reload(); //刷新页面 
+  					}
+  				}
+                });
+                
+            });
+        }
     	
     </script>
     
