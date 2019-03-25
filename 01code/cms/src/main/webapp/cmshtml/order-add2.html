@@ -9,10 +9,13 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="lib/layui/css/layui.css"  media="all">
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor-dev-1.5.0/ueditor.config.js" type="text/javascript"  > </script>
+    <script type="text/javascript" charset="utf-8" src="ueditor-dev-1.5.0/editor_api.js" type="text/javascript"  > </script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor-dev-1.5.0/lang/zh-cn/zh-cn.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -21,11 +24,17 @@
   </head>
   
   <body>
+  	<script>
+  		$(function(){
+    		loadChannel();
+    		loadArticle();
+    	});
+  	</script>
     <div class="x-body">
         <form class="layui-form">
           <div class="layui-form-item">
               <label for="username" class="layui-form-label">
-                  <span class="x-red">*</span>标题
+                 标题
               </label>
               <div class="layui-input-inline">
                   <input type="text" id="title" name="title" required="" lay-verify="required"
@@ -34,32 +43,197 @@
           </div> 
           <div class="layui-form-item">
               <label for="username" class="layui-form-label">
-                  <span class="x-red">*</span>主题  
-              </label>
-              <div class="layui-input-inline">
-                  <input type="text" id="mainbody" name="mainbody" required="" lay-verify="required"
-                  autocomplete="off" class="layui-input">
-            </div>
-          </div>                                  
-          <div class="layui-form-item">
-              <label for="username" class="layui-form-label">
-                  <span class="x-red">*</span>副标题 
+                  副标题  
               </label>
               <div class="layui-input-inline">
                   <input type="text" id="subhead" name="subhead" required="" lay-verify="required"
                   autocomplete="off" class="layui-input">
             </div>
+            <br /> <br /><br />
+            
+          <div class="layui-form-item">
+             	<label for="username" class="layui-form-label">
+                  正文
+              </label> 
+              <div class="layui-input-inline">
+              <script id="editor" type="text/plain" style="width:800px;height:300px;"></script>
+             </div>
+             </div>
+              <div class="layui-form-item">
+              <label  class="layui-form-label">父频道
+              </label>
+              <div class="layui-input-inline">
+             <select name="pid" id="channel">
+             	<option value="0">--请选择--</option>
+             </select>
+             </div>
           </div>
           <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  附件名称
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="accessoryname"  name="accessoryname " required="" lay-verify="required"
+                  autocomplete="off" class="layui-input">
+            </div>
+            </div>
+          <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  附件
+              </label>
+              <input type="hidden" name="accessory " id="file" />
+              <div class="layui-input-inline">
+              	<button type="button" class="layui-btn" id="test5"><i class="layui-icon"></i>上传文件</button>
+              </div>
+          <div class="layui-form-item">
+          	<label for="username" class="layui-form-label">
+                  相关图片
+              </label>
+              <div id="demoText"></div>
+              <input type="hidden" name="aboutimg " id="img" />
+            <div class="layui-upload">
+                  <button type="button" class="layui-btn" id="test2">上传图片</button> 
+                 <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                                           预览图：
+                    <div class="layui-upload-list" id="demo2">
+                    	<img id="ing" src="" alt="" class="layui-upload-img">
+                    </div>
+                   </blockquote>
+                     </div>
+            <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                 作者  
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="author" name="author" required="" lay-verify="required"
+                  autocomplete="off" class="layui-input">
+            </div>
+             <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                 置顶级别  
+              </label>
+              <div class="layui-input-inline">
+                  <input type="number" id="stick" name="stick" required="" lay-verify="required"
+                  autocomplete="off" class="layui-input">
+            </div>
+            
+           <div class="layui-form-item">
               <label for="L_repass" class="layui-form-label">
               </label>
               <button  class="layui-btn" lay-filter="add" lay-submit="">
-                  增加
+              增加
               </button>
           </div>
       </form>
     </div>
     <script>
+    	function loadChannel(){
+    		$.ajax({
+    			type:"get",
+    			url:"http://localhost:8080/getChannels",
+    			async:true,
+    			success:function(data){
+    				if(data!=null){
+    					$.each(data,function(index,value){
+    						var op=$("<option value='"+value.cid+"'>"+value.cnamepath+"</option>");
+    						$("#channel").append(op);
+    					});
+    				}
+    			}
+    		});
+    		
+    	}
+    	
+    	function loadArticle(){
+ 
+    		if(medcard()!=null){
+    			
+    			$.ajax({
+    			type:"get",
+    			url:"http://localhost:8080/article/"+medcard(),
+    			async:true,
+    			success:function(rdata){
+    				if(rdata!=null){
+    				$("#title").val(rdata.title);
+          	$("#subhead").val(rdata.subhead);
+          	$("#accessoryname").val(rdata.accessoryname);
+          	$("#file").val(rdata.accessory);
+          	$("#img").val(rdata.aboutimg);
+          	$("#stick").val(rdata.stick);
+          	$("#author").val(rdata.author);
+            $("select").find("option[value='"+rdata.pid+"']").attr('selected',true);
+          	UE.getEditor('editor').execCommand('insertHtml', rdata.mainbody);
+    				$('#ing').attr('src','http://localhost:8080/getimg/'+medcard());
+    				}
+    			}
+    		});
+    			
+    		}
+    		
+    	}
+    	
+    	function medcard(){
+				var url=location.search;
+				if(url.indexOf("?")!=-1){
+					var str=url.substr(1);
+					var medcard=str.split("=");
+					return medcard[1];
+				}
+			}
+    	
+    </script>
+      <script type="text/javascript" src="lib/layui/layui.js" charset="utf-8"></script>
+    <script>
+    	layui.use('upload', function(){
+   var $ = layui.jquery;
+  upload = layui.upload;
+    upload.render({
+    elem: '#test2'
+    ,url: 'http://localhost:8080/uploadImg'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+      	$('#demo2').empty();
+        $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+      });
+    }
+    ,done: function(res){
+      //上传完毕
+       if(res.code > 0){ 
+                return layer.msg('上传失败'); 
+                } 
+            //上传成功 
+                $("#img").val(res.data);
+                return layer.msg('上传成功'); 
+              } 
+  });
+  
+  upload.render({
+    elem: '#test5'
+    ,url:'http://localhost:8080/uploadImg'
+    ,accept: 'file' 
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+      	layer.load();
+      });
+    }
+    ,done: function(res){
+    	layer.closeAll("loading");
+    	 if(res.code > 0){ 
+                return layer.msg('上传失败'); 
+                } 
+            //上传成功 
+                $("#file").val(res.data);
+                return layer.msg('上传成功');
+    }
+  });
+  
+    	
+   });
+    </script>
+    <script>
+    	var ue = UE.getEditor('editor');
         layui.use(['form','layer'], function(){
             $ = layui.jquery;
           var form = layui.form
@@ -76,14 +250,37 @@
 
           //监听提交
           form.on('submit(add)', function(data){
+          	var u='http://localhost:8080/inserArticle';
+          	var me='post';
+          	var msg='增加成功';
+          	if(medcard()!=null){
+          		u=u+"/"+medcard();
+          		me='put';
+          		msg='修改成功';
+          		alert(u);
+          	}
+          	var title=$("#title").val();
+          	var subhead=$("#subhead").val();
+          	var accessoryname=$("#accessoryname").val();
+          	var accessory=$("#file").val();
+          	var aboutimg=$("#img").val();
+          	var stick=$("#stick").val();
+          	var author=$("#author").val();
+          	var pid=$("option:selected").val();
+          	var mainbody=UE.getEditor('editor').getContent();
+          	if(pid=='0'){
+          		layer.msg("请选择父频道");
+          		return false;
+          	}
+          	var dat={"title":title,"subhead":subhead,"accessoryname":accessoryname,"accessory":accessory,"aboutimg":aboutimg,"stick":stick,"pid":pid,"author":author,"mainbody":mainbody};
             $.ajax({
-            	method:'post',
-            	url:'http://localhost:8080/inserArticle',
-            	data:JSON.stringify(data.field),
+            	method:me,
+            	url:u,
+            	data:JSON.stringify(dat),
             	contentType: "application/json;charset=utf-8",
             	success: function(dat) {
             		if(dat=='1'){
-            			layer.alert("增加成功", {icon: 6},function () {
+            			layer.alert(msg, {icon: 6},function () {
             				window.parent.location.reload();
                             // 获得frame索引
                             var index = parent.layer.getFrameIndex(window.name);

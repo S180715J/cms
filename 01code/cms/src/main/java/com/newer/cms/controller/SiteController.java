@@ -1,6 +1,7 @@
 package com.newer.cms.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +72,11 @@ public class SiteController {
 		System.out.println(site);
 		int i =siteService.putSite(site);
 		return new ResponseEntity<>(i>0?"1":"0",HttpStatus.OK);
+	}
+	
+	@GetMapping("/getloadSites")
+	public ResponseEntity<?> getloadSites(){
+		List<Site> list=siteService.getloadSites();
+		return new ResponseEntity<List<Site>>(list,HttpStatus.OK);
 	}
 }

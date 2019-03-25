@@ -227,9 +227,6 @@
         	 
          	 if(obj.event=='openIsactivation'){//监听激活的状态
          		 obj.data.isactivation =obj.data.isactivation == 1 ? 0:1;
-         	 
-         	 
-         	     layer.confirm('确定要更改状态？',function(){
          	    	$.ajax({
          	        	method:'put',
          	        	url:'http://localhost:8080/upStatus',
@@ -243,9 +240,8 @@
          	        			});
          	        		}
          	        	}
-         	        	
          	        }); 
-         	     });
+         	   
          	 }
          	 
           });
