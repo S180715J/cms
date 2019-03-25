@@ -13,6 +13,9 @@
 	<if test="calias!=null">
 	AND calias LIKE '%${calias}%'
 	</if>
+	<if test="fid!=null">
+	 AND pid=#{fid}
+	</if>
 	</where>
 	LIMIT #{index},#{pageSize}
 	</select>

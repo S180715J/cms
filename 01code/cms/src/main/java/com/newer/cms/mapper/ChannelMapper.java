@@ -123,7 +123,7 @@ public interface ChannelMapper {
 	 * 
 	 * @return
 	 */
-	@Select("SELECT * FROM t_channel")
+	@Select("SELECT cid,cname,calias,pid,xurl,icon_open AS 'iconOpen',icon_close AS 'iconClose',icon FROM t_channel ")
 	List<Channel> findAllChannel();
 
 }

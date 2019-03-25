@@ -71,10 +71,4 @@ public class SiteService {
 		return updateSite;
 	}
 
-	public List<Site> getloadSites() {
-		List<Site> list=	siteMapper.getLoadSites();
-		
-		return list;
-	}
-
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.newer.cms.mapper.SiteMapper;
 import com.newer.cms.model.Page;
 
 import com.newer.cms.pojo.Language;
@@ -23,7 +22,6 @@ import com.newer.cms.service.LanguageService;
 public class LanguageController {
   @Autowired
 	private LanguageService languageService;
-  
 	
   /**
 	 * 得到用户信息
@@ -113,7 +111,4 @@ public class LanguageController {
 		System.out.println("是什么:"+upStatus);
 		return new ResponseEntity<String>(upStatus,HttpStatus.OK);
 	}
-	
-	
-	
 }

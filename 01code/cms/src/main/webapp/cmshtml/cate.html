@@ -57,15 +57,7 @@
         <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
       </div>
     </script>
-    <script type="text/javascript">
-    $(function(){
-    	load('');
-    });
-    $("#ss").click(function(){
-		var calias=$("#calias").val();
-		load(calias);
-	});
-    </script>
+    
     <script type="text/html" id="operate">
 
     <a title="删除" onclick="member_del(this,{{d.cid}})" href="javascript:;">
@@ -73,11 +65,37 @@
     </a>
 
     </script>
+    <script type="text/javascript">
+    
+    //获取url传递过来的参数
+    var url = location.search;
+    var fid=-1;
+  //截取url路径 获取传递的参数
+    if(url.indexOf('?')!=-1){
+   	 var str =	url.substr(1);
+   	 var strs=str.split('=');
+   	 fid=strs[1];
+   
+    }
+  
+  if(fid!=-1){
+	  $(function(){
+		  	load(fid,'');
+		  	
+		  });
+	  $("#ss").click(function(){
+			var calias=$("#calias").val();
+			load(fid,calias);
+		});
+  }
+ 
+    </script>
     <script>
-    function load(calias) {		
+    /* +'&fid='+fid */
+    function load(fid,calias) {		
     layui.use('table',function(){
       var table = layui.table;
-      var url='http://localhost:8080/findChannelAll?calias='+calias;
+      var url='http://localhost:8080/findChannelAll';
       table.render({
 			elem : '#table',
 			url : url, //数据接口
@@ -94,6 +112,7 @@
 			    pageName: 'pageNoStr' //页码的参数名称，默认：page
 			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
 			  },
+			  where: {calias:calias, fid: fid},
 			cols : [ [ //表头
 				{
 				type:'checkbox',

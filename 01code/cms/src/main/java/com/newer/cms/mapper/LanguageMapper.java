@@ -25,7 +25,7 @@ public interface LanguageMapper {
 	 * @param language
 	 * @return
 	 */
-	@Update("UPDATE `t_language` SET lname=#{lname},abbreviation=#{abbreviation},tid=#{site.tid} WHERE lid=#{lid};")
+	@Update("UPDATE `t_language` SET lname=#{lname},abbreviation=#{abbreviation} WHERE lid=#{lid};")
 	int updateLanguage(Language language);
 	
 	/**
