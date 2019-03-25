@@ -83,7 +83,7 @@ public class InstitutionService {
 		Integer index = (page.getPageNo() - 1) * pageSize;
 
 		// 查询机构信息数据集合
-		List<Institution> data = institutionMapper.findPageInstitution(index, pageSize);
+		List<Institution> data = institutionMapper.findAllInstitution();
 
 		page.setData(data);
 
@@ -157,6 +157,70 @@ public class InstitutionService {
 		int j = institutionMapper.updateInstitutionByIdpath(institionByName);
 		System.out.println(institution);
 		return j > 0 ? "ok" : null;
+	}
+
+	/**
+	 * 得到所有机构信息 用于构建 机构的Tree
+	 * 
+	 * @return 成功返回List 机构信息集合
+	 */
+	public List<Institution> getAllInstitution() {
+		// TODO Auto-generated method stub
+		return institutionMapper.findAllInstitution();
+	}
+
+	/**
+	 * 根据id删除当前以及子孙机构
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@Transactional
+	public String deleteInstitution(Integer id) {
+
+		// 1.通过id查询当前机构 得到其机构的ipath
+		Institution institution = institutionMapper.findInstitutionById(id);
+
+		// 得到当前对象的idpath
+		String idpath = institution.getIdpath();
+
+		// 2.先通过模糊条件匹配 删除当前频道以及子孙频道
+
+		int i = institutionMapper.deleteInstitution(idpath);
+
+		return i > 0 ? "ok" : null;
+	}
+
+	@Transactional
+	public String updateInstitution(Institution institution) {
+		// 1.通过id查询当前机构
+		Institution inst = institutionMapper.findInstitutionById(institution.getId());
+
+		// 2. 得到namepath包含为修改前的机构名的所有机构集合
+		List<Institution> list = institutionMapper.findInstitutionByNamepath(inst.getIname());
+
+		// 3循环将查询到的机构路径给替换掉
+		int i = 0;
+		for (Institution ins : list) {
+
+			// 1>将编辑前的机构名路径中的机构名替换成修改后的机构名
+			String str = ins.getNamepath().replaceAll(inst.getIname(), institution.getIname());
+
+			// 2>将替换掉的机构路径进行更新
+			ins.setNamepath(str);
+			i += institutionMapper.updateInstitutionByIdpath(ins);
+
+		}
+		// 修改当前机构的机构名
+
+		int j = institutionMapper.updateInstitutionByIname(institution.getIname(), institution.getId());
+
+		// 判断是否修改成功
+		boolean falg = j > 0;
+		if (!falg) {
+			return null;
+		}
+		return i > 0 ? "ok" : null;
 	}
 
 }

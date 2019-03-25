@@ -83,12 +83,12 @@
                 </select>  
             </div>  
             <div class="layui-input-inline">  
-                <select name="mechanism" lay-filter="mechanism" disabled="disabled">  
+                <select name="mechanism" lay-filter="mechanism" >  
                     <option value="">请选择子机构</option>  
                 </select>  
             </div>  
             <div class="layui-input-inline">  
-                <select name="department" lay-filter="department" disabled="disabled">  
+                <select name="department" lay-filter="department" >  
                     <option value="">请选择部门</option>  
                 </select>  
             </div>  
@@ -123,9 +123,7 @@
         var layer = layui.layer, $ = layui.jquery, address = layui.address();  
          
     });  
-
    
-
    
     </script>
     <script type="text/javascript">
@@ -136,6 +134,7 @@
 		$.ajax({
 			method:'get',
 			url:'http://localhost:8080/findRole',
+			headers:createAuthorizationTokenHeader(),
 			success: function(data) {
 				if(data!=null){
 					var html='';
@@ -209,6 +208,7 @@
             	method:'post',
             	url:'http://localhost:8080/User',
             	data:JSON.stringify(userRole),
+            	headers:createAuthorizationTokenHeader(),
             	contentType:'application/json',
             success: function(data){
             	      layer.alert("增加成功", {icon: 6},function () {

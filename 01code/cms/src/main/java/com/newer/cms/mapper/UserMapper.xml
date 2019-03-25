@@ -29,4 +29,5 @@ islogin=#{islogin}
 WHERE uid=#{uid}
 </update>
 
+
 </mapper>

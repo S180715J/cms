@@ -68,19 +68,49 @@
       </div>
       <xblock>
         <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add2.html')"><i class="layui-icon"></i>添加</button>
-        
-        <span id="dataLength" class="x-right" style="line-height:40px"></span>
+        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add.html')"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：88 条</span>
       </xblock>
      <div>
-     	      <table class="layui-table" id="table" lay-filter="test">
-        
+     	      <table class="layui-table" lay-data="{url:'./user.json',page:true,toolbar: '#toolbarDemo',id:'test'}" lay-filter="test">
+        <thead>
+          <tr>
+            <th lay-data-user="{type:'checkbox'}">ID</th>
+            <th lay-data-user="{field:'id', width:80, sort: true,templet:'{{d.role.rid}}'}">ID</th>
+            <th lay-data-user="{field:'username', width:120, sort: true, edit: 'text',templet:'{{d.role.rname}}'}">标题</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">副标题</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">缩略图</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">正文</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">附件名</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">附件</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">创建时间</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">文章类型</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">是否置顶</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">状态</th>
+             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">操作</th>
+             
+             
+             
+             
+             
+             
+            <th lay-data="{field:'sex', width:80,templet: '#switchTpl'}">是否激活</th>
+            <th lay-data="{field:'id', minWidth: 30,templet:'{{d.site.tintro}}'}">描述</th>
+           <th lay-data="{field:'id', minWidth: 30,templet:'#operate'}">操作</th>
+          </tr>
+        </thead>
       </table>
      </div>
    
 
     </div>
-     
+     <script type="text/html" id="operate">
+    	
+             
+              <a title="删除" onclick="member_del(this,'{{d.role.rid}}')" href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+              </a>
+    </script>
     <script type="text/html" id="toolbarDemo">
       <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
@@ -127,27 +157,6 @@
       });
     });
     </script>
-    <script type="text/html" id="statusu">
-      <!-- 这里的 checked 的状态只是演示 -->
-      <input type="checkbox" name="stick" value="{{d.stick}}" lay-skin="switch" lay-text="未发布|已发布" lay-filter="sexDemo" {{ d.stick == 0 ? 'checked' : '' }} lay-event='openSex'>
-    </script>
-    <script type="text/html" id="operate">
-           
-
-              <a title="删除" onclick="member_del(this,{{d.aid}})" href="javascript:;">
-                
-             <i class="layui-icon">&#xe640;   </i>
-
-              </a>
-
-           
-    </script>
-     
-    <script type="text/html" id="operaupda">
-           
-         <button class="layui-btn" onclick="x_admin_show('修改用户','./order-edit.html?id={{d.aid}}')"><i class="layui-icon"></i>修改</button>
-           
-    </script>
     <script>
       layui.use('laydate', function(){
         var laydate = layui.laydate;
@@ -163,101 +172,6 @@
         });
       });
 
-      layui.use('table',function(){
-          var table = layui.table;
-         var url='http://localhost:8080/pageArticle';
-          table.render({
-    			elem : '#table',
-    			url : url, //数据接口
-    			response: {
-    			    statusName: 'status' //规定数据状态的字段名称，默认：code
-    			    ,statusCode: 'OK' //规定成功的状态码，默认：0
-    			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
-    			    ,countName: 'count' //规定数据总数的字段名称，默认：count
-    			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
-    			  } , 
-    			page : true, //开启分页
-    			toolbar: '#toolbarDemo',
-    			request: {
-    			    pageName: 'pageNoStr' //页码的参数名称，默认：page
-    			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
-    			  },
-    			cols : [ [ //表头
-    				{
-    				type:'checkbox',
-    				field:'aid',
-    				width:50
-    				},
-    			  {
-    				templet:'<div>{{d.aid}}</div>',
-    				field:'d.aid',
-    				title : 'ID',
-    				sort : true,
-    				align : 'center'
-    			}, {
-    				templet:'<div>{{d.title}}</div>',
-    				field:'title',
-    				title : '标题',
-    				align : 'center',
-    				edit:'text'
-
-    			},  {
-    				templet:'<div>{{d.mainbody}}</div>',
-    				field:'mainbody',
-    				title : '主题 ',
-    				align : 'center'
-    				
-    			},{
-    				templet:'<div>{{d.subhead}}</div>',
-    				field:'subhead',
-    				title : '副标题 ',
-    				align : 'center'
-    				
-    			}, {
-    				templet:'<div>{{d.creattime}}</div>',
-    				field:'creattime',
-    				title : '创建时间 ',
-    				align : 'center',
-    				sort : true
-    			
-    				
-    			},{
-    				templet:'<div>{{d.status == 0 ? "待审批" : "已发布"}}</div>',
-    				field:'statusu',
-    				title : '状态 ',
-    				align : 'center',
-    				event:'islogin',
-    					edit:'text'
-    			},{
-    				templet:'#operate',
-    				title : '操作 ',
-    				align : 'center'
-    				/* sort : true, */
-    			},{
-    				templet:'#operaupda',
-    				title : '操作 ',
-    				align : 'center'
-    				/* sort : true, */
-    			}
-    			] ],
-
-    			size : 'lg',
-    			done : function(res, curr, count) {
-    				
-    				//如果是异步请求数据方式，res即为你接口返回的信息。
-    				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
-    				//得到数据总量
-    				$("#dataLength").text("共有数据：" + (count+1) + "条");
-    			}
-    		}); 
-      });
-      
-      function member_update(obj,aid){
-    	  $("#ese").on("click",function(){
-        	  alert("666")
-          });
-      }
-      
        /*用户-停用*/
       function member_stop(obj,id){
           layer.confirm('确认要停用吗？',function(index){
@@ -282,26 +196,16 @@
           });
       }
 
-      
       /*用户-删除*/
-      function member_del(obj,aid){
+      function member_del(obj,id){
           layer.confirm('确认要删除吗？',function(index){
-        	  $.ajax({
-              	method:'delete',
-              	url:'http://localhost:8080/deleteA/'+aid,
-              	success: function(data) {
-					if(data=='ok'){
-						//发异步删除数据
-			              $(obj).parents("tr").remove();
-			              layer.msg('已删除!',{icon:1,time:1000});	
-					}
-				}
-              });
-          });       
-      };
-  
-      
-     
+              //发异步删除数据
+              $(obj).parents("tr").remove();
+              layer.msg('已删除!',{icon:1,time:1000});
+          });
+      }
+
+
 
       function delAll (argument) {
 
@@ -313,7 +217,6 @@
             $(".layui-form-checked").not('.header').parents('tr').remove();
         });
       }
-      
     </script>
     <script>var _hmt = _hmt || []; (function() {
         var hm = document.createElement("script");

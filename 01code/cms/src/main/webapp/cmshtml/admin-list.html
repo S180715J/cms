@@ -9,10 +9,11 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" src="./js/jwt.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -33,7 +34,7 @@
     </div>
     <!--表格开始-->
     <div class="x-body">   
-    	 
+    	
       <table class="layui-table" id="table" lay-filter="test">
         
       </table>
@@ -65,6 +66,7 @@
       	 <xblock>
         <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
         <button class="layui-btn" onclick="x_admin_show('添加用户','./admin-add.html')"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：88 条</span>
       </xblock>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
@@ -101,7 +103,9 @@
     
     <script type="text/javascript" src="./js/jwt.js"></script>
     <script>
-  
+    $(function() {
+		
+	})
     layui.use('table',function(){
       var table = layui.table;
      var url='http://localhost:8080/pageUsers';
@@ -127,7 +131,7 @@
 			cols : [ [ //表头
 				{
 				type:'checkbox',
-				field:'ID'
+				field:'user.uid'
 				},
 			{
 				field:'user.uid',
@@ -201,7 +205,7 @@
 				//如果是异步请求数据方式，res即为你接口返回的信息。
 				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
 				//得到数据总量
-				/* $("#dataLength").text("共有数据：" + count + "条"); */
+				$("#dataLength").text("共有数据：" + count + "条");
 			}
 		}); 
         
@@ -227,6 +231,7 @@
         	method:'put',
         	url:'http://localhost:8080/User',
         	data:JSON.stringify(user),
+        	headers:createAuthorizationTokenHeader(),
         	contentType:'application/json;charset=UTF-8',
         	success:function(res){
         		if(res=='ok'){
@@ -254,6 +259,7 @@
      	        	method:'put',
      	        	url:'http://localhost:8080/User',
      	        	data:JSON.stringify(user),
+     	        	headers:createAuthorizationTokenHeader(),
      	        	contentType:'application/json;charset=UTF-8',
      	        	success:function(res){
      	        		if(res=='ok'){
@@ -277,6 +283,7 @@
          	        	method:'put',
          	        	url:'http://localhost:8080/User',
          	        	data:JSON.stringify(user),
+         	        	headers:createAuthorizationTokenHeader(),
          	        	contentType:'application/json;charset=UTF-8',
          	        	success:function(res){
          	        		if(res=='ok'){
@@ -366,6 +373,7 @@
         	  $.ajax({
               	method:'delete',
               	url:'http://localhost:8080/User/'+id,
+              	headers:createAuthorizationTokenHeader(),
               	success: function(data) {
 					if(data=='ok'){
 						//发异步删除数据

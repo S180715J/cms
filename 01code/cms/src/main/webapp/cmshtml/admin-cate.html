@@ -13,6 +13,7 @@
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" src="./js/jwt.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -39,38 +40,36 @@
           <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon"></i>增加</button>
         </form>
       </div>
-      <table class="layui-table" lay-data="{url:'./user.json',page:true,toolbar: '#toolbarDemo',id:'test'}" lay-filter="test">
-        <thead>
-          <tr>
-            <th lay-data-user="{type:'checkbox'}">ID</th>
-            <th lay-data-user="{field:'id', width:80, sort: true,templet:'{{d.role.rid}}'}">ID</th>
-            <th lay-data-user="{field:'username', width:120, sort: true, edit: 'text',templet:'{{d.role.rname}}'}">角色名</th>
-             <th lay-data="{field:'sex', width:80,edit: 'text',templet:'{{d.role.duty}}'}">职责</th>
-            <th lay-data="{field:'sex', width:80,templet: '#switchTpl'}">状态</th>
-            <th lay-data="{field:'id', minWidth: 30,templet:'#operate'}">操作</th>
-           
-          </tr>
-        </thead>
+      <span id="dataLength"></span>
+      <table class="layui-table" id="table" lay-filter="test">
+        
       </table>
 
     </div>
+    <script type="text/html" id="controls">
+   
+  
+
+</script>
     <script type="text/html" id="operate">
     	
-             
-              <a title="删除" onclick="member_del(this,'{{d.role.rid}}')" href="javascript:;">
+             <a title="编辑"  onclick="x_admin_show('编辑','role-add.html?rid={{d.rid}}&name=x')" href="javascript:;">
+                <i class="layui-icon">&#xe642;</i>
+              </a>
+              <a title="删除" onclick="member_del(this,'{{d.rid}}')" href="javascript:;">
                 <i class="layui-icon">&#xe640;</i>
               </a>
-    </script>
+    </script>	
     <script type="text/html" id="toolbarDemo">
       <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">新增角色</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
       </div>
     </script>
-    <script type="text/html" id="switchTpl">
+    <script type="text/html" id="isusable">
       <!-- 这里的 checked 的状态只是演示 -->
-      <input type="checkbox" name="sex" value="{{d.id}}" lay-skin="switch" lay-text="开|关" lay-filter="sexDemo" {{ d.id == 10003 ? 'checked' : '' }}>
+      <input type="checkbox" name="isusable" value="{{d.isusable}}" lay-skin="switch" lay-text="开|关"  {{ d.isusable == 1 ? 'checked' : '' }} lay-event='isusable'>
     </script>
     <script>
       layui.use('laydate', function(){
@@ -93,15 +92,167 @@
     layui.use('table', function(){
       var table = layui.table;
         
-      myMenu('layui-table-body tr');
+ var url='http://localhost:8080/findPageRoleControl';
       
+       table.render({
+			elem : '#table',
+			url : url, //数据接口
+		 headers:createAuthorizationTokenHeader(),
+			response: {
+			    statusName: 'status' //规定数据状态的字段名称，默认：code
+			    ,statusCode: 'OK' //规定成功的状态码，默认：0
+			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
+			    ,countName: 'count' //规定数据总数的字段名称，默认：count
+			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
+			  } , 
+			page : true, //开启分页
+			toolbar: '#toolbarDemo',
+			request: {
+			    pageName: 'pageNoStr' //页码的参数名称，默认：page
+			    ,limitName: 'pageSizeStr',
+			     //每页数据量的参数名，默认：limit
+			  },
+			cols : [ [ //表头
+				{
+				type:'checkbox',
+				field:'role.rid'
+				},
+			{
+				field:'rid',
+			 	
+				 title : 'ID',
+				
+				sort : true,
+				align : 'center',
+				
+			}, { 
+				
+				 field:'rname',
+				title : '角色名',
+				align : 'center',
+			
+				edit:'text'
+
+			}, {
+				 
+				field:'duty',
+				title : '角色说明 ',
+				
+				align : 'center',
+				sort : true,
+				event:'openSex'
+				
+			}, { 
+				 templet : function(d) {
+					var control='';
+					$.each(d.controls,function(index,obj){
+						if(index<d.controls.length-1){
+							control+=obj.controlName+',';
+						}else{
+							control+=obj.controlName+'.';
+						}
+						
+					});
+					
+					return '<div>'+control+'</div>';
+					
+				} ,
+				field:'controls',
+				title : '拥有权限',
+				
+				align : 'center',
+				sort : true,
+			
+				
+			}, {
+				templet:'#isusable',
+				field:'isusable',
+				title : '是否可用',
+				
+				
+				align : 'center',
+				sort : true,
+				event:'isusable'
+				
+			}, {
+				templet:'#operate',
+				title : '操作 ',
+				
+				align : 'center',
+				sort : true,
+			
+			}] ],
+			defaultToolbar: ['filter', 'print', 'exports'],
+			size : 'lg',
+			done : function(res, curr, count) {
+				
+				//如果是异步请求数据方式，res即为你接口返回的信息。
+				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+				//得到数据总量
+				$("#dataLength").text("共有数据：" + count + "条");
+				
+				
+				
+			}
+		}); 
+      
+       //监听性别是否可用的状态改变事件
+       table.on('tool(test)',function(obj){
+     	 
+      	
+      	 if(obj.event=='isusable'){
+      		 obj.data.isusable =obj.data.isusable == 1 ? 0:1;
+          	  var role=obj.data;
+          	    
+          	    	$.ajax({
+          	        	method:'put',
+          	        	url:'http://localhost:8080/role',
+          	        	data:JSON.stringify(role),
+          	        	headers:createAuthorizationTokenHeader(),
+          	        	contentType:'application/json;charset=UTF-8',
+          	        	success:function(res){
+          	        		if(res=='ok'){
+          	        			layer.msg('[角色: '+ obj.data.rname +'] ' +'更改状态成功！',{
+          	        				icon:1,
+          	        				time:2000
+          	        			});
+          	        		}
+          	        	}
+          	        	
+          	        }); 
+          	   
+      	 }
+       });
       
       //监听单元格编辑
       table.on('edit(test)', function(obj){
         var value = obj.value //得到修改后的值
         ,data = obj.data //得到所在行所有键值
         ,field = obj.field; //得到字段
-        layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+        
+        if(field=='rname'){
+        	data.rname=value;
+        }
+        
+        //发送ajax请求
+       $.ajax({
+          	        	method:'put',
+          	        	url:'http://localhost:8080/role',
+          	        	data:JSON.stringify(data),
+          	        	headers:createAuthorizationTokenHeader(),
+          	        	contentType:'application/json;charset=UTF-8',
+          	        	success:function(res){
+          	        		if(res=='ok'){
+          	        		   layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value,{
+          	        			   icon:1,
+          	        			   time:2000
+          	        		   });
+          	        		}
+          	        	}
+          	        	
+          	        }); 
+        
+     
       });
 
       //头工具栏事件
@@ -110,7 +261,8 @@
         switch(obj.event){
           case 'getCheckData':
             var data = checkStatus.data;
-            layer.alert(JSON.stringify(data));
+          
+            x_admin_show('新增角色','role-add.html','600','450');
           break;
           case 'getCheckLength':
             var data = checkStatus.data;
@@ -123,12 +275,29 @@
       });
     });
     </script>
-    <script>var _hmt = _hmt || []; (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-      })();</script>
+     <script type="text/javascript">
+   /*用户-删除*/
+   function member_del(obj,id){
+       layer.confirm('确认要删除该角色吗？',function(index){
+     	  $.ajax({
+           	method:'delete',
+           	url:'http://localhost:8080/role/'+id,
+           	headers:createAuthorizationTokenHeader(),
+           	success: function(data) {
+					if(data=='ok'){
+						//发异步删除数据
+			              $(obj).parents("tr").remove();
+			              layer.msg('删除成功!',{icon:1,time:2000});
+					}
+					location.reload();
+				}
+           });
+           
+       });
+   }
+   
+   
+   </script>
   </body>
 
 </html>
