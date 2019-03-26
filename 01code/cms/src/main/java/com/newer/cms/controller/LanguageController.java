@@ -22,8 +22,8 @@ import com.newer.cms.service.LanguageService;
 public class LanguageController {
   @Autowired
 	private LanguageService languageService;
-	
-  /**
+
+	/**
 	 * 得到用户信息
 	 * 
 	 * @param pageNoStr
@@ -54,6 +54,7 @@ public class LanguageController {
 	
 	/**
 	 * 根据id修改语种
+	 * 
 	 * @param language
 	 * @return
 	 */
@@ -69,6 +70,7 @@ public class LanguageController {
 	
 	/**
 	 * 根据id查询语种
+	 * 
 	 * @param language
 	 * @return
 	 */
@@ -84,6 +86,7 @@ public class LanguageController {
 	
 	/**
 	 * 更改激活状态
+	 * 
 	 * @param language
 	 * @return
 	 */
@@ -99,6 +102,7 @@ public class LanguageController {
 	
 	/**
 	 * 添加
+	 * 
 	 * @param language
 	 * @return
 	 */
@@ -111,4 +115,23 @@ public class LanguageController {
 		System.out.println("是什么:"+upStatus);
 		return new ResponseEntity<String>(upStatus,HttpStatus.OK);
 	}
+
+	/**
+	 * 获取所有展现下的语种信息
+	 * 
+	 * @return 成功返回所有语种信息集合 否则返回500错误码
+	 */
+	@GetMapping("/findSiteAndLanguage")
+	public ResponseEntity<?> findeSiteAndLanguages() {
+		// 调用服务层
+		List<Language> data = languageService.findSiteAndLanguages();
+
+		if (data == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<List<Language>>(data, HttpStatus.OK);
+
+	}
+
 }

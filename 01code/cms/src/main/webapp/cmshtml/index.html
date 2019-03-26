@@ -29,10 +29,10 @@
 		<div class="left_open">
 			<i title="展开左侧栏" class="iconfont">&#xe699;</i>
 		</div>
-		<ul class="layui-nav left fast-add" lay-filter="">
+	<!-- 	<ul class="layui-nav left fast-add" lay-filter="">
 			<li class="layui-nav-item"><a href="javascript:;">+新增</a>
 				<dl class="layui-nav-child">
-					<!-- 二级菜单 -->
+					二级菜单
 					<dd>
 						<a onclick="x_admin_show('资讯','http://www.baidu.com')"><i
 							class="iconfont">&#xe6a2;</i>资讯</a>
@@ -46,17 +46,17 @@
 							class="iconfont">&#xe6b8;</i>用户</a>
 					</dd>
 				</dl></li>
-		</ul>
+		</ul> -->
 		<ul class="layui-nav right" lay-filter="">
 			<li class="layui-nav-item"><a href="javascript:;" id="admin"></a>
 				<input type="hidden" id="rid" value="">
 				<dl class="layui-nav-child">
 					<!-- 二级菜单 -->
 					<dd>
-						<a onclick="x_admin_show('个人信息','http://www.baidu.com')">个人信息</a>
+						<a onclick="open('个人信息')">个人信息</a>
 					</dd>
 					<dd>
-						<a onclick="x_admin_show('修改密码','http://www.baidu.com')">修改密码</a>
+						<a onclick="open('修改密码')">修改密码</a>
 					</dd>
 					<dd>
 						<a href="./login.html">退出</a>
@@ -120,34 +120,8 @@
 				<li><a _href="cate.html"> <i class="iconfont">&#xe723;</i>
 						<cite>频道管理</cite> <i class="iconfont nav_right">&#xe697;</i>
 				</a>
-					<ul class="sub-menu">
-						
-
-						<div class="layui-form">
-							<div class="layui-input-inline" style="width: 80px">
-								<label class="layui-input-inline">站点:</label> <select
-									name="institution" lay-filter="institution" class="institution">
-									<option value="">请选择机构</option>
-								</select>
-							</div>
-							<div class="layui-input-inline" style="width: 80px">
-								<label class="layui-input-inline">语种:</label> <select
-									name="mechanism" lay-filter="mechanism">
-									<option value="">请选择子机构</option>
-								</select>
-							</div>
-						</div>
-						<div class="zTreeDemoBackground left">
-							<ul id="treeDemo" class="ztree"></ul>
-						</div>
-						
-						
-					</ul>
-					<ul class="sub-menu">
-						<li><a _href="cate.html"> <i class="iconfont">&#xe6a7;</i>
-								<cite>多级频道</cite>
-						</a></li>
-					</ul></li>
+					
+					</li>
 				<li><a href="javascript:;"> <i class="iconfont">&#xe723;</i>
 						<cite>语种管理</cite> <i class="iconfont nav_right">&#xe697;</i>
 				</a>
@@ -162,7 +136,7 @@
 						<cite>信息管理</cite> <i class="iconfont nav_right">&#xe697;</i>
 				</a>
 					<ul class="sub-menu">
-						<li><a _href="city.html"> <i class="iconfont">&#xe6a7;</i>
+						<li><a _href="article-list.html"> <i class="iconfont">&#xe6a7;</i>
 								<cite>信息列表</cite>
 						</a></li>
 						<li><a _href="echarts2.html"> <i class="iconfont">&#xe6a7;</i>
@@ -231,108 +205,44 @@
 			Reserved</div>
 	</div>
 	<!-- 底部结束 -->
-	<script type="text/javascript">
-		var zTreeObj;
-
-		//zTree配置
-		var setting = {
-			// 开启异步加载
-			async : {
-				enable : true, //开启异步加载功能，若异步则必写
-				type : 'get',
-				url : 'http://localhost:8080/findAllChannel', //url路径 返回json数据
-				headers : createAuthorizationTokenHeader(), //请求头
-				dataType : 'json' //返回的数据类型 
-			},
-			data : {
-				keep : {
-					leaf : true,
-					parent : true,
-				},
-				key : {
-					name : 'cname',
-					
-					isParent: "parent"
-				},
-				simpleData : {
-					enable : true,
-					idKey : "cid",
-					pIdKey : "pid",
-					rootPid : 0
+	
+	 <script type="text/javascript">
+	 function open(title) {
+		if(title=='个人信息'){
+			//发送异步请求得到数据
+			$.ajax({
+				method : 'get',
+				url : 'http://localhost:8080/findTokenByUser',
+				headers : createAuthorizationTokenHeader(),
+				success : function(data) {
+					if (data != null) {
+					     //示范一个公告层
+					      layer.open({
+					        type: 1
+					        ,offset: type
+					        ,area: '300px;'
+					        ,shade: 0.8
+					        ,id: 'layerDemo'+type //设定一个id，防止重复弹出
+					        ,btn: '返回'
+					        ,btnAlign: 'c'
+					        ,shade: 0 //不显示遮罩
+					        ,moveType: 1 //拖拽模式，0或者1
+					        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">亲爱的:'+data.user.uname+'<br><br>您是'+data.role.rname+'<br><br>您的手机号为:'+data.user.phone+'<br><br>等基本信息<br>更多的信息需要保密哟 ^_^</div>'
+					        ,yes: function(){
+					            layer.closeAll();
+					        }
+					      });		
+						}
 				}
-			},
-			/* 	 edit:{
-					 enable:true,
-					 showRemoveBtn: true,
-					 showRenameBtn: true  
-				 }, */
-			/*  callback:{
-				onClick: zTreeOnClick
-			 }, */
-			view : {
-				fontCss : {
-
-					color : 'red',
-				},
-				addDiyDom:addDiyDom
-			}
-		};
-
-		$(document).ready(function() {
-			zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
-		});
-
-		function addDiyDom(treeId, treeNode) {
+			});
+		}
 		
-			var aObj = $('#'+treeNode.tId+'_a');
-		           var btn=$("#diyBtn_"+treeNode.cid);
-		          
-			if ($("#diyBtn_"+treeNode.cid).length>0) return;
-			var editStr = '	<input type="hidden" value="'+treeNode.cid+'">';
-			 
-				aObj.append(editStr);
+		//修改密码
+		if(title=='修改密码'){
 			
-		};
-	</script>
-	<!-- <script type="text/javascript">
-	 layui.use('tree',function(){
-		layui.tree({
-			elem:"#demo",
-			nodes:  [{ //节点
-			    name: '父节点1'
-			        ,children: [{
-			          name: '子节点11'
-			        },{
-			          name: '子节点12'
-			        }]
-			      },{
-			        name: '父节点2（可以点左侧箭头，也可以双击标题）'
-			        ,children: [{
-			          name: '子节点21'
-			          ,children: [{
-			            name: '子节点211'
-			          }]
-			        }]
-			      }]
-			
-		}); 
-	 });
-	 
-	 function getNodes() {
-		var nodes=null;
-		$.ajax({
-			method:'get',
-			url:'http://localhost:8080/findAllChannel',
-			headers : createAuthorizationTokenHeader(), //请求头
-			dataType : 'json', //返回的数据类型
-			success: function(data) {
-				if(data!=null){
-					nodes=data;
-				}
-			}
-		});
-	};
-	</script> -->
+		}
+	}
+	</script> 
 	
 	<script type="text/javascript">
 		$(function() {

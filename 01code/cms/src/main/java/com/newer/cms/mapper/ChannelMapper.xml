@@ -25,7 +25,7 @@
 	<select id="findCount" resultType="int">
 	SELECT COUNT(*) FROM t_channel
 	<where>
-	  lid=#{lid} 
+	  pid=#{fid} 
 	<if test="calias!=null">
 	AND calias LIKE '%${calias}%'
 	</if>

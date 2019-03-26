@@ -33,10 +33,8 @@ public interface LanguageMapper {
 	 * 用来在修改时回显数据
 	 * @return
 	 */
-	@Select("SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,s.`tid` AS'site.tid', s.`tname` AS 'site.tname',s.`tintro` AS 'site.tintro' FROM `t_language` l\r\n" + 
-			"LEFT JOIN `t_site` s\r\n" + 
-			"ON l.`tid`=s.`tid`\r\n" + 
-			"WHERE lid=#{lid}")
+	@Select("SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,s.`tid` AS'site.tid', s.`tname` AS 'site.tname',s.`tintro` AS 'site.tintro' FROM `t_language` l\r\n"
+			+ "LEFT JOIN `t_site` s\r\n" + "ON l.`tid`=s.`tid`\r\n" + "WHERE lid=#{lid}")
 	Language queryLanguageS(@Param("lid") Integer lid);
 	/**
 	 * .删除语种
@@ -64,9 +62,9 @@ public interface LanguageMapper {
 	 * .获得该站点下所有语种的集合
 	 * @return
 	 */
-	@Select("SELECT a.lid ,a.lname,a.abbreviation,a.isactivation,b.uid AS 'user.uid',b.uname AS 'user.uname' FROM \r\n" + 
-			"(SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,t.uid FROM t_language l LEFT JOIN t_site_user t ON l.`tid`=t.`tid`) a\r\n" + 
-			"LEFT JOIN t_user b ON a.tid=b.`uid` WHERE a.tid=#{tid}")
+	@Select("SELECT a.lid ,a.lname,a.abbreviation,a.isactivation,b.uid AS 'user.uid',b.uname AS 'user.uname' FROM \r\n"
+			+ "(SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,t.uid FROM t_language l LEFT JOIN t_site_user t ON l.`tid`=t.`tid`) a\r\n"
+			+ "LEFT JOIN t_user b ON a.tid=b.`uid` WHERE a.tid=#{tid}")
 	List<Language> queryLanguage(@Param("tid") Integer tid);
 	
 	
@@ -86,9 +84,8 @@ public interface LanguageMapper {
 	 * @param pageSize
 	 * @return 用户数据集合
 	 */
-	@Select("SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,s.`tid` AS'site.tid', s.`tname` AS 'site.tname',s.`tintro` AS 'site.tintro' FROM `t_language` l\r\n" + 
-			"LEFT JOIN `t_site` s\r\n" + 
-			"ON l.`tid`=s.`tid` ORDER BY  l.lid ASC LIMIT #{index},#{pageSize}")
+	@Select("SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,l.`tid`,s.`tid` AS'site.tid', s.`tname` AS 'site.tname',s.`tintro` AS 'site.tintro' FROM `t_language` l\r\n"
+			+ "LEFT JOIN `t_site` s\r\n" + "ON l.`tid`=s.`tid` ORDER BY  l.lid ASC LIMIT #{index},#{pageSize}")
 	List<Language> getPageByLanguage(@Param("index") Integer index, @Param("pageSize") Integer pageSize);
 	
 	/**
@@ -98,5 +95,15 @@ public interface LanguageMapper {
 	 */
 	@Update("UPDATE `t_language` SET isactivation=#{isactivation} WHERE lid=#{lid}")
 	Integer upStatus(Language language);
+
+	/**
+	 * 得到所有站点下的语种信息
+	 * 
+	 * @return 返回所有信息集合
+	 */
+	@Select("SELECT l.`lid`,l.`lname`,l.`abbreviation`,l.`isactivation`,s.`tid` AS 'site.tid',\r\n"
+			+ "	s.`tname` AS 'site.tname',s.`tintro` AS 'site.tintro' FROM t_language l\r\n"
+			+ "	 LEFT JOIN t_site s\r\n" + "	 ON	s.`tid`=l.`tid`")
+	List<Language> findSiteAndLanguages();
 
 }

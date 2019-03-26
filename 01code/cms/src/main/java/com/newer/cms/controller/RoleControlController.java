@@ -141,4 +141,31 @@ public class RoleControlController {
 		return new ResponseEntity<Role>(role, HttpStatus.OK);
 	}
 
+	/**
+	 * 获得带分页效果的权限列表
+	 * 
+	 * @param pageNoStr
+	 *            当前页
+	 * @param pageSizeStr
+	 *            每页显示记录数
+	 * @return 成功返回Page对象 否则返回500错误码
+	 */
+	@GetMapping("/findPageControl")
+	public ResponseEntity<?> findPageControls(
+			@RequestParam(value = "pageNoStr", required = false, defaultValue = "1") String pageNoStr,
+			@RequestParam(value = "pageNoStr", required = false, defaultValue = "10") String pageSizeStr) {
+		// 调用服务层
+		Integer pagesize = Integer.parseInt(pageSizeStr);
+
+		Page<Control> page = rCService.findPageControl(pageNoStr, pagesize);
+
+		// 判断page是否为空
+		if (page == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		// 给page对象添加状态码
+		page.setStatus(HttpStatus.OK);
+		return new ResponseEntity<Page<Control>>(page, HttpStatus.OK);
+	}
 }

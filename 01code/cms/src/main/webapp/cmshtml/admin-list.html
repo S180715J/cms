@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
@@ -25,9 +25,9 @@
     <div class="x-nav">
       <span class="layui-breadcrumb">
         <a href="">首页</a>
-        <a href="">演示</a>
+        <a href="">用户管理</a>
         <a>
-          <cite>导航元素</cite></a>
+          <cite>用户列表</cite></a>
       </span>
       <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
@@ -40,7 +40,7 @@
       </table>
         
     </div>
-    </div>
+    
     <script type="text/html" id="rname">
     	<!--
         	作者：offline
@@ -103,9 +103,7 @@
     
     <script type="text/javascript" src="./js/jwt.js"></script>
     <script>
-    $(function() {
-		
-	})
+  
     layui.use('table',function(){
       var table = layui.table;
      var url='http://localhost:8080/pageUsers';

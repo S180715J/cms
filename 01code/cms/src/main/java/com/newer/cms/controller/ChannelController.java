@@ -186,10 +186,10 @@ public class ChannelController {
 	 * 
 	 * @return 成功返回所有频道信息集合，
 	 */
-	@GetMapping("/findAllChannel")
-	public ResponseEntity<?> findAllChannel() {
+	@GetMapping("/findAllChannel/{id}")
+	public ResponseEntity<?> findAllChannel(@PathVariable("id") Integer id) {
 		// 调用服务成
-		List<Channel> data = channelService.findAllChannel();
+		List<Channel> data = channelService.findAllChannel(id);
 
 		// 判断data是否为空
 		if (data == null || data.isEmpty()) {

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.newer.cms.mapper.LanguageMapper;
 import com.newer.cms.model.Page;
-
 import com.newer.cms.pojo.Language;
 
 @Service
@@ -89,5 +88,15 @@ public class LanguageService {
 	public String saveLanguage(Language language) {
 		Integer upStatus = languageMapper.saveLanguage(language);
 		return upStatus>0?"ok":"no";
+	}
+
+	/**
+	 * 获取所有站点下的语种信息
+	 * 
+	 * @return 成功返回List结合 所有语种结合 否则返回null
+	 */
+	public List<Language> findSiteAndLanguages() {
+		// 调用数据接口得到数据
+		return languageMapper.findSiteAndLanguages();
 	}
 }

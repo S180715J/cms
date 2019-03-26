@@ -329,9 +329,9 @@ public class ChannelService {
 	 * 
 	 * @return 成功返回list 所有频道集合
 	 */
-	public List<Channel> findAllChannel() {
+	public List<Channel> findAllChannel(Integer id) {
 		// TODO Auto-generated method stub
-		return channelMapper.findAllChannel();
+		return channelMapper.findAllChannel(id);
 	}
 
 }

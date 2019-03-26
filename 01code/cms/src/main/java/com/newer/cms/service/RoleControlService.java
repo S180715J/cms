@@ -130,4 +130,32 @@ public class RoleControlService {
 		// TODO Auto-generated method stub
 		return rCMapper.finRoleControlByRid(rid);
 	}
+
+	/**
+	 * 根据当前页，每页显示记录数 <br>
+	 * 获得权限的集合
+	 * 
+	 * @param pageNoStr
+	 *            当前页
+	 * @param pagesize
+	 *            每页显示记录数
+	 * @return 成功返回page对象
+	 */
+	public Page<Control> findPageControl(String pageNoStr, Integer pagesize) {
+
+		// 1.获取control 的总记录数
+		Integer totalControl = rCMapper.findControlCount();
+
+		// 将page对象实例化
+		Page<Control> page = new Page<>(pageNoStr, totalControl, pagesize);
+
+		// 修正初始化的index(初始查询记录开始数)
+		Integer index = (page.getPageNo() - 1) * pagesize;
+
+		// 查询control 的记录数
+		List<Control> data = rCMapper.findPageControl(index, pagesize);
+
+		page.setData(data);
+		return page;
+	}
 }
