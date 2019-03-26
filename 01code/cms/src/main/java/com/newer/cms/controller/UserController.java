@@ -146,6 +146,7 @@ public class UserController {
 		try {
 			Claims parseJWT = new JwtTokenUtil().parseJWT(token);
 			Object object = parseJWT.get("userRole");
+
 			return new ResponseEntity<Object>(object, HttpStatus.OK);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

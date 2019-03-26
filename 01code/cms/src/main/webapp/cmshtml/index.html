@@ -18,6 +18,7 @@
 <script type="text/javascript" src="js/jwt.js"></script>
 <script type="text/javascript"
 	src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
+	<script type="text/javascript" src="./js/myCode.js"></script>
 
 </head>
 <body>
@@ -82,7 +83,7 @@
 
 						</a>
 							<ul class="sub-menu">
-								<li><a _href="admin-list.html"> <i class="iconfont">&#xe6a7;</i>
+								<li><a href="javascript:;" onclick="javascript:openControl(this,'admin-list.html',1);"> <i class="iconfont">&#xe6a7;</i>
 										<cite>用户列表</cite>
 								</a></li>
 								<li><a _href="admin-role.html"> <i class="iconfont">&#xe6a7;</i>
@@ -90,7 +91,7 @@
 								</a></li>
 
 							</ul></li>
-						<li><a _href="company-list1.html"> <i class="iconfont">&#xe6a7;</i>
+						<li><a href="javascript:;" onclick="javascript:openControl(this,'company-list1.html',1);"> <i class="iconfont"> <i class="iconfont">&#xe6a7;</i>
 								<cite>机构管理</cite>
 
 						</a></li>
@@ -100,10 +101,10 @@
 
 						</a>
 							<ul class="sub-menu">
-								<li><a _href="admin-cate.html"> <i class="iconfont">&#xe6a7;</i>
+								<li><a href="javascript:;" onclick="javascript:openControl(this,'admin-cate.html',1);"> <i class="iconfont">&#xe6a7;</i>
 										<cite>角色列表</cite>
 								</a></li>
-								<li><a _href="admin-rule.html"> <i class="iconfont">&#xe6a7;</i>
+								<li><a href="javascript:;" onclick="javascript:openControl(this,'admin-rule.html',1);"> <i class="iconfont">&#xe6a7;</i>
 										<cite>权限管理</cite>
 								</a></li>
 							</ul></li>
@@ -113,11 +114,11 @@
 						<cite>站点管理</cite> <i class="iconfont nav_right">&#xe697;</i>
 				</a>
 					<ul class="sub-menu">
-						<li><a _href="order-list.html"> <i class="iconfont">&#xe6a7;</i>
+						<li><a  href="javascript:;" onclick="javascript:openControl(this,'order-list.html',2);"> <i class="iconfont"> <i class="iconfont">&#xe6a7;</i>
 								<cite>站点列表</cite>
 						</a></li>
 					</ul></li>
-				<li><a _href="cate.html"> <i class="iconfont">&#xe723;</i>
+				<li><a  href="javascript:;" onclick="javascript:openControl(this,'cate.html',3);"> <i class="iconfont"> <i class="iconfont">&#xe723;</i>
 						<cite>频道管理</cite> <i class="iconfont nav_right">&#xe697;</i>
 				</a>
 					
@@ -126,7 +127,7 @@
 						<cite>语种管理</cite> <i class="iconfont nav_right">&#xe697;</i>
 				</a>
 					<ul class="sub-menu">
-						<li><a _href="city.html"> <i class="iconfont">&#xe6a7;</i>
+						<li><a  href="javascript:;" onclick="javascript:openControl(this,'city.html',2);"> <i class="iconfont">&#xe6a7;</i>
 								<cite>语种列表</cite>
 						</a></li>
 
@@ -136,7 +137,7 @@
 						<cite>信息管理</cite> <i class="iconfont nav_right">&#xe697;</i>
 				</a>
 					<ul class="sub-menu">
-						<li><a _href="article-list.html"> <i class="iconfont">&#xe6a7;</i>
+						<li><a  href="javascript:;" onclick="javascript:openControl(this,'article-list.html',4);"> <i class="iconfont">&#xe6a7;</i>
 								<cite>信息列表</cite>
 						</a></li>
 						<li><a _href="echarts2.html"> <i class="iconfont">&#xe6a7;</i>
@@ -294,6 +295,21 @@
 			}
 
 		}
+	</script>
+	<script type="text/javascript">
+	function openControl(event,url,conId) {
+		var uri=checkControl(url,conId);
+		
+		if(uri==url){
+			
+			 $(event).attr("_href",uri); 
+		}else {
+			 $(event).attr("_href","error.html"); 
+			
+	
+		}
+	}
+	/*  openControl("admin-list.html",2); */
 	</script>
 </body>
 </html>

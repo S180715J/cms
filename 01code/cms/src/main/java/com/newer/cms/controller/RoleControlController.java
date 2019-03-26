@@ -168,4 +168,25 @@ public class RoleControlController {
 		page.setStatus(HttpStatus.OK);
 		return new ResponseEntity<Page<Control>>(page, HttpStatus.OK);
 	}
+
+	/**
+	 * 通过角色id 得到其拥有的权限
+	 * 
+	 * @param rid
+	 *            角色id
+	 * @return 成功返回角色集合 否则返回500错误
+	 */
+	@GetMapping("/control/{rid}")
+	public ResponseEntity<?> findControlByRid(@PathVariable("rid") Integer rid) {
+
+		// 调用服务层
+		List<Control> controls = rCService.findControlByRid(rid);
+		// 判断List集合是否存在 如果不存在返回500错误码
+		if (controls == null || controls.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<List<Control>>(controls, HttpStatus.OK);
+
+	}
 }

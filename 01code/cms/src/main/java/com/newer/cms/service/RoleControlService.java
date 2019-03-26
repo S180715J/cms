@@ -158,4 +158,16 @@ public class RoleControlService {
 		page.setData(data);
 		return page;
 	}
+
+	/**
+	 * 根据角色id 获取该角色拥有的权限
+	 * 
+	 * @param rid
+	 *            角色id
+	 * @return 成功返回角色权限集合 否则返回null
+	 */
+	public List<Control> findControlByRid(Integer rid) {
+		// TODO Auto-generated method stub
+		return rCMapper.findControlByRid(rid);
+	}
 }
