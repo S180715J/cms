@@ -1,4 +1,43 @@
-本项目须知：
-1，在application.properties文件中配置好自己MySQL数据库相关数据
-2.启动项目后，登录需数据库至少有一个初始用户数据（t_user）
-。。。。
+部署须知：
+
+
+
+
+	1 下载Tomcat到本地硬盘
+从官网上下载Tomcat服务器。官网上下载的文件都是绿色免安装的。
+
+下载地址为：http://tomcat.apache.org/download-70.cgi。
+
+下载后解压缩，如E:\apache-tomcat-7.0.26。
+
+ 
+
+2 设置Tomcat环境变量
+依然是点开电脑的环境变量对话框。
+
+新建一个环境变量：
+
+变量名：TOMCAT_HOME
+
+变量值：你的TOMCAT解压后的目录，如E:\apache-tomcat-7.0.26。
+
+ 
+
+3 验证Tomcat环境变量的配置是否成功
+运行Tomcat解压目录下的 bin/startup.bat，启动Tomcat服务器。在任何一款浏览器的地址栏中输入http://localhost:8080 ，如果界面显示如下图，则说明Tomcat的环境变量配置成功。
+
+tomcat启动的窗口为：
+
+startup-tomcat
+
+localhost-8080
+
+ 
+
+ 
+
+4. 部署Web项目的War包到Tomcat服务器
+ 
+1>.在数据库文档中将XXX.sql文件 插入至MySQL中运行，进行初始化数据与表结构！
+
+ 

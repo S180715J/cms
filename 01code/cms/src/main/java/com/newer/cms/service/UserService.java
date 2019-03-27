@@ -38,7 +38,7 @@ public class UserService {
 
 		// 修正分页初始记录数
 		Integer index = (page.getPageNo() - 1) * pageSize;
-		System.out.println(totalUser + "......" + index + "...." + pageSize + "....." + page.getPageNo());
+
 		List<UserRole> data = userMapper.getPageByUser(index, pageSize);
 		page.setData(data);
 		return page;
