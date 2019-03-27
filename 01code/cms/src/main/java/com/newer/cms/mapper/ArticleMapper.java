@@ -11,6 +11,13 @@ import org.apache.ibatis.annotations.Update;
 import com.newer.cms.pojo.Article;
 
 public interface ArticleMapper {
+	/**
+	 * . 根据id查询文章
+	 * @param aid
+	 * @return
+	 */
+	@Select("SELECT aid,title,subhead,mainbody,accessoryname,accessory,creattime,`status`,stick,author,aboutimg,cid AS `by`FROM t_article WHERE aid=#{aid} and `status`=1")
+	Article findArticleById2(@Param("aid") Integer aid);
 
 	/**
 	 * . 根据id查询文章

@@ -34,6 +34,10 @@ public class ArticleService {
 		page.setData(data);
 		return page;
 	}
+	public Article findArticleById2(Integer aid) {
+		Article findArticleById2 = articleMapper.findArticleById2(aid);
+		return findArticleById2;
+	}
 
 	/**
 	 * 根据id删除用户

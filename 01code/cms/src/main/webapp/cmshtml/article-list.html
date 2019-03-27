@@ -60,47 +60,52 @@
     
     //发送ajax 异步请求
      //得到站点 语种选择
-      $.ajax({
-    	  method:'get',
-    	  url:'http://localhost:8080/findSiteAndLanguage',
-    	  dataType:'json',
-			headers: createAuthorizationTokenHeader(),
-			success:function(data){
-				var html='';
-				if(data!=null){
-					$.each(data,function(index,val){
-					if(val.lid==1){
-						html+='<option value="'+val.lid+'" checked="checked">'+val.site.tname+'-'+val.lname+'</option> ';
-					}else{
-					 html+='<option value="'+val.lid+'" >'+val.site.tname+'-'+val.lname+'</option>  ';
-					}
-					});
-					$('select').append(html);
-				}
-			},
-			error:function(){
-				layer.msg('加载错误！',{
-					icon:2,
-					time:2000
-				})
-			}
-      });
-    
+     function loadSiteAndLanguage(){
+         $.ajax({
+       	  method:'get',
+       	  url:'http://localhost:8080/findSiteAndLanguage',
+       	  dataType:'json',
+   			headers: createAuthorizationTokenHeader(),
+   			success:function(data){
+   				var html='';
+   				if(data!=null){
+   					$.each(data,function(index,val){
+   					if(val.lid==6){
+   						html+='<option value="'+val.lid+'" selected="selected">'+val.site.tname+'-'+val.lname+'</option> ';
+   					}else{
+   					 html+='<option value="'+val.lid+'" >'+val.site.tname+'-'+val.lname+'</option>  ';
+   					}
+   					});
+   					$('select').append(html);
+   				}
+   			},
+   			error:function(){
+   				layer.msg('加载错误！',{
+   					icon:2,
+   					time:2000
+   				})
+   			}
+         });
+    }
+    function getId(){
+    	var id =$("option:selected").val();
+    	getZtree(id);
+    }
     </script>
      <script type="text/javascript">
+     loadSiteAndLanguage();
      //初始化加载树
      $(function() {
-		var id =$("select").find('option:checked').val();
-		getZtree(id);
+		getId();
+		 //下拉框值改变事件
+	    $("select").on('change',function(){
+	    	 var lid =$(this).find('option:selected').val();
+	    	getZtree(lid);
+	    });
+		
 	});
      
-     //下拉框值改变事件
-    $("select").on('change',function(){
-    	 var lid =$(this).find('option:checked').val();
-    	
-    	getZtree(lid);
- 
-    });
+    
     
     function getZtree(lid) {
    	 
@@ -158,6 +163,7 @@
    		function zTreeOnClick(event,treeId,treeNode) {
    			
    			var fid=JSON.stringify(treeNode.cid);
+   			alert(fid);
    			load(fid);
 		}
    		
@@ -349,7 +355,12 @@
     
       
     </script>
-   
+    <script>var _hmt = _hmt || []; (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();</script>
   </body>
 
 </html>

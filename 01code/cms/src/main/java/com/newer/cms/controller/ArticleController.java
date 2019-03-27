@@ -144,6 +144,31 @@ public class ArticleController {
 		Article act = articleService.findArticleById(aid);
 		return new ResponseEntity<Article>(act, HttpStatus.OK);
 	}
+	/**
+	 * .得到读取图片的流
+	 */
+	@GetMapping("/getimgs/{aid}")
+	public void getimg2(@PathVariable("aid") Integer aid,HttpServletResponse rep){
+		Article act=articleService.findArticleById2(aid);
+		String str=act.getAboutimg();
+		File file=new File(str);
+		 InputStream fis;
+		try {
+			fis = new BufferedInputStream(new FileInputStream(file));
+			byte[] buffer = new byte[fis.available()];
+			fis.read(buffer);
+            fis.close();
+            rep.reset();
+            OutputStream toClient = new BufferedOutputStream(rep.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+         
+		
+	}
 
 	/**
 	 * .得到读取图片的流
