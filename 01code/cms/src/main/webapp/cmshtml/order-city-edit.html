@@ -9,10 +9,11 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="/cmshtml/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" src="./js/jwt.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -25,35 +26,32 @@
         <form class="layui-form">
           <div class="layui-form-item">
               <label for="username" class="layui-form-label">
-                  <span class="x-red">*</span>语种名称
+                  <span class="x-red">*</span>语种名称 
               </label>
               <div class="layui-input-inline">
-                  
-                  <textarea  placeholder="请输入内容" class="layui-textarea" name="lname" id="lname"></textarea>
-            </div>
+                  <input type="text" id="lname" name="lname" required="" lay-verify="required"
+                  autocomplete="off" class="layui-input">
+              </div>
           </div> 
           <div class="layui-form-item">
               <label for="username" class="layui-form-label">
                   <span class="x-red">*</span>语种简称
               </label>
               <div class="layui-input-inline">
-                  
-                  <textarea  placeholder="请输入内容" class="layui-textarea" name="abbreviation" id="abbreviation"></textarea>
+                  <input type="text" id="vs" name="abbreviation" required="" lay-verify="required"
+                  autocomplete="off" class="layui-input">
             </div>
-          </div>
-			<div class="layui-form-item">
-				<label for="username" class="layui-form-label">
-                  <span class="x-red">*</span>所属机构
+          </div>                                  
+          <div class="layui-form-item">
+				<label  class="layui-form-label">所属机构
               </label>
-				<div class="layui-input-block" >
-					<select class="layui-input" name="site" lay-filter="province">
-						<option >请选择</option>
-						<!-- <option value="1">牛耳总公司1</option>
-						<option value="2">贝尔安亲</option> -->
+				<div class="layui-input-inline" >
+					<select name="site" id='site'>
+						<option value="0" >请选择</option>
 					</select>
 				</div>
 			</div>
-			<div class="layui-form-item">
+          <div class="layui-form-item">
               <label for="L_repass" class="layui-form-label">
               </label>
               <button  class="layui-btn" lay-filter="add" lay-submit="">
@@ -63,7 +61,41 @@
       </form>
     </div>
     <script>
+    $(function(){
+    	loadSites();
+    	loadLanguages();
+    })
+    function loadSites(){
+    	$.ajax({
+    			type:"get",
+    			url:"http://localhost:8080/getloadSites",
+    			async:true,
+    			success:function(data){
+    				if(data!=null){
+    					$.each(data,function(index,value){
+    						var op=$("<option value='"+value.tid+"'>"+value.tname+"</option>");
+    						$("#site").append(op);
+    					});
+    				}
+    			}
+    		});
+    	
+    	
+    }
     
+    function loadLanguages(){
+    	 $.ajax({
+            	method:'GET',
+            	url:'http://localhost:8080/queryLanguage/'+medcard(),
+            	dataType:"json",
+            	contentType: "application/json;charset=utf-8",
+            	success: function(dat) {
+            		var lname=$("#lname").val(dat.lname);
+            		var vs=$("#vs").val(dat.abbreviation);
+            		$("#site").find("option[value='"+dat.site.tid+"']").attr('selected',true);
+            	}
+            });
+    }
     
     function medcard(){
 		var url=location.search;
@@ -80,25 +112,7 @@
           ,layer = layui.layer;
         /* alert(JSON.stringify(layer)); */
           /* alert($);alert(JSON.stringify(form));alert(JSON.stringify(layer)); */
-           $.ajax({
-            	method:'GET',
-            	url:'http://localhost:8080/queryLanguage/'+medcard(),
-            	data:{},
-            	dataType:"json",
-            	contentType: "application/json;charset=utf-8",
-            	success: function(dat) {
-            		
-        			$("#lname").html(dat.lname);
-        			$("#abbreviation").html(dat.abbreviation);
-        			
-        			
-        			  $("select").append('<option value="'+dat.site.tid+'">'+dat.site.tname+'</option>'); 
-        			 
-            		/* $.each(dat,function(i,value){
-            			
-            		}) */
-            	}
-            });
+          
           //自定义验证规则
           form.verify({
             nikename: function(value){
@@ -114,8 +128,6 @@
         	var se= $("select option:selected").val();
         	  var tid={"tid":se}
         	data.field.site=tid;
-        	
-        	  alert(JSON.stringify(data));
              $.ajax({
             	method:'PUT',
             	url:'http://localhost:8080/updateLanguage/'+medcard(),
@@ -136,8 +148,6 @@
             }); 
             return false;
           });
-          
-          
 
         });
         

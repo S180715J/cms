@@ -31,6 +31,14 @@ public class Article implements Serializable {
 	private String author;
 	private String aboutimg;
 	private Channel channel;
+	private Integer by;
+	
+	public Integer getBy() {
+		return by;
+	}
+	public void setBy(Integer by) {
+		this.by = by;
+	}
 	public Integer getAid() {
 		return aid;
 	}

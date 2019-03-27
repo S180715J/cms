@@ -13,6 +13,7 @@
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+      <script type="text/javascript" src="./js/jwt.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -24,97 +25,47 @@
     <div class="x-nav">
       <span class="layui-breadcrumb">
         <a href="">首页</a>
-        <a href="">信息管理</a>
+        <a href="">演示</a>
         <a>
-          <cite>信息列表</cite></a>
+          <cite>导航元素</cite></a>
       </span>
       <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
     <div class="x-body">
       <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-          
-          <input type="text" name="username"  placeholder="请输入订单号" autocomplete="off" class="layui-input">
-          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
-        </form>
+           <div class="layui-form-item" style="margin-left: -50px;">
+              <label  class="layui-form-label">
+            站点选择 </label>
+              <div class="layui-input-inline">
+             <select name="site" id="siteId">
+             </select>
+             </div>
+          </div>
+         
       </div>
-      <xblock>
-        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-city-add.html')"><i class="layui-icon"></i>添加</button>
-        
-        <span id="dataLength" class="x-right" style="line-height:40px"></span>
-      </xblock>
      <div>
      	      <table class="layui-table" id="table" lay-filter="test">
         
       </table>
      </div>
-   
-
     </div>
      
     <script type="text/html" id="toolbarDemo">
       <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+        <button class="layui-btn layui-btn-danger" lay-event="getCheckData"><i class="layui-icon"></i>批量删除</button>
+      <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add2.html')"><i class="layui-icon"></i>添加</button>
+        <span id="dataLength" class="x-right" style="line-height:40px"></span>
       </div>
     </script>
     
     <script>
-    	  layui.use('table', function(){
-      var table = layui.table;
-      
-      //监听单元格编辑
-      table.on('edit(test)', function(obj){
-        var value = obj.value //得到修改后的值
-        ,data = obj.data //得到所在行所有键值
-        ,field = obj.field; //得到字段
-        
-        /* if(field=="status"){
-        	data.status=value;
-        	alert(JSON.stringify(data));
-       
-        
-        //此处修改的AJAX
-        $.ajax({
-        	method:'put',
-        	url:'http://localhost:8080/updateStatus',
-        	data:JSON.stringify(data),
-        	contentType:'application/json;charset=UTF-8',
-        	success:function(res){
-        		if(res=='ok'){
-        			layer.msg('[ID: '+ data.status +'] ' +field + ' :字段更改为：'+ value,{
-        				
-        				icon:1,
-        				time:2000
-        			});
-        		}
-        	}
-        	
-        });  
-        } */
-      });
-
-      //头工具栏事件
-      table.on('toolbar(test)', function(obj){
-        var checkStatus = table.checkStatus(obj.config.id);
-        switch(obj.event){
-          case 'getCheckData':
-            var data = checkStatus.data;
-            layer.alert(JSON.stringify(data));
-          break;
-          case 'getCheckLength':
-            var data = checkStatus.data;
-            layer.msg('选中了：'+ data.length + ' 个');
-          break;
-          case 'isAll':
-            layer.msg(checkStatus.isAll ? '全选': '未全选');
-          break;
-        };
-      });
-    });
+    	$(function(){
+    		var tid=getSiteId();
+    	loadSite();
+    	loadTabl(1);
+    	changeSite();
+    	});
     </script>
     <script type="text/html" id="isactivation">
       <!-- 这里的 checked 的状态只是演示 -->
@@ -125,12 +76,6 @@
       <button class="layui-btn layui-btn-radius layui-btn-danger" onclick="member_del(this,{{d.lid}})" href="javascript:;">删 除     </button>  
 
 <button class="layui-btn" onclick="x_admin_show('修改用户','./order-city-edit.html?id={{d.lid}}')"><i class="layui-icon"></i>修改</button>  
-    </script>
-     
-    <script type="text/html" id="operaupda">
-           
-         
-           
     </script>
     <script>
       layui.use('laydate', function(){
@@ -146,13 +91,14 @@
           elem: '#end' //指定元素
         });
       });
-
+ function loadTabl(tid){
       layui.use('table',function(){
           var table = layui.table;
-         var url='http://localhost:8080/pageLanguage';
-          table.render({
+        	var url='http://localhost:8080/pageLanguage/'+tid;
+        	table.render({
     			elem : '#table',
     			url : url, //数据接口
+    			headers:createAuthorizationTokenHeader(),
     			response: {
     			    statusName: 'status' //规定数据状态的字段名称，默认：code
     			    ,statusCode: 'OK' //规定成功的状态码，默认：0
@@ -182,8 +128,7 @@
     				templet:'<div>{{d.lname}}</div>',
     				field:'lname',
     				title : '语种名称',
-    				align : 'center',
-    				edit:'text'
+    				align : 'center'
 
     			},  {
     				templet:'<div>{{d.abbreviation}}</div>',
@@ -227,14 +172,12 @@
         	 
          	 if(obj.event=='openIsactivation'){//监听激活的状态
          		 obj.data.isactivation =obj.data.isactivation == 1 ? 0:1;
-         	 
-         	 
-         	     layer.confirm('确定要更改状态？',function(){
          	    	$.ajax({
          	        	method:'put',
          	        	url:'http://localhost:8080/upStatus',
          	        	data:JSON.stringify(obj.data),
          	        	contentType:'application/json;charset=UTF-8',
+         	        	headers:createAuthorizationTokenHeader(),
          	        	success:function(res){
          	        		if(res=='ok'){
          	        			layer.msg('[用户: '+ obj.data.lid +'] ' +'修改成功',{
@@ -243,51 +186,80 @@
          	        			});
          	        		}
          	        	}
-         	        	
          	        }); 
-         	     });
+         	   
          	 }
          	 
           });
+         table.on('toolbar(test)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        switch(obj.event){
+          case 'getCheckData':
+            var data = checkStatus.data;
+            var delList=[];
+            $.each(data, function(i,v) {
+            	delList.push(v.lid);
+            });
+           delAll(delList);
+          break;
+        };
       });
-      
+      });
+      }
       function member_update(obj,aid){
     	  $("#ese").on("click",function(){
         	  alert("666")
           });
       };
     
-       /*用户-停用*/
-      function member_stop(obj,id){
-          layer.confirm('确认要停用吗？',function(index){
-
-              if($(obj).attr('title')=='启用'){
-
-                //发异步把用户状态进行更改
-                $(obj).attr('title','停用')
-                $(obj).find('i').html('&#xe62f;');
-
-                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                layer.msg('已停用!',{icon: 5,time:1000});
-
-              }else{
-                $(obj).attr('title','启用')
-                $(obj).find('i').html('&#xe601;');
-
-                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                layer.msg('已启用!',{icon: 5,time:1000});
-              }
-              
-          });
-      }
-
-      
+      /* 加载站点*/
+    function  loadSite(){
+    	$.ajax({
+    		type:"get",
+    		url:"http://localhost:8080/getloadSites",
+    		async:true,
+    		headers:createAuthorizationTokenHeader(),
+    		success:function(data){
+    			if(data!=null){
+    				$.each(data, function(index,val) {
+    					if(val.tid==1){
+    					var op="<option value='"+val.tid+"' selected='selected' >"+val.tname+"</option>";
+    					$("#siteId").append(op);
+    					}else{
+    					var op="<option value='"+val.tid+"'>"+val.tname+"</option>";
+    						$("#siteId").append(op);
+    					}
+    				});
+    				
+    			}
+    				layui.use('form', function() {
+          		      var form = layui.form; 
+          		       form.render();
+          		   }); 
+    				
+    		}
+    	});
+    	
+    }
+     //获得下拉框的value值作为站点id
+     function getSiteId(){
+     	return $("option:selected").val();
+     }
+     //下拉框的change事件
+     function changeSite(){
+     	$("#siteId").change(function(){
+     		var sId=getSiteId();
+     		loadTabl(sId);
+     	});
+     }
+     
       /*用户-删除*/
       function member_del(obj,aid){
           layer.confirm('确认要删除   id:'+aid+'的数据吗？',function(index){
         	  $.ajax({
               	method:'delete',
               	url:'http://localhost:8080/deleteL/'+aid,
+              	headers:createAuthorizationTokenHeader(),
               	success: function(data) {
 					if(data=='ok'){
 						//发异步删除数据
@@ -298,18 +270,23 @@
               });
           });       
       };
-  
-      
-     
-
-      function delAll (argument) {
-
-        var data = tableCheck.getData();
-            
-        layer.confirm('确认要删除吗？'+data,function(index){
+      function delAll (data) {
+        layer.confirm('确认要删除所选择的语种吗？（这将会导致该语种下是所有频道及文章全部删除）',function(index){
             //捉到所有被选中的，发异步进行删除
-            layer.msg('删除成功', {icon: 1});
-            $(".layui-form-checked").not('.header').parents('tr').remove();
+            $.ajax({
+            	type:"delete",
+            	url:"http://localhost:8080/deleteLanguages",
+            	async:true,
+            	data:{"id":data},
+            	dataType:'json',
+            	headers:createAuthorizationTokenHeader(),
+            	success:function(data){
+            		if(data=='1'){
+            			layer.msg('删除成功', {icon: 1});
+                     $(".layui-form-checked").not('.header').parents('tr').remove();
+            		}
+            	}
+            });
         });
       }
     

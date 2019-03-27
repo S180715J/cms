@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newer.cms.mapper.ArticleMaaper;
+import com.newer.cms.mapper.ArticleMapper;
 import com.newer.cms.mapper.ChannelMapper;
 import com.newer.cms.model.Page;
 import com.newer.cms.pojo.Article;
@@ -22,7 +22,7 @@ public class ChannelService {
 	private ChannelMapper channelMapper;
 
 	@Autowired
-	private ArticleMaaper articleMaaper;
+	private ArticleMapper articleMapper;
 
 	/**
 	 * 通过lid查询所有
@@ -87,7 +87,7 @@ public class ChannelService {
 
 		if (i > 0) {
 			// 删除父频道下的文章
-			articleMaaper.deleteArticle(cid);
+			articleMapper.deleteArticle(cid);
 
 			// 通过id全路径模糊查询父频道下的所有子孙频道
 
@@ -99,7 +99,7 @@ public class ChannelService {
 				// 遍历所有子孙频道得到cid
 				for (Channel c : list) {
 					// 删除所有子孙频道下的文章
-					articleMaaper.deleteArticle(c.getCid());
+					articleMapper.deleteArticle(c.getCid());
 				}
 				return i + j;
 			}
@@ -256,7 +256,7 @@ public class ChannelService {
 		// 给新复制的频道添加文章
 		Channel channel4 = new Channel(cidMax);
 		// 得到被移动频道下的所有文章
-		List<Article> queryArticle = articleMaaper.queryArticle(cid);
+		List<Article> queryArticle = articleMapper.queryArticle(cid);
 		if (queryArticle != null) {
 			for (Article article : queryArticle) {
 				// 得到被移动频道下的所有文章id
@@ -332,6 +332,11 @@ public class ChannelService {
 	public List<Channel> findAllChannel(Integer id) {
 		// TODO Auto-generated method stub
 		return channelMapper.findAllChannel(id);
+	}
+	
+	public List<Channel> getChannels() {
+		List<Channel> queryChannel = channelMapper.queryChannel(1);
+		return queryChannel;
 	}
 
 }
