@@ -9,10 +9,11 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" src="./js/jwt.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -32,130 +33,26 @@
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
     <div class="x-body">
-      <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-          <input class="layui-input" placeholder="开始日" name="start" id="start">
-          <input class="layui-input" placeholder="截止日" name="end" id="end">
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option>支付状态</option>
-              <option>已支付</option>
-              <option>未支付</option>
-            </select>
-          </div>
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option>支付方式</option>
-              <option>支付宝</option>
-              <option>微信</option>
-              <option>货到付款</option>
-            </select>
-          </div>
-          <div class="layui-input-inline">
-            <select name="contrller">
-              <option value="">订单状态</option>
-              <option value="0">待确认</option>
-              <option value="1">已确认</option>
-              <option value="2">已收货</option>
-              <option value="3">已取消</option>
-              <option value="4">已完成</option>
-              <option value="5">已作废</option>
-            </select>
-          </div>
-          <input type="text" name="username"  placeholder="请输入订单号" autocomplete="off" class="layui-input">
-          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
-        </form>
-      </div>
-      <xblock>
-        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
-        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add.html')"><i class="layui-icon"></i>添加</button>
-        <span class="x-right" style="line-height:40px">共有数据：88 条</span>
-      </xblock>
      <div>
-     	      <table class="layui-table" lay-data="{url:'./user.json',page:true,toolbar: '#toolbarDemo',id:'test'}" lay-filter="test">
-        <thead>
-          <tr>
-            <th lay-data-user="{type:'checkbox'}">ID</th>
-            <th lay-data-user="{field:'id', width:80, sort: true,templet:'{{d.role.rid}}'}">ID</th>
-            <th lay-data-user="{field:'username', width:120, sort: true, edit: 'text',templet:'{{d.role.rname}}'}">标题</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">副标题</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">缩略图</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">正文</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">附件名</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">附件</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">创建时间</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">文章类型</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">是否置顶</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">状态</th>
-             <th lay-data="{field:'sex', width:100,edit: 'text',templet:'{{d.role.duty}}'}">操作</th>
-             
-             
-             
-             
-             
-             
-            <th lay-data="{field:'sex', width:80,templet: '#switchTpl'}">是否激活</th>
-            <th lay-data="{field:'id', minWidth: 30,templet:'{{d.site.tintro}}'}">描述</th>
-           <th lay-data="{field:'id', minWidth: 30,templet:'#operate'}">操作</th>
-          </tr>
-        </thead>
+     	      <table class="layui-table" id="table" lay-filter="test">
+        
       </table>
      </div>
-   
-
     </div>
-     <script type="text/html" id="operate">
-    	
-             
-              <a title="删除" onclick="member_del(this,'{{d.role.rid}}')" href="javascript:;">
-                <i class="layui-icon">&#xe640;</i>
-              </a>
-    </script>
+     
     <script type="text/html" id="toolbarDemo">
-      <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+       <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-danger" lay-event="getCheckData"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add2.html')"><i class="layui-icon"></i>添加</button>
+        <span id="dataLength" class="x-right" style="line-height:40px"></span>
       </div>
     </script>
-    <script type="text/html" id="switchTpl">
-      <!-- 这里的 checked 的状态只是演示 -->
-      <input type="checkbox" name="sex" value="{{d.site.}}" lay-skin="switch" lay-text="开|关" lay-filter="sexDemo" {{ d.id == 10003 ? 'checked' : '' }}>
+    <script type="text/html" id="operate">
+<button class="layui-btn layui-btn layui-btn-xs"  onclick="x_admin_show('查看/修改','./order-add2.html?id={{d.aid}}')" ><i class="layui-icon">&#xe642;</i>查看/修改</button>
+ <button class="layui-btn-danger layui-btn layui-btn-xs"  onclick="member_del(this,{{d.aid}})" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>
     </script>
-    <script>
-    	  layui.use('table', function(){
-      var table = layui.table;
-      
-      //监听单元格编辑
-      table.on('edit(test)', function(obj){
-        var value = obj.value //得到修改后的值
-        ,data = obj.data //得到所在行所有键值
-        ,field = obj.field; //得到字段
-         alert(field);
-         alert(data.username);
-        //此处修改的AJAX
-        
-        layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
-      });
-
-      //头工具栏事件
-      table.on('toolbar(test)', function(obj){
-        var checkStatus = table.checkStatus(obj.config.id);
-        switch(obj.event){
-          case 'getCheckData':
-            var data = checkStatus.data;
-            layer.alert(JSON.stringify(data));
-          break;
-          case 'getCheckLength':
-            var data = checkStatus.data;
-            layer.msg('选中了：'+ data.length + ' 个');
-          break;
-          case 'isAll':
-            layer.msg(checkStatus.isAll ? '全选': '未全选');
-          break;
-        };
-      });
-    });
+    <script type="text/html"  id="checkSta">
+    <button class="layui-btn layui-btn layui-btn-xs"  onclick="x_admin_show('审核','./order-add.html?id={{d.aid}}',300,200)" >审核</button>
     </script>
     <script>
       layui.use('laydate', function(){
@@ -165,58 +62,141 @@
         laydate.render({
           elem: '#start' //指定元素
         });
-
         //执行一个laydate实例
         laydate.render({
           elem: '#end' //指定元素
         });
       });
 
-       /*用户-停用*/
-      function member_stop(obj,id){
-          layer.confirm('确认要停用吗？',function(index){
+      layui.use('table',function(){
+          var table = layui.table;
+         var url='http://localhost:8080/pageArticle';
+          table.render({
+    			elem : '#table',
+    			url : url, //数据接口
+    			headers:createAuthorizationTokenHeader(),
+    			response: {
+    			    statusName: 'status' //规定数据状态的字段名称，默认：code
+    			    ,statusCode: 'OK' //规定成功的状态码，默认：0
+    			    ,msgName: 'msg' //规定状态信息的字段名称，默认：msg
+    			    ,countName: 'count' //规定数据总数的字段名称，默认：count
+    			    ,dataName: 'data' //规定数据列表的字段名称，默认：data
+    			  } , 
+    			page : true, //开启分页
+    			toolbar: '#toolbarDemo',
+    			request: {
+    			    pageName: 'pageNoStr' //页码的参数名称，默认：page
+    			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
+    			  },
+    			cols : [ [ //表头
+    				{
+    				type:'checkbox',
+    				field:'aid',
+    				width:50
+    				},
+    			  {
+    				templet:'<div>{{d.aid}}</div>',
+    				field:'d.aid',
+    				title : 'ID',
+    				sort : true,
+    				align : 'center',
+    				width:70
+    			}, {
+    				templet:'<div>{{d.title}}</div>',
+    				field:'title',
+    				title : '标题',
+    				align : 'center'
+    			},  {
+    				templet:'<div>{{d.creattime}}</div>',
+    				field:'creattime',
+    				title : '创建时间 ',
+    				align : 'center',
+    				sort : true
+    			},{
+    				templet:'<div>{{d.status == 0 ? "待审批" :(d.status==1?"已发布":"审核不通过") }}</div>',
+    				field:'statusu',
+    				title : '状态 ',
+    				align : 'center',
+    				sort : true
+    			},{
+    				templet:'#checkSta',
+    				title : '审核情况',
+    				align : 'center',
+    			},
+    			{
+    				templet:'#operate',
+    				title : '操作 ',
+    				align : 'center',
+    				width:250
+    				/* sort : true, */
+    			}
+    			] ],
 
-              if($(obj).attr('title')=='启用'){
-
-                //发异步把用户状态进行更改
-                $(obj).attr('title','停用')
-                $(obj).find('i').html('&#xe62f;');
-
-                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                layer.msg('已停用!',{icon: 5,time:1000});
-
-              }else{
-                $(obj).attr('title','启用')
-                $(obj).find('i').html('&#xe601;');
-
-                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                layer.msg('已启用!',{icon: 5,time:1000});
-              }
-              
-          });
-      }
-
+    			size : 'lg',
+    			done : function(res, curr, count) {
+    				
+    				//如果是异步请求数据方式，res即为你接口返回的信息。
+    				//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+    				//得到数据总量
+    				$("#dataLength").text("共有数据：" + (count) + "条");
+    			}
+    		}); 
+    		
+    		
+    		table.on('toolbar(test)', function(obj){
+        var checkStatus = table.checkStatus(obj.config.id);
+        switch(obj.event){
+          case 'getCheckData':
+            var data = checkStatus.data;
+            var delList=[];
+            $.each(data, function(i,v) {
+            	delList.push(v.aid);
+            });
+           delAll(delList);
+          break;
+        };
+      });
+      });
+      
       /*用户-删除*/
-      function member_del(obj,id){
+      function member_del(obj,aid){
           layer.confirm('确认要删除吗？',function(index){
-              //发异步删除数据
-              $(obj).parents("tr").remove();
-              layer.msg('已删除!',{icon:1,time:1000});
-          });
-      }
+        	  $.ajax({
+              	method:'delete',
+              	url:'http://localhost:8080/deleteA/'+aid,
+              	headers:createAuthorizationTokenHeader(),
+              	success: function(data) {
+					if(data=='ok'){
+						//发异步删除数据
+			              $(obj).parents("tr").remove();
+			              layer.msg('已删除!',{icon:1,time:1000});	
+					}
+				}
+              });
+          });       
+      };
 
-
-
-      function delAll (argument) {
-
-        var data = tableCheck.getData();
-  
-        layer.confirm('确认要删除吗？'+data,function(index){
-            //捉到所有被选中的，发异步进行删除
+      function delAll (data) {
+      	layer.confirm('确认要删除所选的文章吗？',function(index){
+       var x= $.ajax({
+        	type:"delete",
+        	url:"http://localhost:8080/deleteArticleAll",
+        	async:true,
+        	data:{"id":data},
+        	dataType:'json',
+        	headers:createAuthorizationTokenHeader(),
+        	success:function(rep){
+        		if(rep=='1'){
+        			
             layer.msg('删除成功', {icon: 1});
             $(".layui-form-checked").not('.header').parents('tr').remove();
+       }
+            	}
+            });
         });
       }
+    
+      
     </script>
     <script>var _hmt = _hmt || []; (function() {
         var hm = document.createElement("script");

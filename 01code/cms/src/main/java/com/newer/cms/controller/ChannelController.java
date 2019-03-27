@@ -198,4 +198,15 @@ public class ChannelController {
 		}
 		return new ResponseEntity<List<Channel>>(data, HttpStatus.OK);
 	}
+	
+	/**
+	 * .获得所有频道
+	 * @return
+	 */
+	@GetMapping("/getChannels")
+	public ResponseEntity<?> getChannels(){
+		List<Channel> list=channelService.getChannels();
+		return new ResponseEntity<List<Channel>>(list,HttpStatus.OK);
+	}
+	
 }

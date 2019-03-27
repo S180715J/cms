@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.newer.cms.mapper.SiteMapper">
-<select id="getTotalSite" resultType="java.lang.Integer">
+<select id="getTotalSite" resultType="int">
 SELECT COUNT(*) FROM 
 (SELECT s.`tid`,s.`tname`,s.`tintro`,t.`uid` 
 FROM t_site s LEFT JOIN t_site_user t ON s.`tid`=t.`tid`) a LEFT JOIN

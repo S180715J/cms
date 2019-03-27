@@ -17,7 +17,7 @@ public interface ArticleMapper {
 	 * @param aid
 	 * @return
 	 */
-	@Select("SELECT aid,title,subhead,mainbody,accessoryname,accessory,creattime,`status`,stick,author,aboutimg,cid AS pid FROM t_article WHERE aid=#{aid}")
+	@Select("SELECT aid,title,subhead,mainbody,accessoryname,accessory,creattime,`status`,stick,author,aboutimg,cid AS `by`FROM t_article WHERE aid=#{aid}")
 	Article findArticleById(@Param("aid") Integer aid);
 	
 	/**
@@ -47,7 +47,7 @@ public interface ArticleMapper {
 	 * @return
 	 */
 	@Insert("INSERT INTO t_article(title,subhead,mainbody,accessoryname,accessory,creattime,author,aboutimg,cid,stick)\r\n" + 
-			" VALUES(#{title},#{subhead},#{mainbody},#{accessoryname},#{accessory},NOW(),#{author},#{aboutimg},#{pid},#{stick})")
+			" VALUES(#{title},#{subhead},#{mainbody},#{accessoryname},#{accessory},NOW(),#{author},#{aboutimg},#{by},#{stick})")
 	Integer inserArticle(Article article);
 	                                                                     
 	/**
@@ -72,7 +72,7 @@ public interface ArticleMapper {
 	 * .修改文章
 	 * @return
 	 */
-	@Update("UPDATE t_article SET title=#{title},subhead=#{subhead},mainbody=#{mainbody},accessoryname=#{accessoryname},accessory=#{accessory},stick=#{stick},author=#{author},aboutimg=#{aboutimg},cid=#{pid}  WHERE aid=#{aid};")
+	@Update("UPDATE t_article SET title=#{title},subhead=#{subhead},mainbody=#{mainbody},accessoryname=#{accessoryname},accessory=#{accessory},stick=#{stick},author=#{author},aboutimg=#{aboutimg},cid=#{by}  WHERE aid=#{aid};")
 	int updateArticle(Article article);
 	
 	/**
@@ -81,6 +81,18 @@ public interface ArticleMapper {
 	 */
 	@Delete("DELETE FROM t_article WHERE aid=#{aid}")
 	int deleteArticle(@Param("aid") Integer aid);
+
+	@Delete("DELETE FROM t_article WHERE cid=#{cid}")
+	void deleteArticleAll(Integer cid);
+
+	@Select("SELECT * FROM t_article WHERE aid=#{aid}")
+	Article getStatus(Integer aid);
+
+	@Update("UPDATE t_article SET `status`=2 WHERE aid=#{aid}")
+	int updateArticleById(Integer aid);
+	
+	@Update("UPDATE t_article SET `status`=1 WHERE aid=#{aid}")
+	int updateArticleById2(Integer aid);
 
 	
 

@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.newer.cms.mapper.ArticleMaaper;
+import com.newer.cms.mapper.ArticleMapper;
 import com.newer.cms.model.Page;
 import com.newer.cms.pojo.Article;
 import com.newer.cms.pojo.UserRole;
@@ -14,7 +15,7 @@ import com.newer.cms.pojo.UserRole;
 public class ArticleService {
    
 	@Autowired
-	private ArticleMaaper articleMaaper;
+	private ArticleMapper articleMapper;
 	
 	
 	/**
@@ -26,15 +27,12 @@ public class ArticleService {
 	 */
 	public Page<Article> getPageByArticle(String pageNoStr, Integer pageSize) {
 		// 得到用户信息总记录数
-		Integer totalUser = articleMaaper.getTotalArticle();
-
+		Integer totalUser = articleMapper.getTotalArticle();
 		// 实例化Page对象
 		Page<Article> page = new Page<>(pageNoStr, totalUser, pageSize);
-
 		// 修正分页初始记录数
 		Integer index = (page.getPageNo() - 1) * pageSize;
-		System.out.println(totalUser + "......" + index + "...." + pageSize + "....." + page.getPageNo());
-		List<Article> data = articleMaaper.getPageByArticle(index, pageSize);
+		List<Article> data = articleMapper.getPageByArticle(index, pageSize);
 		page.setData(data);
 		return page;
 	}
@@ -48,8 +46,42 @@ public class ArticleService {
 	 */
 	public String deleteArticle(Integer aid) {
 		// 根据id删除用户数据 得到返回的影响函数
-		int i = articleMaaper.deleteArticle(aid);
+		int i = articleMapper.deleteArticle(aid);
 
 		return i > 0 ? "ok" : "error";
+	}
+
+
+	public Article findArticleById(Integer aid) {
+		Article f = articleMapper.findArticleById(aid);
+		return f;
+	}
+
+    @Transactional
+	public String deleteArticleAll(Integer[] id) {
+		int j=0;
+		for (Integer i : id) {
+			articleMapper.deleteArticle(i);
+			j++;
+		}
+		return j==id.length?"1":"0";
+	}
+
+
+	public int getStatus(Integer aid) {
+		Article status = articleMapper.getStatus(aid);
+		return status.getStatus();
+	}
+
+
+	public int updateArticleById(Integer aid) {
+		int i=articleMapper.updateArticleById(aid);
+		return i;
+	}
+
+
+	public int updateArticleById2(Integer aid) {
+		int i=articleMapper.updateArticleById2(aid);
+		return i;
 	}
 }

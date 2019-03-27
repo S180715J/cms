@@ -125,5 +125,8 @@ public interface ChannelMapper {
 	 */
 	@Select("SELECT cid,cname,calias,pid,xurl,icon_open AS 'iconOpen',lid AS 'language.lid',icon_close AS 'iconClose',icon FROM t_channel WHERE lid=#{id}")
 	List<Channel> findAllChannel(Integer id);
+	
+	@Delete("DELETE FROM t_channel WHERE lid=#{lid}")
+	void deleteChannelAll(Integer lid);
 
 }
