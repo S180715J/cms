@@ -15,7 +15,11 @@
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
     <script type="text/javascript" src="./js/jwt.js"></script>
-    
+    <style type="text/css">
+.layui-table-page {
+position:fixed;
+}
+</style>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -34,20 +38,13 @@
       <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
-    <div class="x-body">
-    <xblock>
-     
-      <input style="width: 100px;height:30px" id="cateName" type="text" placeholder="权限名">
-        <button class="layui-btn" id="cx">查询</button>
-        
-            	 <span class="x-right" id="dataLength" style="line-height:40px"></span>
-        
-      </div>
-     </xblock>
+    
+    
       <!--表格开始-->
     <div class="x-body">   
     	 
-      <table class="layui-table" id="table_control" lay-filter="test">
+            <span class="x-right" id="dataLength" style="line-height:40px"></span>
+      <table class="layui-table" id="table_control" lay-filter="test1">
         
       </table>
         
@@ -65,7 +62,6 @@
     	
       <div class="layui-btn-container">
          <button class="layui-btn" onclick="x_admin_show('添加用户','./admin-add.html')"><i class="layui-icon"></i>添加</button>
-		<button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
 
@@ -102,7 +98,7 @@
 			cols : [ [ //表头
 				{
 				type:'checkbox',
-				field:'id'
+				field:'controlId'
 				},
 			{
 				field:'controlId',
@@ -116,13 +112,13 @@
 				field:'controlName',
 				title : '权限名称',
 				align : 'center',
-				edit:'text'
+				
 			}, {
 				templet:'<div>{{d.controlExplain}}</div>',
 				field:'controlExplain',
 				title : '权限描述 ',
 				align : 'center',
-				edit:'text'
+				
 			}, {
 				templet:'#operate1',
 				title : '操作 ',
@@ -142,7 +138,7 @@
       
       
       //监听单元格编辑
-      table.on('edit(test)', function(obj){
+      table.on('edit(test1)', function(obj){
         var value = obj.value //得到修改后的值
         ,data = obj.data //得到所在行所有键值
         ,field = obj.field; //得到字段
@@ -228,7 +224,7 @@
       });
 
       //头工具栏事件
-      table.on('toolbar(test)', function(obj){
+      table.on('toolbar(test1)', function(obj){
         var checkStatus = table.checkStatus(obj.config.id);
         switch(obj.event){
           case 'getCheckData':

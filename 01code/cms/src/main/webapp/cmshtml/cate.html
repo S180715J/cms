@@ -107,6 +107,12 @@
 		getZtree(id);
 	});
      
+     //搜索的点击事件
+     $("#ss").click(function() {
+		var calias = $("#calias").val();
+		var fid =$("select").find('option:checked').val();
+		load(fid,calias);
+	});
      //下拉框值改变事件
     $("select").on('change',function(){
     	 var lid =$(this).find('option:checked').val();
