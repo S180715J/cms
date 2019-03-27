@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script type="text/javascript" src="./js/cookie.js"></script>
+      <script type="text/javascript" src="./js/jwt.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="x-body">
+       <div id='xlu'></div>
+    </div>
+    <script>
+    	$(function(){
+      	var aid=medcard();
+      	loadSta(aid);
+      	
+      	$("#xlu").on('click','#BH',function(){
+      		$.ajax({
+      		type:"put",
+      		url:"http://localhost:8080/updateArticleById/"+medcard(),
+      		headers:createAuthorizationTokenHeader(),
+      		success:function(data){
+      				if ( data== '1') {
+								alert('审核成功');
+						}
+							// 刷新父窗口
+							window.parent.location.reload();
+							// 关闭窗口
+							var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+							parent.layer.close(index); // 关闭layer
+      		}
+      	});
+      	});
+      	
+      	$("#xlu").on('click','#TG',function(){
+      		$.ajax({
+      		type:"put",
+      		url:"http://localhost:8080/updateArticleById2/"+medcard(),
+      		headers:createAuthorizationTokenHeader(),
+      		success:function(data){
+      				if ( data== '1') {
+								alert('审核成功');
+						}
+							// 刷新父窗口
+							window.parent.location.reload();
+							// 关闭窗口
+							var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+							parent.layer.close(index); // 关闭layeralert("审核成功");
+      				
+      				
+      			}
+      		
+      	});
+      	});
+      	});
+      	
+      	
+    </script>
+    
+    <script>
+         
+      
+     	function loadSta(aid){
+     		
+     		$.ajax({
+     			type:"get",
+     			url:"http://localhost:8080/getStatus/"+aid,
+     			async:true,
+     			headers:createAuthorizationTokenHeader(),
+     			success:function(rdata){
+     				if(rdata=='0'){
+     					var html="<button id='TG'  class='layui-btn layui-btn layui-btn-xs'>通过</button>";
+     				html+=" "+"<button id='BH' value='2' class='layui-btn-danger layui-btn layui-btn-xs'>驳回</button>"; 
+     				$("#xlu").append(html);
+     			}else{
+     				var html="<h1>已审核完成</h1>";
+     				$("#xlu").append(html);
+     			}
+     			}
+     		});
+     		
+     	}
+     	 function medcard(){
+				var url=location.search;
+				if(url.indexOf("?")!=-1){
+					var str=url.substr(1);
+					var medcard=str.split("=");
+					return medcard[1];
+				}
+			}
+     </script>
+  </body>
+
+</html>

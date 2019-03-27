@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script type="text/javascript" src="./js/cookie.js"></script>
+     <script type="text/javascript" src="js/jwt.js"></script>
+    <script type="text/javascript" src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>机构/部门名称
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="iname" name="iname" required="" lay-verify="required"
+                  autocomplete="off" placeholder="请输入机构/部门名" class="layui-input">
+               <label for="username" class="layui-form-label" style="margin-left: 100px">
+                  <span class="x-red">*</span>请选择机构:
+              </label>
+              </div>
+             
+        
+          </div>
+                  <div class="zTreeDemoBackground left" style="margin-left: 320px;" >
+		<ul id="treeDemo" class="ztree" style="margin-top: -60px"></ul>
+	    </div>  
+         
+          <div class="layui-form-item">
+              <label class="layui-form-label"><span class="x-red">*</span>所属机构</label>
+              <div class="layui-input-inline">  
+               <input type="text" id="fidiname" name="fidiname" required="" lay-verify="required"
+                  autocomplete="off" value="所属机构" class="layui-input" readonly>
+                  <input type="hidden" id="id" name="iname" required="" lay-verify="required"
+                   class="layui-input" readonly>
+            </div>
+            
+          </div>
+        
+     
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  增加
+              </button>
+          </div>
+      </form>
+    </div>
+    <script type="text/javascript">
+    var zTreeObj;
+    
+    //zTree配置
+    var setting={
+   		 // 开启异步加载
+   		 async:{
+   			 enable:true, //开启异步加载功能，若异步则必写
+   			 type:'get',
+   			 url:'http://localhost:8080/getAllInstitution',  //url路径 返回json数据
+   			 headers:createAuthorizationTokenHeader(), //请求头
+   			 dataType:'json' //返回的数据类型 
+   		 },
+   		 data:{
+   			 keep:{
+   				leaf:true,
+   				parent:true,
+   			 },
+   			 key:{
+   				 name:'iname'
+   			 },
+   			 simpleData:{
+   				enable:true,
+   				idKey:"id",
+   				pIdKey:"fid",
+   				rootPid:0
+   			 }
+   		 },
+   		 callback:{
+   			 onClick:zTreeOnClick
+   		 },
+   /* 		 edit:{
+   			 enable:true,
+   			 showRemoveBtn: true,
+   			 showRenameBtn: true
+   		 }, */
+   		 view:{
+   			 fontCss:{
+   				 color:'red'
+   			 }
+   		 }
+    };
+    
+    $(document).ready(function(){
+        zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+     });
+      
+    
+    function zTreeOnClick(event, treeId, treeNode) {
+		 $("#fidiname").val(treeNode.iname);
+		 $("#id").val(treeNode.id);
+	}
+    </script>
+    
+    <script type="text/javascript">
+    layui.config({  
+        base : "js/" //address.js的路径  
+    }).use([ 'layer', 'jquery', "address" ], function() {  
+        var layer = layui.layer, $ = layui.jquery, address = layui.address();  
+         
+    }); 
+         
+    </script>
+   
+    <script> 
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //自定义验证规则
+          form.verify({
+            nikename: function(value){
+              if(value.length < 5){
+                return '至少得5个字符啊';
+              }
+             
+            }
+          
+          });
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            console.log(data);
+            //发异步，把数据提交给php
+             var fid = $("#id").val();
+           
+            var iname=$("#iname").val();
+             var inst ={
+            		 "iname":iname,
+            		 "fid":fid
+             }
+             alert(JSON.stringify(inst));
+                  $.ajax({
+                	  method:'post',
+                	  url:'http://localhost:8080/mechanism',
+                	  data:JSON.stringify(inst),
+                	  headers:createAuthorizationTokenHeader(),
+                	  contentType:'application/json;charset=UTF-8',
+                	  success: function(data) {
+						if(data=='ok'){
+							layer.alert("新建成功", {icon: 6},function () {
+				                // 获得frame索引
+				                var index = parent.layer.getFrameIndex(window.name);
+				                //关闭当前frame
+				                parent.layer.close(index);
+				               parent.location.reload();
+							  });
+						}
+					},
+					error: function() {
+						layer.msg('创建失败！',{
+							icon:2,
+							time:2000
+						})
+					}
+            });
+            return false;
+          });
+          
+          
+        });
+    </script>
+   
+  </body>
+
+</html>
