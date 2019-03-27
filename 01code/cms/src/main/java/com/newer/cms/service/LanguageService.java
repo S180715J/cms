@@ -11,8 +11,9 @@ import com.newer.cms.pojo.Language;
 
 @Service
 public class LanguageService {
-    @Autowired
+	@Autowired
 	private LanguageMapper languageMapper;
+
 	/**
 	 * 获取用户信息
 	 * 
@@ -20,7 +21,7 @@ public class LanguageService {
 	 * @param pageSize
 	 * @return 带分页效果的用户信息 Page对象
 	 */
-   
+
 	public Page<Language> getPageByArticle(String pageNoStr, Integer pageSize) {
 		// 得到用户信息总记录数
 		Integer totalLanguage = languageMapper.getTotalLanguage();
@@ -35,7 +36,7 @@ public class LanguageService {
 		page.setData(data);
 		return page;
 	}
-	
+
 	/**
 	 * 根据id删除用户
 	 * 
@@ -44,10 +45,9 @@ public class LanguageService {
 	 */
 	public String deleteLanguage(Integer lid) {
 		int deleteLanguage = languageMapper.deleteLanguage(lid);
-		return deleteLanguage>0?"ok":"error";
+		return deleteLanguage > 0 ? "ok" : "error";
 	}
-	
-	
+
 	/**
 	 * 根据id修改用户
 	 * 
@@ -56,38 +56,39 @@ public class LanguageService {
 	 */
 	public String updateLanguage(Language language) {
 		int updateLanguage = languageMapper.updateLanguage(language);
-		return updateLanguage>0?"ok":"error";
+		return updateLanguage > 0 ? "ok" : "error";
 	}
-	
+
 	/**
-	 * 关联查询t_language     t_site
-	 * 用来在修改时回显数据
+	 * 关联查询t_language t_site 用来在修改时回显数据
+	 * 
 	 * @return
 	 */
-	public Language queryLanguage(Integer lid){
+	public Language queryLanguage(Integer lid) {
 		Language queryLanguage = languageMapper.queryLanguageS(lid);
 		return queryLanguage;
 	}
-	
+
 	/**
 	 * 更改激活状态
+	 * 
 	 * @param language
 	 * @return
 	 */
 	public String upStatus(Language language) {
 		Integer upStatus = languageMapper.upStatus(language);
-		return upStatus>0?"ok":"no";
+		return upStatus > 0 ? "ok" : "no";
 	}
-	
-	
+
 	/**
 	 * 添加
+	 * 
 	 * @param language
 	 * @return
 	 */
 	public String saveLanguage(Language language) {
 		Integer upStatus = languageMapper.saveLanguage(language);
-		return upStatus>0?"ok":"no";
+		return upStatus > 0 ? "ok" : "no";
 	}
 
 	/**

@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.newer.cms.model.Page;
-
 import com.newer.cms.pojo.Language;
 import com.newer.cms.service.LanguageService;
 
 @RestController
 public class LanguageController {
-  @Autowired
+	@Autowired
 	private LanguageService languageService;
 
 	/**
@@ -44,76 +43,73 @@ public class LanguageController {
 
 		return new ResponseEntity<Page<Language>>(page, HttpStatus.OK);
 	}
-	
-	@RequestMapping(value="/deleteL/{lid}",method=RequestMethod.DELETE)
-	public ResponseEntity<?> deleteLanguage(@PathVariable("lid") Integer lid ){
+
+	@RequestMapping(value = "/deleteL/{lid}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteLanguage(@PathVariable("lid") Integer lid) {
 		String delLanguage = languageService.deleteLanguage(lid);
-		
-		return new ResponseEntity<String>(delLanguage,HttpStatus.OK);
+
+		return new ResponseEntity<String>(delLanguage, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 根据id修改语种
 	 * 
 	 * @param language
 	 * @return
 	 */
-	@RequestMapping(value="/updateLanguage/{lid}",method=RequestMethod.PUT)
-	public ResponseEntity<?> updateLanguage(@PathVariable("lid") Integer lid,@RequestBody Language language ){
+	@RequestMapping(value = "/updateLanguage/{lid}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateLanguage(@PathVariable("lid") Integer lid, @RequestBody Language language) {
 		language.setLid(lid);
 		System.out.println(language);
 		String updateLanguage = languageService.updateLanguage(language);
-		
-		return new ResponseEntity<String>(updateLanguage,HttpStatus.OK);
-		
+
+		return new ResponseEntity<String>(updateLanguage, HttpStatus.OK);
+
 	}
-	
+
 	/**
 	 * 根据id查询语种
 	 * 
 	 * @param language
 	 * @return
 	 */
-	@RequestMapping(value="/queryLanguage/{lid}",method=RequestMethod.GET)
-	public ResponseEntity<?> queryLanguage(@PathVariable("lid") Integer lid){
-		
+	@RequestMapping(value = "/queryLanguage/{lid}", method = RequestMethod.GET)
+	public ResponseEntity<?> queryLanguage(@PathVariable("lid") Integer lid) {
+
 		Language queryLanguage = languageService.queryLanguage(lid);
-		
-		return new ResponseEntity<Language>(queryLanguage,HttpStatus.OK);
-		
+
+		return new ResponseEntity<Language>(queryLanguage, HttpStatus.OK);
+
 	}
-	
-	
+
 	/**
 	 * 更改激活状态
 	 * 
 	 * @param language
 	 * @return
 	 */
-	@RequestMapping(value="/upStatus",method=RequestMethod.PUT)
-	public ResponseEntity<?> upStatus(@RequestBody Language language){
-		System.out.println("声明"+language);
+	@RequestMapping(value = "/upStatus", method = RequestMethod.PUT)
+	public ResponseEntity<?> upStatus(@RequestBody Language language) {
+		System.out.println("声明" + language);
 		String upStatus = languageService.upStatus(language);
-		System.out.println("是什么:"+upStatus);
-		return new ResponseEntity<String>(upStatus,HttpStatus.OK);
+		System.out.println("是什么:" + upStatus);
+		return new ResponseEntity<String>(upStatus, HttpStatus.OK);
 	}
-	
-	
-	
+
 	/**
 	 * 添加
 	 * 
 	 * @param language
 	 * @return
 	 */
-	@RequestMapping(value="/saveLanguage",method=RequestMethod.POST)
-	public ResponseEntity<?> saveLanguage(@RequestBody Language language){
-		
+	@RequestMapping(value = "/saveLanguage", method = RequestMethod.POST)
+	public ResponseEntity<?> saveLanguage(@RequestBody Language language) {
+
 		language.setIsactivation(0);
-		System.out.println("声明"+language);
+		System.out.println("声明" + language);
 		String upStatus = languageService.saveLanguage(language);
-		System.out.println("是什么:"+upStatus);
-		return new ResponseEntity<String>(upStatus,HttpStatus.OK);
+		System.out.println("是什么:" + upStatus);
+		return new ResponseEntity<String>(upStatus, HttpStatus.OK);
 	}
 
 	/**

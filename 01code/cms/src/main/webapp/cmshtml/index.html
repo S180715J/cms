@@ -54,10 +54,10 @@
 				<dl class="layui-nav-child">
 					<!-- 二级菜单 -->
 					<dd>
-						<a onclick="open('个人信息')">个人信息</a>
+						<a  onclick="x_admin_show('个人信息','user.html')">个人信息</a>
 					</dd>
 					<dd>
-						<a onclick="open('修改密码')">修改密码</a>
+						<a href="return false" onclick="open('修改密码')">修改密码</a>
 					</dd>
 					<dd>
 						<a href="./login.html">退出</a>
@@ -173,6 +173,7 @@
 	<!-- <div class="x-slide_left"></div> -->
 	<!-- 左侧菜单结束 -->
 	<!-- 右侧主体开始 -->
+	
 	<div class="page-content">
 		<div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
 			<ul class="layui-tab-title">
@@ -208,41 +209,13 @@
 	<!-- 底部结束 -->
 	
 	 <script type="text/javascript">
-	 function open(title) {
-		if(title=='个人信息'){
-			//发送异步请求得到数据
-			$.ajax({
-				method : 'get',
-				url : 'http://localhost:8080/findTokenByUser',
-				headers : createAuthorizationTokenHeader(),
-				success : function(data) {
-					if (data != null) {
-					     //示范一个公告层
-					      layer.open({
-					        type: 1
-					        ,offset: type
-					        ,area: '300px;'
-					        ,shade: 0.8
-					        ,id: 'layerDemo'+type //设定一个id，防止重复弹出
-					        ,btn: '返回'
-					        ,btnAlign: 'c'
-					        ,shade: 0 //不显示遮罩
-					        ,moveType: 1 //拖拽模式，0或者1
-					        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">亲爱的:'+data.user.uname+'<br><br>您是'+data.role.rname+'<br><br>您的手机号为:'+data.user.phone+'<br><br>等基本信息<br>更多的信息需要保密哟 ^_^</div>'
-					        ,yes: function(){
-					            layer.closeAll();
-					        }
-					      });		
-						}
-				}
-			});
-		}
-		
-		//修改密码
-		if(title=='修改密码'){
-			
-		}
-	}
+	 layui.use('layer', function(){
+		  var layer = layui.layer;
+		  
+		  
+		});    
+	 
+	
 	</script> 
 	
 	<script type="text/javascript">
@@ -297,6 +270,8 @@
 		}
 	</script>
 	<script type="text/javascript">
+	
+	//权限控制JS
 	function openControl(event,url,conId) {
 		var uri=checkControl(url,conId);
 		

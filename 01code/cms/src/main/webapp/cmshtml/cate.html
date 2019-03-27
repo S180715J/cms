@@ -193,7 +193,7 @@
     
     <script type="text/html" id="toolbarDemo">
       <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">新增频道</button>
         <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
       </div>
     </script>
@@ -302,7 +302,13 @@
         switch(obj.event){
           case 'getCheckData':
             var data = checkStatus.data;
-            layer.alert(JSON.stringify(data));
+           
+            
+            //获取语种
+            var lid =$("select").find('option:checked').val();
+            x_admin_show('添加频道','channel-add.html?lid='+lid,'600','340');
+            
+            
           break;
           case 'getCheckLength':
             var data = checkStatus.data;
