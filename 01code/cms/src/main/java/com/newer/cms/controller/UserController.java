@@ -71,10 +71,10 @@ public class UserController {
 			@RequestParam(value = "pageNoStr", required = false, defaultValue = "1") String pageNoStr,
 			@RequestParam(value = "pageSizeStr", required = false, defaultValue = "6") String PageSizeStr) {
 		Integer pageSize = Integer.parseInt(PageSizeStr);
-		System.out.println(pageSize);
+
 		Page<UserRole> page = userService.getPageByUser(pageNoStr, pageSize);
 		page.setStatus(HttpStatus.OK);
-		System.out.println(page.toString());
+
 		if (page == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}

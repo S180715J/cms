@@ -57,55 +57,54 @@
      </div>
     </div>
       <script type="text/javascript">
-    
+
+		
+	
     //发送ajax 异步请求
      //得到站点 语种选择
-     function loadSiteAndLanguage(){
-         $.ajax({
-       	  method:'get',
-       	  url:'http://localhost:8080/findSiteAndLanguage',
-       	  dataType:'json',
-   			headers: createAuthorizationTokenHeader(),
-   			success:function(data){
-   				var html='';
-   				if(data!=null){
-   					$.each(data,function(index,val){
-   					if(val.lid==6){
-   						html+='<option value="'+val.lid+'" selected="selected">'+val.site.tname+'-'+val.lname+'</option> ';
-   					}else{
-   					 html+='<option value="'+val.lid+'" >'+val.site.tname+'-'+val.lname+'</option>  ';
-   					}
-   					});
-   					$('select').append(html);
-   				}
-   			},
-   			error:function(){
-   				layer.msg('加载错误！',{
-   					icon:2,
-   					time:2000
-   				})
-   			}
-         });
-    }
-    function getId(){
-    	var id =$("option:selected").val();
-    	getZtree(id);
-    }
+      $.ajax({
+    	  method:'get',
+    	  url:'http://localhost:8080/findSiteAndLanguage',
+    	  dataType:'json',
+			headers: createAuthorizationTokenHeader(),
+			success:function(data){
+				var html='';
+				if(data!=null){
+					$.each(data,function(index,val){
+					if(val.lid==1){
+						html+='<option value="'+val.lid+'" checked="checked">'+val.site.tname+'-'+val.lname+'</option> ';
+					}else{
+					 html+='<option value="'+val.lid+'" >'+val.site.tname+'-'+val.lname+'</option>  ';
+					}
+					});
+					$('select').append(html);
+				}
+			},
+			error:function(){
+				layer.msg('加载错误！',{
+					icon:2,
+					time:2000
+				})
+			}
+      });
+     
+   
     </script>
      <script type="text/javascript">
-     loadSiteAndLanguage();
-     //初始化加载树
+   	
      $(function() {
-		getId();
-		 //下拉框值改变事件
-	    $("select").on('change',function(){
-	    	 var lid =$(this).find('option:selected').val();
-	    	getZtree(lid);
-	    });
-		
+    	 //初始化加载树
+         var id =$("select").find('option:checked').val();
+      		getZtree(id);
 	});
-     
     
+     //下拉框值改变事件
+    $("select").on('change',function(){
+    	 var lid =$(this).find('option:checked').val();
+    	
+    	getZtree(lid);
+ 
+    });
     
     function getZtree(lid) {
    	 
@@ -145,7 +144,8 @@
    					 showRenameBtn: true  
    				 }, */
    			  callback:{
-   				onClick: zTreeOnClick
+   				onClick: zTreeOnClick,
+   				onAsyncSuccess: zTreeOnAsyncSuccess
    			 }, 
    			view : {
    				fontCss : {
@@ -163,9 +163,17 @@
    		function zTreeOnClick(event,treeId,treeNode) {
    			
    			var fid=JSON.stringify(treeNode.cid);
-   			alert(fid);
    			load(fid);
-		}
+		};
+   		
+		//初始化异步加载数据成功后 得到当前树的第一个根节点的文章信息
+   		function zTreeOnAsyncSuccess(event,treeId,treeNode) {   
+   			var treeObj= $.fn.zTree.getZTreeObj("treeDemo");
+   			var nodes = treeObj.getNodes();
+   			
+   			var fid=nodes[0].cid;
+   			load(fid);
+		};
    		
    		function addDiyDom(treeId, treeNode) {
    		
@@ -180,7 +188,7 @@
    		};
    		}
     </script>
-   <script type="text/javascript">
+  <!--  <script type="text/javascript">
     
     $(function(){
     	var fid=$("select").find('option:checked').val();
@@ -189,7 +197,7 @@
 	  	
 	  });
  
-    </script>
+    </script> -->
     <script type="text/html" id="toolbarDemo">
        <div class="layui-btn-container">
         <button class="layui-btn layui-btn-danger" lay-event="getCheckData"><i class="layui-icon"></i>批量删除</button>

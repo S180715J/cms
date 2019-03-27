@@ -36,8 +36,8 @@
     <div class="x-body">
      
       <xblock>
-        <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add3.html')"><i class="layui-icon"></i>添加</button>
-        <input  style="width: 100px;height:30px" id="name" type="text"/>
+       
+        <input  style="width: 100px;height:26px" id="name" type="text"/>
                 <button class="layui-btn" id="cx" >查询(站点或管理员)</button>
         <span class="x-right" id='dataLength' style="line-height:40px"></span>
       </xblock>
@@ -58,6 +58,9 @@
     load(name);
     });
    </script>
+   <script type="text/html" id="toolbarDemo">
+		 <button class="layui-btn" onclick="x_admin_show('添加用户','./order-add3.html')"><i class="layui-icon"></i>添加</button>
+</script>
      <script type="text/html" id="operate">
               <a title="删除" onclick="member_del(this,{{d.site.tid}})" href="javascript:;">
                 <i class="layui-icon">&#xe640;</i>
