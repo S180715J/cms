@@ -1,0 +1,17 @@
+今日任务:
+左侧菜单Ztree 页面实现跳转，
+携带当前Ztree树的节点id，
+ 完成情况：
+ 已完成
+ 
+ 遇到问题：
+ layui框架的模板 左侧菜单点击zTree树节点 跳转页面404？
+ 解决方法：修改源码：在JS源码中搜索sub-menu  找的跳转页面的方法 找到URL 
+ 当URL不存在的时候 手动定义跳转的页面， 并将节点的参数id携带过去；
+ 
+ zTree树在页面得不到节点id ？
+ 在setting中的view中设置addDayDom：function；
+  自己手动创建一个input隐藏域  在layui的模板框架源码JS中通过find（）方法得到input中的值
+  
+  项目进度：
+  正在推进！

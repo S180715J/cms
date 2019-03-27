@@ -36,16 +36,17 @@ public class ChannelController {
 	 * @return
 	 */
 	@GetMapping("/findChannelAll")
-	public ResponseEntity<?> findChannelAll(String calias,
+	public ResponseEntity<?> findChannelAll(String calias, Integer fid,
 			@RequestParam(value = "pageNoStr", required = false, defaultValue = "1") String pageNoStr,
 			@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
 			@RequestParam(value = "lid", required = false, defaultValue = "1") Integer lid) {
-		System.out.println(calias);
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pageNoStr", pageNoStr);
 		map.put("pageSize", pageSize);
 		map.put("lid", lid);
 		map.put("calias", calias);
+		map.put("fid", fid);
 		Page<Channel> findChannelAll = channelService.findChannelAll(map);
 		findChannelAll.setStatus(HttpStatus.OK);
 		ResponseEntity<Page<Channel>> res = new ResponseEntity<Page<Channel>>(findChannelAll, HttpStatus.OK);
@@ -185,10 +186,10 @@ public class ChannelController {
 	 * 
 	 * @return 成功返回所有频道信息集合，
 	 */
-	@GetMapping("/findAllChannel")
-	public ResponseEntity<?> findAllChannel() {
+	@GetMapping("/findAllChannel/{id}")
+	public ResponseEntity<?> findAllChannel(@PathVariable("id") Integer id) {
 		// 调用服务成
-		List<Channel> data = channelService.findAllChannel();
+		List<Channel> data = channelService.findAllChannel(id);
 
 		// 判断data是否为空
 		if (data == null || data.isEmpty()) {

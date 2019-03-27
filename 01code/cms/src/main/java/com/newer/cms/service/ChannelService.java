@@ -282,7 +282,7 @@ public class ChannelService {
 	public Page<Channel> findChannelAll(Map<String, Object> map) {
 		// 查询数据库中的总记录数
 		int totalRecordNo = channelMapper.findCount(map);
-		System.out.println(totalRecordNo);
+
 		// pageSize常量
 		int pageSize = (int) map.get("pageSize");
 
@@ -329,9 +329,9 @@ public class ChannelService {
 	 * 
 	 * @return 成功返回list 所有频道集合
 	 */
-	public List<Channel> findAllChannel() {
+	public List<Channel> findAllChannel(Integer id) {
 		// TODO Auto-generated method stub
-		return channelMapper.findAllChannel();
+		return channelMapper.findAllChannel(id);
 	}
 
 }

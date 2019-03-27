@@ -255,7 +255,7 @@ $(function () {
 
         if($(this).children('.sub-menu').length){
             if($(this).hasClass('open')){
-
+           
                 if($(this).parent().hasClass('sub-menu')){
                     deleteCookie('left_menu_son');
                 }else{
@@ -287,7 +287,9 @@ $(function () {
             var url = $(this).children('a').attr('_href');
             var title = $(this).find('cite').html();
             // var index  = $('.left-nav #nav li').index($(this));
-
+            if(url==null||url==''||url==undefined){
+            	url='error.html';
+            }
             var is_refresh = $(this).attr('date-refresh')?true:false; 
 
             for (var i = 0; i <$('.x-iframe').length; i++) {

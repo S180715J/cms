@@ -100,7 +100,7 @@ public class UserController {
 		}
 
 		// 用户存在则生成Token令牌
-		String token = new JwtTokenUtil().creatJwt(userRole.getUser().getUname(), userRole.getUser().getUid(),
+		String token = new JwtTokenUtil().creatJwt(userRole.getUser().getUname(), userRole, userRole.getUser().getUid(),
 				userRole.getRole().getRid());
 		if (token == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -134,6 +134,25 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
+	}
+
+	@GetMapping("/findTokenByUser")
+	public ResponseEntity<?> findTokenByUser(HttpServletRequest request) {
+
+		// 获取请求头
+		String token = request.getHeader(header);
+
+		// 解析token
+		try {
+			Claims parseJWT = new JwtTokenUtil().parseJWT(token);
+			Object object = parseJWT.get("userRole");
+
+			return new ResponseEntity<Object>(object, HttpStatus.OK);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 	}
 
 	/**

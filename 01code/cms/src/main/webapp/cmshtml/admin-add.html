@@ -9,10 +9,14 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css">
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
+    <script type="text/javascript" src="./js/jwt.js"></script>
+    <script type="text/javascript"
+	src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -77,21 +81,16 @@
    
         <div class="layui-form">  
          <label class="layui-form-label"><span class="x-red">*</span>所属机构</label>
-            <div class="layui-input-inline">  
-                <select name="institution" lay-filter="institution" class="institution">  
-                    <option value="">请选择机构</option>  
-                </select>  
-            </div>  
-            <div class="layui-input-inline">  
-                <select name="mechanism" lay-filter="mechanism" >  
-                    <option value="">请选择子机构</option>  
-                </select>  
-            </div>  
-            <div class="layui-input-inline">  
-                <select name="department" lay-filter="department" >  
-                    <option value="">请选择部门</option>  
-                </select>  
-            </div>  
+            <div class="layui-input-inline">
+                  <input type="text" id="institution" name="institution" readonly required="" lay-verify="required"
+                  autocomplete="off" class="layui-input" style="width: 80px">
+                 	
+                  <input type="hidden" id="insId" name="insId" value="">
+                  <div class="zTreeDemoBackground left" style="margin-left: 120px;" >
+		<ul id="treeDemo" class="ztree" style="margin-top: -30px"></ul>
+	    </div>  
+              </div>
+         
         </div>  
 
 
@@ -125,6 +124,59 @@
     });  
    
    
+    </script>
+     <script type="text/javascript">
+    var zTreeObj;
+    
+    //zTree配置
+    var setting={
+   		 // 开启异步加载
+   		 async:{
+   			 enable:true, //开启异步加载功能，若异步则必写
+   			 type:'get',
+   			 url:'http://localhost:8080/getAllInstitution',  //url路径 返回json数据
+   			 headers:createAuthorizationTokenHeader(), //请求头
+   			 dataType:'json' //返回的数据类型 
+   		 },
+   		 data:{
+   			 keep:{
+   				leaf:true,
+   				parent:true,
+   			 },
+   			 key:{
+   				 name:'iname'
+   			 },
+   			 simpleData:{
+   				enable:true,
+   				idKey:"id",
+   				pIdKey:"fid",
+   				rootPid:0
+   			 }
+   		 },
+   		 callback:{
+   			 onClick:zTreeOnClick
+   		 },
+   /* 		 edit:{
+   			 enable:true,
+   			 showRemoveBtn: true,
+   			 showRenameBtn: true
+   		 }, */
+   		 view:{
+   			 fontCss:{
+   				 color:'red'
+   			 }
+   		 }
+    };
+    
+    $(document).ready(function(){
+        zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+     });
+      
+    
+    function zTreeOnClick(event, treeId, treeNode) {
+		 $("#institution").val(treeNode.iname);
+		 $("#insId").val(treeNode.id);
+	}
     </script>
     <script type="text/javascript">
     $(function() {
@@ -185,16 +237,10 @@
             		"six":data.field.six,
             		
             		  };
-            var institution;
-             if(data.field.mechanism==null||data.field.mechanism==''){
-            	 institution={
-            			 "id":data.field.institution
-            	 }
-             }else{
-            	 user.institution={
-            			 "id":data.field.department ==null||data.field.department =='' ? data.field.mechanism : data.field.department
-            	 }
-             }
+            user.institution={
+            		"id":data.field.insId
+            }
+          
            
                
             var role={

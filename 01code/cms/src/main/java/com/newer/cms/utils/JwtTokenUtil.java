@@ -5,6 +5,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.newer.cms.pojo.UserRole;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.JwtBuilder;
@@ -37,20 +39,22 @@ public class JwtTokenUtil {
 	/**
 	 * 创建jwt token
 	 * 
+	 * @param userRole
+	 * 
 	 * @param uid
 	 * @param lastTime
 	 * @param pwd
 	 * @param aid
 	 * @return
 	 */
-	public String creatJwt(String uname, Integer uid, Integer rid) {
+	public String creatJwt(String uname, UserRole userRole, Integer uid, Integer rid) {
 		Date now = clock.now();
 		// 添加JWT的包含部分：有三个部分：头部（header）。截荷（payload),签证（sinnatrue）,
 		// 设置jwt创建时间
 		JwtBuilder jwtBuilder = Jwts.builder().setHeaderParam("typ", "JWT").setIssuedAt(now).setIssuer(uname) // 设置当前用户信息
 				.setExpiration(calculateExpirationDate(now)) // 设置失效时间
 				.setSubject("uid").claim("uname", uname).claim("uid", uid).claim("role", rid)
-				.signWith(SignatureAlgorithm.HS512, SECRET); // 设置加密算法，指定秘钥
+				.claim("userRole", userRole).signWith(SignatureAlgorithm.HS512, SECRET); // 设置加密算法，指定秘钥
 
 		return jwtBuilder.compact();
 	}

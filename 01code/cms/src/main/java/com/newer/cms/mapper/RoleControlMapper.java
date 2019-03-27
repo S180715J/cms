@@ -92,4 +92,34 @@ public interface RoleControlMapper {
 
 	Role finRoleControlByRid(Integer rid);
 
+	/**
+	 * 查询control总记录数 control 权限
+	 * 
+	 * @return Integer 总记录数
+	 */
+	@Select("SELECT COUNT(*) FROM t_control")
+	Integer findControlCount();
+
+	/**
+	 * 查询从index开始的pageSize条记录
+	 * 
+	 * @param index
+	 *            初始index位置
+	 * @param pagesize
+	 * @return
+	 */
+	@Select("SELECT  control_id AS 'controlId',control_name AS 'controlName',control_explain AS 'controlExplain',by1,by2 FROM t_control LIMIT #{index},#{pagesize}")
+	List<Control> findPageControl(@Param("index") Integer index, @Param("pagesize") Integer pagesize);
+
+	/**
+	 * 根据角色id查询对应的权限
+	 * 
+	 * @param rid
+	 *            角色id
+	 * @return 权限集合
+	 */
+	@Select("SELECT c.`control_id` AS 'controlId',c.`control_name` AS 'controlName',c.`control_explain` AS 'controlExplain' FROM t_role_control r\r\n"
+			+ "LEFT JOIN t_control c\r\n" + "ON c.`control_id`=r.`control_id`\r\n" + "WHERE r.`role_id` =#{rid}")
+	List<Control> findControlByRid(Integer rid);
+
 }
