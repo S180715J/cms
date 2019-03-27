@@ -40,8 +40,8 @@ public interface ArticleMapper {
 	 * 
 	 * @return integer 用户数据总记录数
 	 */
-	@Select("SELECT COUNT(*) FROM t_article")
-	Integer getTotalArticle();
+	@Select("SELECT COUNT(*) FROM t_article WHERE cid=#{pid}")
+	Integer getTotalArticle(Integer pid);
 
 	/**
 	 * .添加文章
@@ -60,8 +60,9 @@ public interface ArticleMapper {
 	 * @param pageSize
 	 * @return 用户数据集合
 	 */
-	@Select("SELECT * FROM t_article LIMIT #{index},#{pageSize}")
-	List<Article> getPageByArticle(@Param("index") Integer index, @Param("pageSize") Integer pageSize);
+	@Select("SELECT * FROM t_article WHERE cid=#{pid} LIMIT #{index},#{pageSize}")
+	List<Article> getPageByArticle(@Param("index") Integer index, @Param("pageSize") Integer pageSize,
+			@Param("pid") Integer pid);
 
 	/**
 	 * .添加文章

@@ -9,11 +9,14 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css">
     <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="./js/cookie.js"></script>
     <script type="text/javascript" src="./js/jwt.js"></script>
+    <script type="text/javascript"
+	src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -32,6 +35,20 @@
       <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
         <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
+      <div class="x-body">
+	  <div class="layui-form-item" >
+    <label class="layui-form-label" style="margin-top: -10px;">站点-语种选择:</label>
+    <div class="layui-input-block" style="width: 180px;">
+      <select name="city" lay-verify="required" style="height: 20px">  
+         
+      </select>
+    </div>
+    
+  </div>
+						<div class="zTreeDemoBackground left" style="width: 400px;margin-left: 320px;margin-top: -50px">
+							<ul id="treeDemo" class="ztree"></ul>
+						</div>						
+    </div>
     <div class="x-body">
      <div>
      	      <table class="layui-table" id="table" lay-filter="test">
@@ -39,7 +56,134 @@
       </table>
      </div>
     </div>
+      <script type="text/javascript">
+    
+    //发送ajax 异步请求
+     //得到站点 语种选择
+      $.ajax({
+    	  method:'get',
+    	  url:'http://localhost:8080/findSiteAndLanguage',
+    	  dataType:'json',
+			headers: createAuthorizationTokenHeader(),
+			success:function(data){
+				var html='';
+				if(data!=null){
+					$.each(data,function(index,val){
+					if(val.lid==1){
+						html+='<option value="'+val.lid+'" checked="checked">'+val.site.tname+'-'+val.lname+'</option> ';
+					}else{
+					 html+='<option value="'+val.lid+'" >'+val.site.tname+'-'+val.lname+'</option>  ';
+					}
+					});
+					$('select').append(html);
+				}
+			},
+			error:function(){
+				layer.msg('加载错误！',{
+					icon:2,
+					time:2000
+				})
+			}
+      });
+    
+    </script>
+     <script type="text/javascript">
+     //初始化加载树
+     $(function() {
+		var id =$("select").find('option:checked').val();
+		getZtree(id);
+	});
      
+     //下拉框值改变事件
+    $("select").on('change',function(){
+    	 var lid =$(this).find('option:checked').val();
+    	
+    	getZtree(lid);
+ 
+    });
+    
+    function getZtree(lid) {
+   	 
+
+   		var zTreeObj;
+
+   		//zTree配置
+   		var setting = {
+   			// 开启异步加载
+   			async : {
+   				enable : true, //开启异步加载功能，若异步则必写
+   				type : 'get',
+   				url : 'http://localhost:8080/findAllChannel/'+lid, //url路径 返回json数据
+   				headers : createAuthorizationTokenHeader(), //请求头
+   				dataType : 'json' //返回的数据类型 
+   			},
+   			data : {
+   				keep : {
+   					leaf : true,
+   					parent : true,
+   				},
+   				key : {
+   					name : 'cname',
+   					
+   					isParent: "parent"
+   				},
+   				simpleData : {
+   					enable : true,
+   					idKey : "cid",
+   					pIdKey : "pid",
+   					rootPid : 0
+   				}
+   			},
+   			/* 	 edit:{
+   					 enable:true,
+   					 showRemoveBtn: true,
+   					 showRenameBtn: true  
+   				 }, */
+   			  callback:{
+   				onClick: zTreeOnClick
+   			 }, 
+   			view : {
+   				fontCss : {
+
+   					color : 'red',
+   				},
+   				addDiyDom:addDiyDom
+   			}
+   		};
+
+   		$(document).ready(function() {
+   			zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+   		});
+
+   		function zTreeOnClick(event,treeId,treeNode) {
+   			
+   			var fid=JSON.stringify(treeNode.cid);
+   			load(fid);
+		}
+   		
+   		function addDiyDom(treeId, treeNode) {
+   		
+   			var aObj = $('#'+treeNode.tId+'_a');
+   		           var btn=$("#diyBtn_"+treeNode.cid);
+   		          
+   			if ($("#diyBtn_"+treeNode.cid).length>0) return;
+   			var editStr = '	<input type="hidden" value="'+treeNode.cid+'">';
+   			 
+   				aObj.append(editStr);
+   			
+   		};
+   		}
+    </script>
+   <script type="text/javascript">
+    
+    $(function(){
+    	var fid=$("select").find('option:checked').val();
+    	
+	  	load(fid);
+	  	
+	  });
+ 
+    </script>
     <script type="text/html" id="toolbarDemo">
        <div class="layui-btn-container">
         <button class="layui-btn layui-btn-danger" lay-event="getCheckData"><i class="layui-icon"></i>批量删除</button>
@@ -68,6 +212,9 @@
         });
       });
 
+      function load(fid) {	
+      	var id=fid;
+      	
       layui.use('table',function(){
           var table = layui.table;
          var url='http://localhost:8080/pageArticle';
@@ -87,6 +234,9 @@
     			request: {
     			    pageName: 'pageNoStr' //页码的参数名称，默认：page
     			    ,limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
+    			  },
+    			  where:{
+    				 pid:id 
     			  },
     			cols : [ [ //表头
     				{
@@ -158,6 +308,7 @@
       });
       });
       
+      }
       /*用户-删除*/
       function member_del(obj,aid){
           layer.confirm('确认要删除吗？',function(index){

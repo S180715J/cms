@@ -9,15 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.newer.cms.mapper.ArticleMapper;
 import com.newer.cms.model.Page;
 import com.newer.cms.pojo.Article;
-import com.newer.cms.pojo.UserRole;
 
 @Service
 public class ArticleService {
-   
+
 	@Autowired
 	private ArticleMapper articleMapper;
-	
-	
+
 	/**
 	 * 获取用户信息
 	 * 
@@ -25,19 +23,18 @@ public class ArticleService {
 	 * @param pageSize
 	 * @return 带分页效果的用户信息 Page对象
 	 */
-	public Page<Article> getPageByArticle(String pageNoStr, Integer pageSize) {
+	public Page<Article> getPageByArticle(String pageNoStr, Integer pageSize, Integer pid) {
 		// 得到用户信息总记录数
-		Integer totalUser = articleMapper.getTotalArticle();
+		Integer totalUser = articleMapper.getTotalArticle(pid);
 		// 实例化Page对象
 		Page<Article> page = new Page<>(pageNoStr, totalUser, pageSize);
 		// 修正分页初始记录数
 		Integer index = (page.getPageNo() - 1) * pageSize;
-		List<Article> data = articleMapper.getPageByArticle(index, pageSize);
+		List<Article> data = articleMapper.getPageByArticle(index, pageSize, pid);
 		page.setData(data);
 		return page;
 	}
-	
-	
+
 	/**
 	 * 根据id删除用户
 	 * 
@@ -51,37 +48,33 @@ public class ArticleService {
 		return i > 0 ? "ok" : "error";
 	}
 
-
 	public Article findArticleById(Integer aid) {
 		Article f = articleMapper.findArticleById(aid);
 		return f;
 	}
 
-    @Transactional
+	@Transactional
 	public String deleteArticleAll(Integer[] id) {
-		int j=0;
+		int j = 0;
 		for (Integer i : id) {
 			articleMapper.deleteArticle(i);
 			j++;
 		}
-		return j==id.length?"1":"0";
+		return j == id.length ? "1" : "0";
 	}
-
 
 	public int getStatus(Integer aid) {
 		Article status = articleMapper.getStatus(aid);
 		return status.getStatus();
 	}
 
-
 	public int updateArticleById(Integer aid) {
-		int i=articleMapper.updateArticleById(aid);
+		int i = articleMapper.updateArticleById(aid);
 		return i;
 	}
 
-
 	public int updateArticleById2(Integer aid) {
-		int i=articleMapper.updateArticleById2(aid);
+		int i = articleMapper.updateArticleById2(aid);
 		return i;
 	}
 }

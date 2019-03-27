@@ -37,20 +37,19 @@ import com.newer.cms.utils.LoadUtils;
 
 @RestController
 public class ArticleController {
-	
+
 	@Autowired
-	private ArticleMapper  articleMapper;
-	
+	private ArticleMapper articleMapper;
+
 	@Autowired
-	private ArticleService  articleService;
-	
+	private ArticleService articleService;
+
 	@GetMapping("/queryListArticle")
-	public ResponseEntity<?> queryListArticle(){
+	public ResponseEntity<?> queryListArticle() {
 		List<Article> queryListArticle = articleMapper.queryListArticle();
-		return new ResponseEntity<List<Article>>(queryListArticle,HttpStatus.OK);
+		return new ResponseEntity<List<Article>>(queryListArticle, HttpStatus.OK);
 	}
 
-	
 	/**
 	 * 得到用户信息
 	 * 
@@ -60,10 +59,10 @@ public class ArticleController {
 	 */
 	@SuppressWarnings("unused")
 	@GetMapping("/pageArticle")
-	public ResponseEntity<?> getPageByArticle(
+	public ResponseEntity<?> getPageByArticle(Integer pid,
 			@RequestParam(value = "pageNoStr", required = false, defaultValue = "1") String pageNoStr,
 			@RequestParam(value = "pageSizeStr", required = false, defaultValue = "10") Integer PageSizeStr) {
-		Page<Article> page = articleService.getPageByArticle(pageNoStr, PageSizeStr);
+		Page<Article> page = articleService.getPageByArticle(pageNoStr, PageSizeStr, pid);
 		page.setStatus(HttpStatus.OK);
 		if (page == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -71,131 +70,130 @@ public class ArticleController {
 
 		return new ResponseEntity<Page<Article>>(page, HttpStatus.OK);
 	}
-	
-	
+
 	/**
 	 * 根据id删Article
+	 * 
 	 * @param aid
 	 * @return
 	 */
-	@RequestMapping(value="/deleteA/{aid}",method=RequestMethod.DELETE)
-	public ResponseEntity<?> deleteArticle(@PathVariable("aid") Integer aid){
-		if(aid==null) {
+	@RequestMapping(value = "/deleteA/{aid}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteArticle(@PathVariable("aid") Integer aid) {
+		if (aid == null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		String deleteArticle = articleService.deleteArticle(aid);
-		return new ResponseEntity<String>(deleteArticle,HttpStatus.OK);
+		return new ResponseEntity<String>(deleteArticle, HttpStatus.OK);
 	}
-	
-	
+
 	/**
 	 * 添加Article
+	 * 
 	 * @param aid
 	 * @return
 	 */
-	@RequestMapping(value="/inserArticle",method=RequestMethod.POST)
-	public ResponseEntity<?> inserArticle(@RequestBody Article article){
+	@RequestMapping(value = "/inserArticle", method = RequestMethod.POST)
+	public ResponseEntity<?> inserArticle(@RequestBody Article article) {
 		Integer inserArticle = articleMapper.inserArticle(article);
-		return new ResponseEntity<>(inserArticle>0?"1":"0",HttpStatus.OK);
+		return new ResponseEntity<>(inserArticle > 0 ? "1" : "0", HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 修改Article
+	 * 
 	 * @param id
 	 * @param article
 	 * @return
 	 */
-	@PutMapping(value="/inserArticle/{aid}")
-	public ResponseEntity<?> updateArti(@PathVariable("aid") Integer aid,@RequestBody Article article){
+	@PutMapping(value = "/inserArticle/{aid}")
+	public ResponseEntity<?> updateArti(@PathVariable("aid") Integer aid, @RequestBody Article article) {
 		System.out.println(article);
 		article.setAid(aid);
 		int updateArticle = articleMapper.updateArticle(article);
-		return new ResponseEntity<String>(updateArticle>0?"1":"0",HttpStatus.OK);
+		return new ResponseEntity<String>(updateArticle > 0 ? "1" : "0", HttpStatus.OK);
 	}
-	
+
 	/**
 	 * .上传文件
+	 * 
 	 * @return 图片地址
 	 */
 	@PostMapping("/uploadImg")
-	public ResponseEntity<?> uploadImg(MultipartFile file, HttpServletRequest request){
-		Map<String,String> map=new HashMap<>();
-			String upload;
-			try {
-				upload = LoadUtils.upload(file, request);
-				map.put("code", "0");
-				map.put("data", upload);
-				System.out.println(upload);
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-		
-		return  new ResponseEntity<Map<String,String>>(map,HttpStatus.OK);
-    } 
-	
+	public ResponseEntity<?> uploadImg(MultipartFile file, HttpServletRequest request) {
+		Map<String, String> map = new HashMap<>();
+		String upload;
+		try {
+			upload = LoadUtils.upload(file, request);
+			map.put("code", "0");
+			map.put("data", upload);
+			System.out.println(upload);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
+	}
+
 	/**
 	 * .根据id查询文章
 	 */
 	@GetMapping("/article/{aid}")
-	public ResponseEntity<?> findArticleById(@PathVariable("aid") Integer aid
-			){
-		Article act=articleService.findArticleById(aid);
-		return new ResponseEntity<Article>(act,HttpStatus.OK);
+	public ResponseEntity<?> findArticleById(@PathVariable("aid") Integer aid) {
+		Article act = articleService.findArticleById(aid);
+		return new ResponseEntity<Article>(act, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * .得到读取图片的流
 	 */
 	@GetMapping("/getimg/{aid}")
-	public void getimg(@PathVariable("aid") Integer aid,HttpServletResponse rep){
-		Article act=articleService.findArticleById(aid);
-		String str=act.getAboutimg();
-		File file=new File(str);
-		 InputStream fis;
+	public void getimg(@PathVariable("aid") Integer aid, HttpServletResponse rep) {
+		Article act = articleService.findArticleById(aid);
+		String str = act.getAboutimg();
+		File file = new File(str);
+		InputStream fis;
 		try {
 			fis = new BufferedInputStream(new FileInputStream(file));
 			byte[] buffer = new byte[fis.available()];
 			fis.read(buffer);
-            fis.close();
-            rep.reset();
-            OutputStream toClient = new BufferedOutputStream(rep.getOutputStream());
-            toClient.write(buffer);
-            toClient.flush();
-            toClient.close();
+			fis.close();
+			rep.reset();
+			OutputStream toClient = new BufferedOutputStream(rep.getOutputStream());
+			toClient.write(buffer);
+			toClient.flush();
+			toClient.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-         
-		
+
 	}
-	
+
 	@DeleteMapping("/deleteArticleAll")
-	public ResponseEntity<?> deleteArticleAll(@RequestParam("id[]") Integer[] id){
-		String msg=articleService.deleteArticleAll(id);
-		return new ResponseEntity<String>(msg,HttpStatus.OK);
+	public ResponseEntity<?> deleteArticleAll(@RequestParam("id[]") Integer[] id) {
+		String msg = articleService.deleteArticleAll(id);
+		return new ResponseEntity<String>(msg, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/updateArticleById/{aid}")
-	public ResponseEntity<?> updateArticleById(@PathVariable("aid") Integer aid){
+	public ResponseEntity<?> updateArticleById(@PathVariable("aid") Integer aid) {
 		System.out.println(aid);
-		int i=articleService.updateArticleById(aid);
-		return new ResponseEntity<String>(i>0?"1":"2",HttpStatus.OK);
+		int i = articleService.updateArticleById(aid);
+		return new ResponseEntity<String>(i > 0 ? "1" : "2", HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/updateArticleById2/{aid}")
-	public ResponseEntity<?> updateArticleById2(@PathVariable("aid") Integer aid){
-		System.out.println("updateArticleById2"+aid);
-		int i=articleService.updateArticleById2(aid);
-		return new ResponseEntity<String>(i>0?"1":"2",HttpStatus.OK);
+	public ResponseEntity<?> updateArticleById2(@PathVariable("aid") Integer aid) {
+		System.out.println("updateArticleById2" + aid);
+		int i = articleService.updateArticleById2(aid);
+		return new ResponseEntity<String>(i > 0 ? "1" : "2", HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/getStatus/{aid}")
-	public ResponseEntity<?> getStatus(@PathVariable("aid") Integer aid){
-		int i=articleService.getStatus(aid);
-		return new ResponseEntity<String>(i==0?"0":(i==1?"1":"2"),HttpStatus.OK);
+	public ResponseEntity<?> getStatus(@PathVariable("aid") Integer aid) {
+		int i = articleService.getStatus(aid);
+		return new ResponseEntity<String>(i == 0 ? "0" : (i == 1 ? "1" : "2"), HttpStatus.OK);
 	}
-	
+
 }
