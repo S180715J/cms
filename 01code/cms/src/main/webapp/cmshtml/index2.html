@@ -27,7 +27,7 @@
            <i class="layui-icon layui-icon-more-vertical"></i>
         </li>
       </ul>
-        <img src="http://localhost:8080/getimgs/1"></img>
+        <img  src="../getimgs/1"></img>
       <div class="nav" id="DH" style="visibility: visible">
        </div>
   <!-- end-header -->
@@ -37,8 +37,8 @@
       </div>
       <div class="layui-carousel imgbox"  id="test1">
         <div carousel-item  class="imgH">
-          <div><img style="width: 100%" src="http://localhost:8080/getimgs/101"></div>
-          <div><img style="width: 100%" src="http://localhost:8080/getimgs/102"></div>
+          <div><img style="width: 100%" src="../getimgs/101"></div>
+          <div><img style="width: 100%" src="../getimgs/102"></div>
         </div>
       </div>
       <div class="prod-show">
@@ -46,23 +46,23 @@
           <div class="row layui-col-space12 layui-clear">
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
               <div id="L2" class="img-txt">
-                <img style="width: 100%;" src="http://localhost:8080/getimgs/7" alt="">
+                <img style="width: 100%;" src="../getimgs/7" alt="">
                 
               </div>
             </div>
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
               <div id="L3" class="img-txt">
-                <img style="width: 100%;" src="http://localhost:8080/getimgs/8" alt="">
+                <img style="width: 100%;" src="../getimgs/8" alt="">
               </div>
             </div>
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
               <div id="L4" class="img-txt">
-               <img style="width: 100%;" src="http://localhost:8080/getimgs/9" alt="">
+               <img style="width: 100%;" src="../getimgs/9" alt="">
               </div>
             </div>
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
               <div id="L5" class="img-txt">
-               <img style="width: 100%;" src="http://localhost:8080/getimgs/10" alt="">
+               <img style="width: 100%;" src="../getimgs/10" alt="">
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@
           <div class="layui-row">
             <div class="item layui-clear">
               <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
-                <img src="http://localhost:8080/getimgs/11" class="left-img">
+                <img src="../getimgs/11" class="left-img">
               </div>
               <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
                 <div id="L6" class="text">
@@ -81,7 +81,7 @@
               </div>
               <div class="layui-col-xs12 layui-col-sm12 layui-col-md8 bot-img-box">
                 <div class="bot-img">
-                  <img src="http://localhost:8080/getimgs/12">
+                  <img style="display: none;" src="./getimgs/12">
                 </div>
               </div>
             </div>
@@ -89,7 +89,7 @@
           <div class="layui-row">
             <div class="item layui-clear">
               <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
-                <img src="http://localhost:8080/getimgs/13" class="left-img">
+                <img style="display: none;" src="../getimgs/13" class="left-img">
               </div>
               <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
                 <div id="L7" class="text">
@@ -97,7 +97,7 @@
               </div>
               <div class="layui-col-xs12 layui-col-sm12 layui-col-md8 bot-img-box">
                 <div class="bot-img">
-                  <img style="display: none;" src="http://localhost:8080/getimgs/14">
+                  <img style="display: none;" src="../getimgs/14">
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@
           <div class="layui-row">
             <div class="item layui-clear">
               <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
-                <img src="http://localhost:8080/getimgs/15" class="left-img">
+                <img style="display: none;" src="../getimgs/15" class="left-img">
               </div>
               <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
                 <div id="L8" class="text">
@@ -113,7 +113,7 @@
               </div>
               <div class="layui-col-xs12 layui-col-sm12 layui-col-md8 bot-img-box">
                 <div class="bot-img">
-                  <img src="http://localhost:8080/getimgs/16">
+                  <img style="display: none;" src="../getimgs/16">
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@
   	function loadLogo(){
   	  $.ajax({
   	  	type:"get",
-  	  	url:"http://localhost:8080/findAllChannel/6",
+  	  	url:"../findAllChannel/6",
   	  	async:true,
   	  	success:function(redata){
   	  		if(redata!=null){
@@ -158,7 +158,7 @@
   	function loadArticle(){
   		$.ajax({
   			type:"get",
-  			url:"http://localhost:8080/getArticleAllByStatus/11",
+  			url:"../getArticleAllByStatus/11",
   			async:true,
   			success:function(rdata){
   				if(rdata!=null){

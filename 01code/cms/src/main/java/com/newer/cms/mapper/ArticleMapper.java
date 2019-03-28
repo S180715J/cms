@@ -109,4 +109,7 @@ public interface ArticleMapper {
 	@Update("UPDATE t_article SET `status`=1 WHERE aid=#{aid}")
 	int updateArticleById2(Integer aid);
 
+	@Select("SELECT a.`aid`,a.`title`,a.`mainbody`,a.`subhead`,a.`accessoryname`,a.`accessory`,a.`creattime`,a.`status`,a.`stick`,a.`author`,a.`aboutimg`,b.`eid` AS 'articletype.eid',b.`ename` AS 'articletype.ename' FROM t_article a LEFT JOIN t_articletype b ON a.`eid`=b.`eid` where cid=#{cid} and `status`=1")
+	List<Article> getArticleAllByStatus(Integer cid);
+
 }

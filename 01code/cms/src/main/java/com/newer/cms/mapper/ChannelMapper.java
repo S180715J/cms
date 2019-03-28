@@ -74,7 +74,7 @@ public interface ChannelMapper {
 	 * .获得所有的频道集合
 	 * 
 	 */
-	@Select("SELECT cid,cname,calias,pid,cnamepath,cidpath,creattime as datetime,tsequence,lid AS 'language.lid' FROM t_channel where lid=#{lid}")
+	@Select("SELECT cid,cname,calias,pid,cnamepath,cidpath,creattime as datetime,tsequence,lid AS 'language.lid' FROM t_channel")
 	List<Channel> queryChannel(Integer lid);
 
 	/**

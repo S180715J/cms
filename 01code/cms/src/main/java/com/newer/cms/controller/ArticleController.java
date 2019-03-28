@@ -107,7 +107,6 @@ public class ArticleController {
 	 */
 	@PutMapping(value = "/inserArticle/{aid}")
 	public ResponseEntity<?> updateArti(@PathVariable("aid") Integer aid, @RequestBody Article article) {
-		System.out.println(article);
 		article.setAid(aid);
 		int updateArticle = articleMapper.updateArticle(article);
 		return new ResponseEntity<String>(updateArticle > 0 ? "1" : "0", HttpStatus.OK);
@@ -150,6 +149,7 @@ public class ArticleController {
 	@GetMapping("/getimgs/{aid}")
 	public void getimg2(@PathVariable("aid") Integer aid,HttpServletResponse rep){
 		Article act=articleService.findArticleById2(aid);
+		if(act!=null) {
 		String str=act.getAboutimg();
 		File file=new File(str);
 		 InputStream fis;
@@ -167,7 +167,7 @@ public class ArticleController {
 			e.printStackTrace();
 		}
          
-		
+		}
 	}
 
 	/**
@@ -176,6 +176,7 @@ public class ArticleController {
 	@GetMapping("/getimg/{aid}")
 	public void getimg(@PathVariable("aid") Integer aid, HttpServletResponse rep) {
 		Article act = articleService.findArticleById(aid);
+		if(act!=null) {
 		String str = act.getAboutimg();
 		File file = new File(str);
 		InputStream fis;
@@ -192,7 +193,7 @@ public class ArticleController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		}
 	}
 
 	@DeleteMapping("/deleteArticleAll")
@@ -203,14 +204,12 @@ public class ArticleController {
 
 	@PutMapping("/updateArticleById/{aid}")
 	public ResponseEntity<?> updateArticleById(@PathVariable("aid") Integer aid) {
-		System.out.println(aid);
 		int i = articleService.updateArticleById(aid);
 		return new ResponseEntity<String>(i > 0 ? "1" : "2", HttpStatus.OK);
 	}
 
 	@PutMapping("/updateArticleById2/{aid}")
 	public ResponseEntity<?> updateArticleById2(@PathVariable("aid") Integer aid) {
-		System.out.println("updateArticleById2" + aid);
 		int i = articleService.updateArticleById2(aid);
 		return new ResponseEntity<String>(i > 0 ? "1" : "2", HttpStatus.OK);
 	}
@@ -220,5 +219,13 @@ public class ArticleController {
 		int i = articleService.getStatus(aid);
 		return new ResponseEntity<String>(i == 0 ? "0" : (i == 1 ? "1" : "2"), HttpStatus.OK);
 	}
-
+	
+	@GetMapping("/getArticleAllByStatus/{cid}")
+	public ResponseEntity<?> getArticleAllByStatus(@PathVariable("cid") Integer cid){
+		List<Article> list=articleService.getArticleAllByStatus(cid);
+		if(list==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<List<Article>>(list,HttpStatus.OK);
+	}
 }

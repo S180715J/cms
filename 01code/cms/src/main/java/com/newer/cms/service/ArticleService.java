@@ -81,4 +81,8 @@ public class ArticleService {
 		int i = articleMapper.updateArticleById2(aid);
 		return i;
 	}
+	public List<Article> getArticleAllByStatus(Integer cid) {
+		List<Article> list=articleMapper.getArticleAllByStatus(cid);
+		return list;
+	}
 }

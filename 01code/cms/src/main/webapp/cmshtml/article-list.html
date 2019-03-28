@@ -96,6 +96,9 @@
     	 //初始化加载树
          var id =$("select").find('option:checked').val();
       		getZtree(id);
+      		
+      		
+      		
 	});
     
      //下拉框值改变事件
@@ -107,10 +110,7 @@
     });
     
     function getZtree(lid) {
-   	 
-
    		var zTreeObj;
-
    		//zTree配置
    		var setting = {
    			// 开启异步加载
@@ -188,16 +188,6 @@
    		};
    		}
     </script>
-  <!--  <script type="text/javascript">
-    
-    $(function(){
-    	var fid=$("select").find('option:checked').val();
-    	
-	  	load(fid);
-	  	
-	  });
- 
-    </script> -->
     <script type="text/html" id="toolbarDemo">
        <div class="layui-btn-container">
         <button class="layui-btn layui-btn-danger" lay-event="getCheckData"><i class="layui-icon"></i>批量删除</button>
@@ -210,7 +200,12 @@
  <button class="layui-btn-danger layui-btn layui-btn-xs"  onclick="member_del(this,{{d.aid}})" href="javascript:;" ><i class="layui-icon">&#xe640;</i>删除</button>
     </script>
     <script type="text/html"  id="checkSta">
-    <button class="layui-btn layui-btn layui-btn-xs"  onclick="x_admin_show('审核','./order-add.html?id={{d.aid}}',300,200)" >审核</button>
+{{#  if(d.status==0){ }}
+    <button class="layui-btn layui-btn layui-btn-xs" onclick="member_tg(this,{{d.aid}})" >通过</button>
+    <button class="layui-btn-danger layui-btn layui-btn-xs" onclick="member_bh(this,{{d.aid}})" >驳回</button>
+{{#  }else{ }}
+<button class="layui-btn layui-btn layui-btn-disabled" >已审核</button>
+{{#  } }}
     </script>
     <script>
       layui.use('laydate', function(){
@@ -228,7 +223,6 @@
 
       function load(fid) {	
       	var id=fid;
-      	
       layui.use('table',function(){
           var table = layui.table;
          var url='http://localhost:8080/pageArticle';
@@ -305,24 +299,24 @@
     				$("#dataLength").text("共有数据：" + (count) + "条");
     			}
     		}); 
-    		
-    		
-    		table.on('toolbar(test)', function(obj){
-        var checkStatus = table.checkStatus(obj.config.id);
-        switch(obj.event){
-          case 'getCheckData':
-            var data = checkStatus.data;
-            var delList=[];
-            $.each(data, function(i,v) {
-            	delList.push(v.aid);
+          table.on('toolbar(test)', function(obj){
+              var checkStatus = table.checkStatus(obj.config.id);
+              switch(obj.event){
+                case 'getCheckData':
+                  var data = checkStatus.data;
+                  var delList=[];
+                  $.each(data, function(i,v) {
+                  	delList.push(v.aid);
+                  });
+                 delAll(delList);
+                break;
+              };
             });
-           delAll(delList);
-          break;
-        };
       });
-      });
-      
       }
+      
+      
+      
       /*用户-删除*/
       function member_del(obj,aid){
           layer.confirm('确认要删除吗？',function(index){
@@ -361,7 +355,40 @@
         });
       }
     
-      
+     /*审核通过*/
+            function member_tg(obj,aid){
+      	
+          	  layer.confirm("是否通过审核？",function(index){
+          			  $.ajax({
+          	              	method:'put',
+          	              	url:'http://localhost:8080/updateArticleById2/'+aid,
+          	              	headers:createAuthorizationTokenHeader(),
+          	              	success: function(data) {
+          						if(data=='1'){
+          				              layer.msg('审核成功!',{icon:6,time:1000});	
+          				              window.location.reload();
+          						}
+          					}
+          	              });
+            });
+          	  }	
+            /*审核驳回*/
+            function member_bh(obj,aid){
+      	
+          	  layer.confirm("是否通过审核？",function(index){
+          			  $.ajax({
+          	              	method:'put',
+          	              	url:'http://localhost:8080/updateArticleById/'+aid,
+          	              	headers:createAuthorizationTokenHeader(),
+          	              	success: function(data) {
+          						if(data=='1'){
+          				              layer.msg('驳回成功!',{icon:6,time:1000});	
+          				              window.location.reload();
+          						}
+          					}
+          	              });
+            });
+          	  }	
     </script>
     <script>var _hmt = _hmt || []; (function() {
         var hm = document.createElement("script");
