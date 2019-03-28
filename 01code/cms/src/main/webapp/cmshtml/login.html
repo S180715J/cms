@@ -52,7 +52,7 @@
                 	success:function(data){
                 		if(data!=null){
                 			setJwtToken(data);
-                			location.href='http://localhost:8080/cmshtml/index.html';
+                			location.href='index.html';
                 		}
                 	},
                 	error:function(){
@@ -60,7 +60,10 @@
                 			iocn:2,
                 			time:2000 //2秒，默认3秒
                 		});
-                	}
+                	},
+                	xhrFields: {
+						withCredentials: true
+				}
                  });
                
                 return false;

@@ -69,6 +69,7 @@
     	$.ajax({
     			type:"get",
     			url:"http://localhost:8080/getloadSites",
+    			headers: createAuthorizationTokenHeader(),
     			async:true,
     			success:function(data){
     				if(data!=null){
@@ -77,7 +78,9 @@
     						$("#site").append(op);
     					});
     				}
-    			}
+    			},xhrFields: {
+								withCredentials: true
+							}
     		});
     	
     	
@@ -87,13 +90,17 @@
     	 $.ajax({
             	method:'GET',
             	url:'http://localhost:8080/queryLanguage/'+medcard(),
+            	headers: createAuthorizationTokenHeader(),
             	dataType:"json",
             	contentType: "application/json;charset=utf-8",
             	success: function(dat) {
             		var lname=$("#lname").val(dat.lname);
             		var vs=$("#vs").val(dat.abbreviation);
             		$("#site").find("option[value='"+dat.site.tid+"']").attr('selected',true);
-            	}
+            	},
+            	xhrFields: {
+								withCredentials: true
+							}
             });
     }
     
@@ -131,6 +138,7 @@
              $.ajax({
             	method:'PUT',
             	url:'http://localhost:8080/updateLanguage/'+medcard(),
+            	headers: createAuthorizationTokenHeader(),
             	data:JSON.stringify(data.field),
             	dataType:"text",
             	contentType: "application/json;charset=utf-8",
@@ -144,7 +152,9 @@
                             parent.layer.close(index);
             		}
             		)}
-            	}
+            	},xhrFields: {
+								withCredentials: true
+							}
             }); 
             return false;
           });

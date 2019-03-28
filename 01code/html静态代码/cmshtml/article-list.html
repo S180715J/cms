@@ -119,37 +119,36 @@
 						xhrFields: {
 							withCredentials: true
 						},
-						 //返回的数据类型 
-					
-					},
-					data: {
-						keep: {
-							leaf: true,
-							parent: true,
-						},
-						key: {
-							name: 'cname',
-
-							isParent: "parent"
-						},
-						simpleData: {
-							enable: true,
-							idKey: "cid",
-							pIdKey: "pid",
-							rootPid: 0
-						}
-					},
-					/* 	 edit:{
-							 enable:true,
-							 showRemoveBtn: true,
-							 showRenameBtn: true  
-						 }, */
-					callback: {
-						onClick: zTreeOnClick,
-						onAsyncSuccess: zTreeOnAsyncSuccess
-					},
-					view: {
-						fontCss: {
+   				dataType : 'json' //返回的数据类型 
+   			},
+   			data : {
+   				keep : {
+   					leaf : true,
+   					parent : true,
+   				},
+   				key : {
+   					name : 'cname',
+   					
+   					isParent: "parent"
+   				},
+   				simpleData : {
+   					enable : true,
+   					idKey : "cid",
+   					pIdKey : "pid",
+   					rootPid : 0
+   				}
+   			},
+   			/* 	 edit:{
+   					 enable:true,
+   					 showRemoveBtn: true,
+   					 showRenameBtn: true  
+   				 }, */
+   			  callback:{
+   				onClick: zTreeOnClick,
+   				onAsyncSuccess: zTreeOnAsyncSuccess
+   			 }, 
+   			view : {
+   				fontCss : {
 
 							color: 'red',
 						},
@@ -211,21 +210,26 @@
 			<button class="layui-btn-danger layui-btn layui-btn-xs" onclick="member_del(this,{{d.aid}})" href="javascript:;"><i class="layui-icon">&#xe640;</i>删除</button>
 		</script>
 		<script type="text/html" id="checkSta">
-			<button class="layui-btn layui-btn layui-btn-xs" onclick="x_admin_show('审核','./order-add.html?id={{d.aid}}',300,200)">审核</button>
-		</script>
-		<script>
-			layui.use('laydate', function() {
-				var laydate = layui.laydate;
-
-				//执行一个laydate实例
-				laydate.render({
-					elem: '#start' //指定元素
-				});
-				//执行一个laydate实例
-				laydate.render({
-					elem: '#end' //指定元素
-				});
-			});
+{{#  if(d.status==0){ }}
+    <button class="layui-btn layui-btn layui-btn-xs" onclick="member_tg(this,{{d.aid}})" >通过</button>
+    <button class="layui-btn-danger layui-btn layui-btn-xs" onclick="member_bh(this,{{d.aid}})" >驳回</button>
+{{#  }else{ }}
+<button class="layui-btn layui-btn layui-btn-disabled" >已审核</button>
+{{#  } }}
+    </script>
+    <script>
+      layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#start' //指定元素
+        });
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#end' //指定元素
+        });
+      });
 
 			function load(fid) {
 				var id = fid;
@@ -351,40 +355,72 @@
 							}
 						},
 						xhrFields: {
-							withCredentials: true
 						}
 					});
 				});
 			};
 
-			function delAll(data) {
-				layer.confirm('确认要删除所选的文章吗？', function(index) {
-					var x = $.ajax({
-						type: "delete",
-						url: "http://localhost:8080/deleteArticleAll",
-						async: true,
-						data: {
-							"id": data
-						},
-						dataType: 'json',
-						headers: createAuthorizationTokenHeader(),
-						success: function(rep) {
-							if(rep == '1') {
-
-								layer.msg('删除成功', {
-									icon: 1
-								});
-								$(".layui-form-checked").not('.header').parents('tr').remove();
-							}
-						},
-						xhrFields: {
-							withCredentials: true
-						}
-					});
-				});
-			}
-		</script>
-
-	</body>
+      function delAll (data) {
+      	layer.confirm('确认要删除所选的文章吗？',function(index){
+       var x= $.ajax({
+        	type:"delete",
+        	url:"http://localhost:8080/deleteArticleAll",
+        	async:true,
+        	data:{"id":data},
+        	dataType:'json',
+        	headers:createAuthorizationTokenHeader(),
+        	success:function(rep){
+        		if(rep=='1'){
+        			
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+       }
+            	}
+            });
+        });
+      }
+    
+     /*审核通过*/
+            function member_tg(obj,aid){
+      	
+          	  layer.confirm("是否通过审核？",function(index){
+          			  $.ajax({
+          	              	method:'put',
+          	              	url:'http://localhost:8080/updateArticleById2/'+aid,
+          	              	headers:createAuthorizationTokenHeader(),
+          	              	success: function(data) {
+          						if(data=='1'){
+          				              layer.msg('审核成功!',{icon:6,time:1000});	
+          				              window.location.reload();
+          						}
+          					}
+          	              });
+            });
+          	  }	
+            /*审核驳回*/
+            function member_bh(obj,aid){
+      	
+          	  layer.confirm("是否通过审核？",function(index){
+          			  $.ajax({
+          	              	method:'put',
+          	              	url:'http://localhost:8080/updateArticleById/'+aid,
+          	              	headers:createAuthorizationTokenHeader(),
+          	              	success: function(data) {
+          						if(data=='1'){
+          				              layer.msg('驳回成功!',{icon:6,time:1000});	
+          				              window.location.reload();
+          						}
+          					}
+          	              });
+            });
+          	  }	
+    </script>
+    <script>var _hmt = _hmt || []; (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();</script>
+  </body>
 
 </html>

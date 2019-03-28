@@ -206,6 +206,8 @@
 					if (data != null) {
 						$("#admin").text(data);
 					}
+				},xhrFields: {
+						withCredentials: true
 				}
 			});
 		}
@@ -234,6 +236,9 @@
 						icon : 2,
 						time : 2000
 					});
+				}
+				,xhrFields: {
+						withCredentials: true
 				}
 			});
 			if (uri) {

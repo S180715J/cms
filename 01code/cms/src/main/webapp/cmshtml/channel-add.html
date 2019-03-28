@@ -107,6 +107,9 @@
        				type : 'get',
        				url : 'http://localhost:8080/findAllChannel/'+lid, //url路径 返回json数据
        				headers : createAuthorizationTokenHeader(), //请求头
+       				xhrFields: {
+							withCredentials: true
+						},
        				dataType : 'json' //返回的数据类型 
        			},
        			data : {
@@ -237,7 +240,9 @@
     							icon:2,
     							time:2000
     						})
-    					}
+    					},xhrFields: {
+							withCredentials: true
+						}
                 });
                }
              
