@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    <head>
+        <meta charset="UTF-8">
+        <title>	</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="stylesheet" href="./css/font.css">
+        <link rel="stylesheet" href="./css/xadmin.css">
+        <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="./js/jwt.js"></script>
+     
+    </head>
+    <body>
+    <div class="x-body">
+        <blockquote class="layui-elem-quote">欢迎管理员：
+            <span class="x-red" id="admin"></span>！当前时间:<span id="date"></span></blockquote>
+        <fieldset class="layui-elem-field">
+             <legend class="x-blue">牛耳教育</legend> 
+            <div class="layui-field-box">
+               <!--  <img alt="" src="./images/111.jpg" style="width: 1050px"> -->
+                  <img alt="" src="./images/timg (1).jpg" style="width: 1050px">
+                </div>
+            </div>
+             <div class="layui-field-box">
+              
+                </div>
+            </div>
+        </fieldset>
+       
+      
+        <blockquote class="layui-elem-quote layui-quote-nm">感谢layui,百度Echarts,jquery,本系统由牛耳教育提供技术支持。</blockquote>
+    </div>
+       
+    </body>
+    <script type="text/javascript">
+    $(function() {
+		
+	 newDate();
+	});
+      function newDate() {
+    		function getNow(s) {
+    		    return s < 10 ? '0' + s: s;
+    		}
+
+    		var myDate = new Date();
+    		//获取当前年
+    		var year=myDate.getFullYear();
+    		//获取当前月
+    		var month=myDate.getMonth()+1;
+    		//获取当前日
+    		var date=myDate.getDate(); 
+    		var h=myDate.getHours();       //获取当前小时数(0-23)
+    		var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+    		var s=myDate.getSeconds();  
+
+    		var now=year+'-'+getNow(month)+"-"+getNow(date)+" "+getNow(h)+':'+getNow(m)+":"+getNow(s);
+    		$("#date").text(now);
+    		setTimeout("newDate()",1000);
+	}
+    	window.onload=function(){
+    		newDate();
+    	}
+      
+   		$.ajax({
+   			method:'get',
+   			url:'http://localhost:8080/findToken',
+   			headers:createAuthorizationTokenHeader(),
+   		  success: function(data) {
+   			if(data!=null){
+   				$("#admin").text(data);
+   			}
+   		},xhrFields: {
+							withCredentials: true
+						}
+   		}); 
+      
+   	
+	
+    </script>
+</html>

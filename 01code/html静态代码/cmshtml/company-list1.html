@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>欢迎页面-X-admin2.1</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+
+		<link rel="styesheet" href="./lib/layui/css/layui.css">
+		<link rel="styesheet" href="./css/common.css">
+		<link rel="stylesheet" href="./css/font.css">
+		<link rel="stylesheet" href="./css/xadmin.css">
+		<style>
+			input {
+				height: 33px;
+				line-height: 33px;
+				padding: 0 7px;
+				border: 1px solid #ccc;
+				border-radius: 2px;
+				margin-bottom: -2px;
+				outline: none;
+			}
+			
+			input:focus {
+				border-color: #009E94;
+			}
+		</style>
+		<style>
+			.layui-table-view .layui-table {
+				width: 100% !important;
+			}
+		</style>
+		<script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./js/xadmin.js"></script>
+		<script type="text/javascript" src="./js/cookie.js"></script>
+		<script type="text/javascript" src="./js/jwt.js"></script>
+		<script type="text/javascript" src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	</head>
+
+	<body>
+		<div class="x-nav layui-container">
+			<span class="layui-breadcrumb">
+        <a href="idenx.html">首页</a>
+        <a href="">机构管理</a>
+        <a>
+          <cite>机构管理</cite></a>
+      </span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
+		</div>
+		<div class="x-body">
+
+			<br><br>
+			<a class="layui-btn layui-btn-normal" href="company-list1.html">&lt;&lt;返回</a>
+			&nbsp;&nbsp;
+			<div class="layui-btn-group">
+				<button class="layui-btn" id="btn-expand">全部展开</button>
+				<button class="layui-btn" id="btn-fold">全部折叠</button>
+			</div>
+			&nbsp;&nbsp;
+			<input id="edt-search" type="text" placeholder="输入关键字" style="width: 120px;" />&nbsp;&nbsp;
+			<button class="layui-btn" id="btn-search">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
+			<span id="dataLength"></span>
+			<table id="auth-table" class="layui-table" lay-filter="auth-table"></table>
+
+			</table>
+
+		</div>
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-btn-container">
+
+				<button class="layui-btn layui-btn-warm layui-btn-xs" lay-event="openAdd"><i class="layui-icon">&#xe642;</i>添加机构</button>
+				<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+				<button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+			</div>
+		</script>
+		<script type="text/html" id="button">
+			<button class="layui-btn layui-btn layui-btn-xs" onclick="getCheckData({{d.id}},'{{d.iname}}');	"><i class="layui-icon">&#xe642;</i>编辑</button>
+
+			<button class="layui-btn-danger layui-btn layui-btn-xs" onclick="member_del(this,{{d.id}})" href="javascript:;"><i class="layui-icon">&#xe640;</i>删除</button></script>
+
+		</script>
+		<script>
+			$.ajax({
+				type: "get",
+				url: "http://localhost:8080/findPageInstitution",
+				headers: createAuthorizationTokenHeader(),
+				success: function(data) {
+					renderZtree(data);
+				},
+				xhrFields: {
+					withCredentials: true
+				}
+			});
+		</script>
+
+		<script>
+			var renderZtree = function(page) {
+
+				//动态生成树状表
+				layui.config({
+					base: 'module/'
+				}).extend({
+					treetable: 'treetable-lay/treetable'
+				}).use(['table', 'treetable'], function() {
+					var $ = layui.jquery;
+					var table = layui.table;
+					var treetable = layui.treetable;
+
+					// 渲染表格
+					/*layer.load(2);*/
+
+					treetable.render({
+						data: page.data,
+						treeColIndex: 2, //树形图标显示在第几列
+						treeSpid: 0, //最上级的父级id
+						treeIdName: 'id', //id字段的名称
+						treePidName: 'fid', //pid字段的名称
+						treeDefaultClose: true, //是否默认折叠
+						treeLinkage: false, //父级展开时是否自动展开所有子级
+						elem: '#auth-table',
+
+						page: false, //开启分页	
+						toolbar: '#toolbarDemo',
+						request: {
+							pageName: 'pageNoStr' //页码的参数名称，默认：page
+								,
+							limitName: 'pageSizeStr',
+							//每页数据量的参数名，默认：limit
+						},
+						cols: [
+							[{
+									type: 'checkbox',
+									field: 'ID'
+								}, {
+									field: 'id',
+									templet: '<div>{{d.id}}</div>',
+									title: 'ID',
+									width: 50,
+
+									align: 'center',
+								}, {
+									field: 'iname',
+									templet: '<div>{{d.iname}}</div>',
+									title: '机构/部门名城',
+									align: 'center',
+								}, {
+									field: 'namepath',
+									/* templet:'<div>{{d.namepath}}</div>', */
+									title: '机构路径',
+									align: 'center',
+								}, {
+									field: 'fid',
+									title: '排序',
+									width: 70
+								},
+								{
+									filed: 'button',
+									templet: '#button',
+									title: '操作',
+									align: 'center',
+									style: 'td-manage',
+								}
+							]
+						],
+						defaultToolbar: ['filter', 'print', 'exports'],
+						size: 'lg',
+						done: function(res, curr, count) {
+
+							//如果是异步请求数据方式，res即为你接口返回的信息。
+							//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+							//得到数据总量
+							$("#dataLength").text("共有数据：" + count + "条");
+						}
+					});
+
+					$('#btn-expand').click(function() {
+						treetable.expandAll('#auth-table');
+					});
+
+					$('#btn-fold').click(function() {
+						treetable.foldAll('#auth-table');
+					});
+
+					$('#btn-search').click(function() {
+						var keyword = $('#edt-search').val();
+						var searchCount = 0;
+						$('#auth-table').next('.treeTable').find('.layui-table-body tbody tr td').each(function() {
+							$(this).css('background-color', 'transparent');
+							var text = $(this).text();
+							if(keyword != '' && text.indexOf(keyword) >= 0) {
+								$(this).css('background-color', 'rgba(250,230,160,0.5)');
+								if(searchCount == 0) {
+									treetable.expandAll('#auth-table');
+									$('html,body').stop(true);
+									$('html,body').animate({
+										scrollTop: $(this).offset().top - 150
+									}, 500);
+								}
+								searchCount++;
+							}
+						});
+						if(keyword == '') {
+							layer.msg("请输入搜索内容", {
+								icon: 5
+							});
+						} else if(searchCount == 0) {
+							layer.msg("没有匹配结果", {
+								icon: 5
+							});
+						}
+					});
+
+					//监听单元格编辑
+					table.on('edit(auth-table)', function(obj) {
+						var value = obj.value //得到修改后的值
+							,
+							data = obj.data //得到所在行所有键值
+							,
+							field = obj.field; //得到字段
+						layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+					});
+
+					//头工具栏事件
+					table.on('toolbar(auth-table)', function(obj) {
+						var checkStatus = table.checkStatus(obj.config.id);
+						switch(obj.event) {
+
+							case 'getCheckLength':
+								var data = checkStatus.data;
+								layer.msg('选中了：' + data.length + ' 个');
+								break;
+							case 'openAdd':
+								x_admin_show('新建机构', 'institution-add.html', '600', '340');
+								break;
+							case 'isAll':
+								layer.msg(checkStatus.isAll ? '全选' : '未全选');
+								break;
+						};
+					});
+
+					//监听增加点击事件
+					table.on('tool(auth-table)', function(obj) {
+
+					});
+
+				});
+			}
+		</script>
+
+		<script type="text/javascript">
+			function getCheckData(id, iname) {
+				layui.use('layer', function() {
+					var layer = layui.layer;
+				});
+				layer.prompt({
+					formType: 2,
+					value: iname,
+					title: '修改机构名',
+					area: ['200px', '70px'] //自定义文本域宽高
+				}, function(value, index, elem) {
+
+					var data = {
+						"id": id,
+						"iname": value,
+
+					}
+					if(value == null || value == '' || value == iname) {
+						layer.msg('错误,请重新编辑!', {
+							icon: 2,
+							time: 2000
+						});
+						layer.close(index);
+					} else {
+						$.ajax({
+							method: 'put',
+							url: 'http://localhost:8080/institution',
+							data: JSON.stringify(data),
+							headers: createAuthorizationTokenHeader(),
+							contentType: 'application/json;charset=UTF-8',
+							success: function(data) {
+								alert(data);
+								if(data == 'ok') {
+									layer.msg('编辑成功！', {
+										icon: 1,
+										time: 2000
+									});
+									layer.close(index, 3000);
+									location.reload();
+								}
+
+							},
+							xhrFields: {
+					withCredentials: true
+				}
+						});
+					}
+
+				});
+			}
+
+			/*用户-删除*/
+			function member_del(obj, id) {
+				layer.confirm('确认要该机构及其下子机构？', function(index) {
+					$.ajax({
+						method: 'delete',
+						url: 'http://localhost:8080/deletaInstitution/' + id,
+						headers: createAuthorizationTokenHeader(),
+						success: function(data) {
+							if(data == 'ok') {
+								//发异步删除数据
+								$(obj).parents("tr").remove();
+								layer.alert('删除成功!', {
+									icon: 1,
+									time: 2000
+								});
+								windows.location.reload(); //刷新页面 
+							}
+						},
+						xhrFields: {
+					withCredentials: true
+				}
+					});
+
+				});
+			}
+		</script>
+
+	</body>
+
+</html>

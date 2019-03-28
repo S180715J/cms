@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>欢迎页面-X-admin2.1</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+		<link rel="stylesheet" href="./css/font.css">
+		<link rel="stylesheet" href="./css/xadmin.css">
+		<link rel="stylesheet" href="./zTree_v3/css/zTreeStyle/zTreeStyle.css">
+		<script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./js/xadmin.js"></script>
+		<script type="text/javascript" src="./js/cookie.js"></script>
+		<script type="text/javascript" src="./js/jwt.js"></script>
+		<script type="text/javascript" src="./zTree_v3/js/jquery.ztree.all.min.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	</head>
+
+	<body>
+		<div class="x-nav">
+			<span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
+		</div>
+		<div class="x-body">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="margin-top: -10px;">站点-语种选择:</label>
+				<div class="layui-input-block" style="width: 180px;">
+					<select name="city" lay-verify="required" style="height: 20px">
+
+					</select>
+				</div>
+
+			</div>
+			<div class="zTreeDemoBackground left" style="width: 400px;margin-left: 320px;margin-top: -50px">
+				<ul id="treeDemo" class="ztree"></ul>
+			</div>
+		</div>
+		<div class="x-body">
+			<div>
+				<table class="layui-table" id="table" lay-filter="test">
+
+				</table>
+			</div>
+		</div>
+		<script type="text/javascript">
+			//发送ajax 异步请求
+			//得到站点 语种选择
+			$(function () {
+				$.ajax({
+				method: 'get',
+				url: 'http://localhost:8080/findSiteAndLanguage',
+				dataType: 'json',
+				headers: createAuthorizationTokenHeader(),
+				success: function(data) {
+					var html = '';
+					if(data != null) {
+						$.each(data, function(index, val) {
+							if(val.lid == 1) {
+								html += '<option value="' + val.lid + '" checked="checked">' + val.site.tname + '-' + val.lname + '</option> ';
+							} else {
+								html += '<option value="' + val.lid + '" >' + val.site.tname + '-' + val.lname + '</option>  ';
+							}
+						});
+						$('select').append(html);
+						var id = $("select").find('option:checked').val();
+				
+				getZtree(id);
+					}
+				},
+				error: function() {
+					layer.msg('加载错误！', {
+						icon: 2,
+						time: 2000
+					})
+				},
+				xhrFields: {
+					withCredentials: true
+				}
+			});
+			})
+			
+		</script>
+		<script type="text/javascript">
+		
+
+			//下拉框值改变事件
+			$("select").on('change', function() {
+				var lid = $(this).find('option:checked').val();
+
+				getZtree(lid);
+
+			});
+
+			function getZtree(lid) {
+
+				var zTreeObj;
+
+				//zTree配置
+				var setting = {
+					// 开启异步加载
+					async: {
+						enable: true, //开启异步加载功能，若异步则必写
+						type: 'get',
+						url: 'http://localhost:8080/findAllChannel/' + lid, //url路径 返回json数据
+						headers: createAuthorizationTokenHeader(), //请求头
+						xhrFields: {
+							withCredentials: true
+						},
+						 //返回的数据类型 
+					
+					},
+					data: {
+						keep: {
+							leaf: true,
+							parent: true,
+						},
+						key: {
+							name: 'cname',
+
+							isParent: "parent"
+						},
+						simpleData: {
+							enable: true,
+							idKey: "cid",
+							pIdKey: "pid",
+							rootPid: 0
+						}
+					},
+					/* 	 edit:{
+							 enable:true,
+							 showRemoveBtn: true,
+							 showRenameBtn: true  
+						 }, */
+					callback: {
+						onClick: zTreeOnClick,
+						onAsyncSuccess: zTreeOnAsyncSuccess
+					},
+					view: {
+						fontCss: {
+
+							color: 'red',
+						},
+						addDiyDom: addDiyDom
+					}
+				};
+
+				$(document).ready(function() {
+					zTreeObj = $.fn.zTree.init($("#treeDemo"), setting);
+				});
+
+				function zTreeOnClick(event, treeId, treeNode) {
+
+					var fid = JSON.stringify(treeNode.cid);
+					load(fid);
+				};
+
+				//初始化异步加载数据成功后 得到当前树的第一个根节点的文章信息
+				function zTreeOnAsyncSuccess(event, treeId, treeNode) {
+					var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+					var nodes = treeObj.getNodes();
+
+					var fid = nodes[0].cid;
+					load(fid);
+				};
+
+				function addDiyDom(treeId, treeNode) {
+
+					var aObj = $('#' + treeNode.tId + '_a');
+					var btn = $("#diyBtn_" + treeNode.cid);
+
+					if($("#diyBtn_" + treeNode.cid).length > 0) return;
+					var editStr = '	<input type="hidden" value="' + treeNode.cid + '">';
+
+					aObj.append(editStr);
+
+				};
+			}
+		</script>
+		<!--  <script type="text/javascript">
+    
+    $(function(){
+    	var fid=$("select").find('option:checked').val();
+    	
+	  	load(fid);
+	  	
+	  });
+ 
+    </script> -->
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-danger" lay-event="getCheckData"><i class="layui-icon"></i>批量删除</button>
+				<button class="layui-btn" onclick="x_admin_show('提交文章','./order-add2.html')"><i class="layui-icon"></i>添加</button>
+				<span id="dataLength" class="x-right" style="line-height:40px"></span>
+			</div>
+		</script>
+		<script type="text/html" id="operate">
+			<button class="layui-btn layui-btn layui-btn-xs" onclick="x_admin_show('查看/修改','./order-add2.html?id={{d.aid}}')"><i class="layui-icon">&#xe642;</i>查看/修改</button>
+			<button class="layui-btn-danger layui-btn layui-btn-xs" onclick="member_del(this,{{d.aid}})" href="javascript:;"><i class="layui-icon">&#xe640;</i>删除</button>
+		</script>
+		<script type="text/html" id="checkSta">
+			<button class="layui-btn layui-btn layui-btn-xs" onclick="x_admin_show('审核','./order-add.html?id={{d.aid}}',300,200)">审核</button>
+		</script>
+		<script>
+			layui.use('laydate', function() {
+				var laydate = layui.laydate;
+
+				//执行一个laydate实例
+				laydate.render({
+					elem: '#start' //指定元素
+				});
+				//执行一个laydate实例
+				laydate.render({
+					elem: '#end' //指定元素
+				});
+			});
+
+			function load(fid) {
+				var id = fid;
+
+				layui.use('table', function() {
+					var table = layui.table;
+					var url = 'http://localhost:8080/pageArticle';
+					table.render({
+						elem: '#table',
+						url: url, //数据接口
+						headers: createAuthorizationTokenHeader(),
+						xhrFields: {
+							withCredentials: true
+						},
+						response: {
+							statusName: 'status' //规定数据状态的字段名称，默认：code
+								,
+							statusCode: 'OK' //规定成功的状态码，默认：0
+								,
+							msgName: 'msg' //规定状态信息的字段名称，默认：msg
+								,
+							countName: 'count' //规定数据总数的字段名称，默认：count
+								,
+							dataName: 'data' //规定数据列表的字段名称，默认：data
+						},
+						page: true, //开启分页
+						toolbar: '#toolbarDemo',
+						request: {
+							pageName: 'pageNoStr' //页码的参数名称，默认：page
+								,
+							limitName: 'pageSizeStr' //每页数据量的参数名，默认：limit
+						},
+						where: {
+							pid: id
+						},
+						cols: [
+							[ //表头
+								{
+									type: 'checkbox',
+									field: 'aid',
+									width: 50
+								},
+								{
+									templet: '<div>{{d.aid}}</div>',
+									field: 'd.aid',
+									title: 'ID',
+									sort: true,
+									align: 'center',
+									width: 70
+								}, {
+									templet: '<div>{{d.title}}</div>',
+									field: 'title',
+									title: '标题',
+									align: 'center'
+								}, {
+									templet: '<div>{{d.creattime}}</div>',
+									field: 'creattime',
+									title: '创建时间 ',
+									align: 'center',
+									sort: true
+								}, {
+									templet: '<div>{{d.status == 0 ? "待审批" :(d.status==1?"已发布":"审核不通过") }}</div>',
+									field: 'statusu',
+									title: '状态 ',
+									align: 'center',
+									sort: true
+								}, {
+									templet: '#checkSta',
+									title: '审核情况',
+									align: 'center',
+								},
+								{
+									templet: '#operate',
+									title: '操作 ',
+									align: 'center',
+									width: 250
+									/* sort : true, */
+								}
+							]
+						],
+
+						size: 'lg',
+						done: function(res, curr, count) {
+
+							//如果是异步请求数据方式，res即为你接口返回的信息。
+							//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+							//得到数据总量
+							$("#dataLength").text("共有数据：" + (count) + "条");
+						}
+					});
+
+					table.on('toolbar(test)', function(obj) {
+						var checkStatus = table.checkStatus(obj.config.id);
+						switch(obj.event) {
+							case 'getCheckData':
+								var data = checkStatus.data;
+								var delList = [];
+								$.each(data, function(i, v) {
+									delList.push(v.aid);
+								});
+								delAll(delList);
+								break;
+						};
+					});
+				});
+
+			}
+			/*用户-删除*/
+			function member_del(obj, aid) {
+				layer.confirm('确认要删除吗？', function(index) {
+					$.ajax({
+						method: 'delete',
+						url: 'http://localhost:8080/deleteA/' + aid,
+						headers: createAuthorizationTokenHeader(),
+						success: function(data) {
+							if(data == 'ok') {
+								//发异步删除数据
+								$(obj).parents("tr").remove();
+								layer.msg('已删除!', {
+									icon: 1,
+									time: 1000
+								});
+							}
+						},
+						xhrFields: {
+							withCredentials: true
+						}
+					});
+				});
+			};
+
+			function delAll(data) {
+				layer.confirm('确认要删除所选的文章吗？', function(index) {
+					var x = $.ajax({
+						type: "delete",
+						url: "http://localhost:8080/deleteArticleAll",
+						async: true,
+						data: {
+							"id": data
+						},
+						dataType: 'json',
+						headers: createAuthorizationTokenHeader(),
+						success: function(rep) {
+							if(rep == '1') {
+
+								layer.msg('删除成功', {
+									icon: 1
+								});
+								$(".layui-form-checked").not('.header').parents('tr').remove();
+							}
+						},
+						xhrFields: {
+							withCredentials: true
+						}
+					});
+				});
+			}
+		</script>
+
+	</body>
+
+</html>
